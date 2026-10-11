@@ -111,29 +111,25 @@ public:
 	                        JGeometry::TVec3<f32>* dir,
 	                        JGeometry::TVec3<f32>* speed);
 	MtxPtr getNozzleMtx();
-	void setEmitPt();
 	f32 getPressure();
 	f32 getPressureMax();
 	void init();
 	void initInLoadAfter();
-	void createGunBody();
-	s32 getMarioUpperStatus();
 	bool isEmitting()
 	{
 		// TODO: more inlines!
-		const TWaterGun* self = this;
-
 		if (mCurrentWater == 0)
 			return false;
 
-		if (self->getCurrentNozzle()->getNozzleKind() == 1) {
-			TNozzleTrigger* trig = (TNozzleTrigger*)self->getCurrentNozzle();
-			if (trig->unk385 == TNozzleTrigger::ACTIVE)
+		if (getCurrentNozzle()->getNozzleKind() == 1) {
+			TNozzleTrigger* triggerNozzle = (TNozzleTrigger*)getCurrentNozzle();
+			if (triggerNozzle->getSprayState()
+			    == TNozzleTrigger::SPRAY_STATE_ACTIVE)
 				return true;
 			return false;
 		}
 
-		if (self->getCurrentNozzle()->unk378 > 0.0f)
+		if (getCurrentNozzle()->getUnk378() > 0.0f)
 			return true;
 
 		return false;
@@ -146,12 +142,12 @@ public:
 	BOOL suck();
 	void triggerPressureMovement(const TMarioControllerWork&);
 
-	J3DModel* getModel();
+	J3DModel* getModel() { return mFluddModel->getModel(); }
 
 	// Fabricated
-	inline bool hasFlag(u16 flag)
+	inline BOOL hasFlag(u16 flag)
 	{
-		bool hasFlag;
+		BOOL hasFlag;
 		if ((mFlags & flag) != 0) {
 			hasFlag = true;
 		} else {
@@ -167,15 +163,16 @@ public:
 	// Fabricated
 	s32 getSuckRate()
 	{
-		return mCurrentPressure
-		       * getCurrentNozzle()->mEmitParams.mSuckRate.get();
+		return mCurrentPressure * getCurrentNozzle()->mSuckRate.get();
 	}
 
 	// Fabricated
-	TNozzleBase* getNozzle(u8 index) const { return mNozzleList[index]; }
-	const TNozzleBase::TEmitParams& getEmitParams() const
+	TNozzleBase* getNozzle(u8 index) { return mNozzleList[index]; }
+
+	// Fabricated
+	TNozzleBase* getNozzle(u8 nozzle_index) const
 	{
-		return getCurrentNozzle()->mEmitParams;
+		return mNozzleList[nozzle_index];
 	}
 
 	// Fabricated
@@ -209,17 +206,17 @@ public:
 	// Fabricated
 	void updateUnk1C88(u8 emittedWater)
 	{
-		mIsEmitWater = emittedWater;
-		unk1C88 += 10.0f
-		           * ((f32)emittedWater * (f32)getEmitParams().mDecRate.get()
-		              / mNozzleList[0]->mEmitParams.mAmountMax.get());
+		mEmittedWaterCount = emittedWater;
+		// TODO: one more inline for getting emit params
+		// rather than separate getMaxWater, getDecRate, etc. functions?
+		f32 decRate = getCurrentNozzle()->mDecRate.get();
+		unk1C88
+		    += 10.0f
+		       * (emittedWater * decRate / mNozzleList[0]->mAmountMax.get());
 	}
 
 	// Fabricated
-	s32 getMaxWater() const
-	{
-		return getCurrentNozzle()->mEmitParams.mAmountMax.get();
-	}
+	s32 getMaxWater() const { return getCurrentNozzle()->mAmountMax.get(); }
 
 	// TODO: get rid of this -- it's real name is isEmitting() and it
 	// wasn't stripped in MarioRun.cpp
@@ -231,7 +228,8 @@ public:
 
 		if (getCurrentNozzle()->getNozzleKind() == 1) {
 			TNozzleTrigger* triggerNozzle = (TNozzleTrigger*)getCurrentNozzle();
-			if (triggerNozzle->unk385 == TNozzleTrigger::ACTIVE)
+			if (triggerNozzle->getSprayState()
+			    == TNozzleTrigger::SPRAY_STATE_ACTIVE)
 				return true;
 
 			return false;
@@ -244,7 +242,7 @@ public:
 	}
 
 	// Fabricated
-	bool isSwitchingToSprayNozzle()
+	bool isSwitchingToPrimaryNozzle()
 	{
 		return mSwitchToSecondNozzleSpeed < 0.0f ? true : false;
 	}
@@ -258,7 +256,7 @@ public:
 	// Fabricated
 	bool checkCurrentNozzleRocketType(u32 pType) const
 	{
-		return getCurrentNozzle()->mEmitParams.mRocketType.get() == pType;
+		return getCurrentNozzle()->mRocketType.get() == pType;
 	}
 
 	// Fabricated
@@ -267,14 +265,36 @@ public:
 		return getCurrentNozzle()->getNozzleKind() == pNozzleKind;
 	}
 
-	// Fabricated
+	// Fabricated and fairly certainly fake
 	bool checkCurrentNozzleTriggerSprayState(s32 pState) const
 	{
-		return ((TNozzleTrigger*)getCurrentNozzle())->unk385 == pState;
+		return ((TNozzleTrigger*)getCurrentNozzle())->mSprayState == pState;
 	}
 
 	// Fabricated (maybe should be indexed?)
 	const JGeometry::TVec3<f32>& getEmitPos0() const { return mEmitPos[0]; }
+
+	// Fabricated
+	s16 getPropellerAngle() const { return mPropellerAngle; }
+	// Fabricated
+	s16 getHoverAngleL() const { return mHoverAngleL; }
+	// Fabricated
+	s16 getHoverAngleR() const { return mHoverAngleR; }
+
+	// Fabricated
+	TMario* getMario() const { return mMario; }
+
+	// Fabricated
+	int getCurrentNozzleType() const { return mCurrentNozzle; }
+
+	// Fabricated
+	TWaterEmitInfo* getEmitInfo() const { return mEmitInfo; }
+
+	// Fabricated
+	f32 getSwitchProgress() const { return mSwitchToSecondNozzleProgress; }
+
+	// Fabricated
+	u8 getEmittedWaterCount() const { return mEmittedWaterCount; }
 
 public:
 	enum {
@@ -295,7 +315,7 @@ public:
 	/* 0x1C80 */ s32 mCurrentWater;
 	/* 0x1C84 */ u8 mCurrentNozzle;
 	/* 0x1C85 */ u8 mSecondNozzle;
-	/* 0x1C86 */ u8 mIsEmitWater;
+	/* 0x1C86 */ u8 mEmittedWaterCount;
 	/* 0x1C87 */ u8 unk1C87;
 	/* 0x1C88 */ f32 unk1C88;
 	/* 0x1C8C */ u8 mCurrentPressure;
@@ -307,9 +327,9 @@ public:
 	/* 0x1CC2 */ s16 unk1CC2;
 	/* 0x1CC4 */ s16 unk1CC4;
 	/* 0x1CC6 */ s16 unk1CC6;
-	/* 0x1CC8 */ f32 unk1CC8; // mNozzleSpeedY
-	/* 0x1CCC */ f32 unk1CCC; // mNozzleSpeedZ
-	/* 0x1CD0 */ s16 unk1CD0;
+	/* 0x1CC8 */ f32 mHoverAngleL;
+	/* 0x1CCC */ f32 mHoverAngleR;
+	/* 0x1CD0 */ s16 mPropellerAngle;
 	/* 0x1CD2 */ s16 unk1CD2;
 	/* 0x1CD4 */ MActor* mFluddModel;
 	/* 0x1CD8 */ u8 unk1CD8; // mCurFluddTransformIdx

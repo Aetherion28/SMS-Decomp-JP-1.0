@@ -1256,6 +1256,12 @@ public:
 	u32 getStatus() const { return mStatus; }
 
 	// Fabricated
+	bool isStatus(u32 status) const { return mStatus == status; }
+
+	// Fabricated
+	const JGeometry::TVec3<f32>& getVelocity() const { return mVel; }
+
+	// Fabricated
 	bool isSleeping() const
 	{
 		bool sleepKind = true;
@@ -1319,6 +1325,24 @@ public:
 	{
 		return mPrevPosition;
 	}
+
+	// Fabricated
+	TWaterGun* const getWaterGun() { return mWaterGun; }
+
+	// Fabricated
+	TMarioGamePad* const getGamePad() { return mGamePad; }
+
+	// Fabricated and probably fake
+	s16 getFaceAngleY() const { return mFaceAngle.y; }
+
+	// Fabricated
+	f32 getUnk564() const { return unk564; }
+
+	// Fabricated
+	f32 getUnk568() const { return unk568; }
+
+	// Fabricated
+	TYoshi* const getYoshi() { return mYoshi; }
 
 public:
 	/* 0x74 */ u32 mInput;

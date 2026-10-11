@@ -42,8 +42,8 @@ void TMario::hitNormal(THitActor* actor)
 		actor->receiveMessage(this, HIT_MESSAGE_TRAMPLE);
 	}
 
-	TWaterGun* wg = mWaterGun;
-	if ((int)wg->mCurrentNozzle == 0 && wg->mIsEmitWater != 0) {
+	if (mWaterGun->getCurrentNozzleType() == TWaterGun::Spray
+	    && mWaterGun->getEmittedWaterCount() != 0) {
 		TWaterHitActor* waterActor = &TModelWaterManager::mStaticHitActor;
 		waterActor->mPosition      = mPosition;
 		waterActor->mPosition.y += 80.0f;
@@ -123,7 +123,7 @@ void TMario::hitBarrel(THitActor* actor)
 			TWaterGun* wg     = mWaterGun;
 			wg->mCurrentWater = (s32)((const TWaterGun*)wg)
 			                        ->getCurrentNozzle()
-			                        ->mEmitParams.mAmountMax.get();
+			                        ->mAmountMax.get();
 		}
 	}
 }
@@ -270,8 +270,7 @@ void TMario::checkCollision()
 					unk3E8              = mWaterGun->mSecondNozzle;
 					const TWaterGun* wg = mWaterGun;
 					unk3EC              = (f32)(wg->mCurrentWater
-                                   / wg->getCurrentNozzle()
-                                         ->mEmitParams.mAmountMax.get());
+                                   / wg->getCurrentNozzle()->mAmountMax.get());
 				}
 				mYoshi->ride();
 				onFlag(MARIO_FLAG_HAS_FLUDD);
@@ -307,7 +306,7 @@ void TMario::checkCollision()
 
 		case ACTOR_TYPE_HINOKURI2:
 		case ACTOR_TYPE_BOSS_EEL:
-		case ACTOR_TYPE_BOSS_UNK13:
+		case ACTOR_TYPE_BOSS_TELESA:
 		case ACTOR_TYPE_BATHTUB_KILLER:
 		case ACTOR_TYPE_ENEMY_UNK1:
 		case ACTOR_TYPE_HAMU_KURI:
