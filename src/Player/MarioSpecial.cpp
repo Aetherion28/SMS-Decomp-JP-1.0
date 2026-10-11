@@ -855,9 +855,9 @@ BOOL TMario::wireWaitToHang()
 	mFaceAngle.y = mModelFaceAngle + 0x4000;
 	setAnimation(ANIM_ROPE_WHG, 1.0f);
 	if (isLast1AnimeFrame()) {
-		BOOL noHold = FALSE;
+		bool noHold = false;
 		if (mHeldObject == nullptr && !onYoshi())
-			noHold = TRUE;
+			noHold = true;
 		if (noHold)
 			return changePlayerStatus(MARIO_STATUS_WIRE_HANGING, 0, false);
 		return changePlayerStatus(MARIO_STATUS_LANDING, 0, false);
@@ -871,9 +871,9 @@ BOOL TMario::wireSWaitToHang()
 	mModelFaceAngle = mFaceAngle.y;
 	setAnimation(ANIM_ROPE_SWHG, 1.0f);
 	if (isLast1AnimeFrame()) {
-		BOOL noHold = FALSE;
+		bool noHold = false;
 		if (mHeldObject == nullptr && !onYoshi())
-			noHold = TRUE;
+			noHold = true;
 		if (noHold)
 			return changePlayerStatus(MARIO_STATUS_WIRE_HANGING, 0, false);
 		return changePlayerStatus(MARIO_STATUS_LANDING, 0, false);
@@ -1133,9 +1133,9 @@ BOOL TMario::wireRolling()
 			unkF6          = 0;
 			mWireBounceVel = 0.0f;
 			mWireSag       = 0.0f;
-			BOOL noHold    = FALSE;
+			bool noHold    = false;
 			if (mHeldObject == nullptr && !onYoshi())
-				noHold = TRUE;
+				noHold = true;
 			if (noHold)
 				return changePlayerStatus(MARIO_STATUS_WIRE_HANGING, 0, false);
 			return changePlayerStatus(MARIO_STATUS_LANDING, 0, false);
