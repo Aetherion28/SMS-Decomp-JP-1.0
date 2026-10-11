@@ -130,18 +130,7 @@ bool SMS_IsMarioTouchGround4cm()
 		return false;
 }
 
-bool SMS_IsMarioOnWire()
-{
-	bool ret;
-	if (gpMarioOriginal->getHolder()
-	    && gpMarioOriginal->getHolder()->mActorType
-	           == ACTOR_TYPE_MAP_WIRE_ACTOR)
-		ret = true;
-	else
-		ret = false;
-
-	return !!ret;
-}
+bool SMS_IsMarioOnWire() { return gpMarioOriginal->isOnWire(); }
 
 bool SMS_IsMarioOpeningDoor()
 {

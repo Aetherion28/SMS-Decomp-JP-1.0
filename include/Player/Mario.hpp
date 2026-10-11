@@ -1277,6 +1277,16 @@ public:
 	}
 
 	// Fabricated
+	BOOL isOnWire() const
+	{
+		bool ret;
+		if (mHolder && mHolder->mActorType == ACTOR_TYPE_MAP_WIRE_ACTOR)
+			ret = true;
+		else
+			ret = false;
+		return ret;
+	}
+
 	bool isFencing() const
 	{
 		if ((mStatus & MARIO_STATUS_TYPE_AND_ID_MASK)
