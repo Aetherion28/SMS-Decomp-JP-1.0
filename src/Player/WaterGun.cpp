@@ -1243,16 +1243,7 @@ void TWaterGun::init()
 	unk1D10 = new TMirrorActor("水鉄砲in鏡");
 	unk1D10->init(mFluddModel->getModel(), 4);
 
-	// TODO: Definitely an inlined function
-	// Another function does the exact same thing
-	for (int i = 0; i < nozzleBmdData.getEmitterCount(mCurrentNozzle); ++i) {
-		MtxPtr emitMtx = getEmitMtx(i);
-		if (emitMtx != nullptr) {
-			mEmitPos[i].x = emitMtx[0][3];
-			mEmitPos[i].y = emitMtx[1][3];
-			mEmitPos[i].z = emitMtx[2][3];
-		}
-	}
+	setEmitPt();
 }
 
 void TWaterGun::createGunBody()
