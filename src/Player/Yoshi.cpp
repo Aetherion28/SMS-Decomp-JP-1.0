@@ -557,17 +557,20 @@ void TYoshi::thinkAnimation()
 				case 2:
 					newIdx = 17;
 					break;
+				default:
+					goto checkR;
 				}
-			} else if (mMario->mGamePad->checkMeaning(
-			               TMarioGamePad::MEANING_R)) {
-				newIdx = 13;
 			} else {
-				goto walking;
+			checkR:
+				if (mMario->mGamePad->checkMeaning(TMarioGamePad::MEANING_R))
+					newIdx = 13;
+				else
+					goto walking;
 			}
 		} else {
 		walking:
 			u32 act = mMario->mStatus;
-			if (act == 0x8023C)
+			if (act == MARIO_STATUS_HIP_ATTACK_END)
 				newIdx = 6;
 			else if (act == MARIO_STATUS_WIN_DEMO)
 				newIdx = 2;
