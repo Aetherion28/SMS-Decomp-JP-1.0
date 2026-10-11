@@ -49,6 +49,8 @@ THitActor* SMS_GetMarioHitActor() { return (THitActor*)gpMarioAddress; }
 
 TLiveActor* SMS_GetMarioLiveActor() { return (TLiveActor*)gpMarioAddress; }
 
+bool SMS_IsMarioStatusWaiting() { }
+
 bool SMS_IsMarioStatusTypeJumping()
 {
 	return gpMarioOriginal->checkStatusType(MARIO_STATUS_FLAG_JUMPING);
@@ -68,6 +70,8 @@ bool SMS_IsMarioStatusHipDrop()
 	}
 }
 
+bool SMS_IsMarioStatusHipDropEnd() { }
+
 bool SMS_IsMarioStatusThrownDown()
 {
 	if (gpMarioOriginal->mStatus == MARIO_STATUS_THROWN_DOWN) {
@@ -86,6 +90,12 @@ bool SMS_IsMarioStatusElecDamage()
 	}
 }
 
+bool SMS_IsStatusHipDropOrHipDropEnd(THitActor*) { }
+
+bool SMS_IsMarioNoCap() { }
+
+bool SMS_IsMarioWearingAloha() { }
+
 bool SMS_IsMarioHeadSlideAttack()
 {
 	if (gpMarioOriginal->mStatus == MARIO_STATUS_CATCH
@@ -98,6 +108,8 @@ bool SMS_IsMarioHeadSlideAttack()
 
 s16 SMS_GetMarioHP() { return gpMarioOriginal->getHealth(); }
 
+s16 SMS_GetMarioHPMax() { }
+
 f32 SMS_GetMarioDamageRadius() { return gpMarioOriginal->mDamageRadius; }
 
 f32 SMS_GetMarioGrLevel() { return gpMarioOriginal->mFloorPosition.y; }
@@ -108,6 +120,8 @@ f32 SMS_GetMarioGravity()
 }
 
 TWaterGun* SMS_GetMarioWaterGun() { return gpMarioOriginal->mWaterGun; }
+
+void SMS_GetMarioJumpIntoWaterModelData() { }
 
 bool SMS_SendMessageToMario(THitActor* m, u32 mesg)
 {
@@ -129,6 +143,8 @@ bool SMS_IsMarioTouchGround4cm()
 	else
 		return false;
 }
+
+void SMS_IsMarioSpeedZero() { }
 
 bool SMS_IsMarioOnWire() { return gpMarioOriginal->isOnWire(); }
 
@@ -169,6 +185,8 @@ void SMS_WindMoveMario(const JGeometry::TVec3<float>& vec)
 	gpMarioOriginal->windMove(vec);
 }
 
+void SMS_GetMarioWork(int) { }
+
 u32 SMS_GetMarioStatus() { return gpMarioOriginal->mStatus; }
 
 const TBGCheckData* SMS_GetMarioGrPlane()
@@ -187,6 +205,10 @@ const TBGCheckData* SMS_GetMarioRfPlane()
 }
 
 u32 SMS_GetMarioStatus(THitActor* actor) { return ((TMario*)actor)->mStatus; }
+
+void SMS_IsMarioTouchGround4cm(THitActor*) { }
+
+void SMS_GetMarioSpeedY(THitActor*) { }
 
 bool SMS_IsMarioFencing() { return gpMarioOriginal->isFencing(); }
 

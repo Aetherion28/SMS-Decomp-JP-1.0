@@ -1277,6 +1277,7 @@ public:
 	}
 
 	// Fabricated
+	// fabricated
 	BOOL isOnWire() const
 	{
 		bool ret;

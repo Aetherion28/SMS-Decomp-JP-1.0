@@ -43,3 +43,6 @@ tools/mwcc_compiler
 orig/GMSJ01/sys/*
 !orig/GMSJ01/sys/main.dol
 !compilers/**
+!orig/GMSJ01/files/
+orig/GMSJ01/files/*
+!orig/GMSJ01/files/mario.MAP
