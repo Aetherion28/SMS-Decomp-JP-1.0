@@ -115,6 +115,7 @@ public:
 	f32 getPressureMax();
 	void init();
 	void initInLoadAfter();
+	void createGunBody();
 	bool isEmitting()
 	{
 		// TODO: more inlines!

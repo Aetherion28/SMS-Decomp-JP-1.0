@@ -1142,7 +1142,6 @@ void TWaterGun::init()
 	mCurrentNozzle               = Spray;
 	mSecondNozzle                = Hover;
 	mNozzleRocket.mSoundId       = MSD_SE_PO_ROCKET_TRIGGER;
-	mNozzleTurbo.mSoundId        = MSD_SE_PO_SNIPER_TRIGGER;
 	mNozzleDeform.mBomb.mSoundId = MSD_SE_PO_SHOTGUN_TRIGGER;
 	mCurrentWater      = mNozzleList[mCurrentNozzle]->mAmountMax.get();
 	mEmittedWaterCount = 0;
@@ -1180,21 +1179,7 @@ void TWaterGun::init()
 	mPropellerAngle = 0;
 	unk1CD2         = 0;
 
-	// This is definitely an inlined funciton. Creating a model seems quite
-	// useful
-	// TODO: Check if already exists
-	MActorAnmData* watergunAnmData = new MActorAnmData();
-	watergunAnmData->init("/mario/watergun2/body", nullptr);
-	mFluddModel = new MActor(watergunAnmData);
-
-	void* fluddModelData
-	    = JKRFileLoader::getGlbResource("/mario/watergun2/body/wg_mdl1.bmd");
-	J3DModel* fluddModel = new J3DModel(
-	    J3DModelLoaderDataBase::load(fluddModelData,
-	                                 J3DMLF_MaterialPEFull
-	                                     | (4 << J3DMLF_TevStageNumShift)),
-	    0, 1);
-	mFluddModel->setModel(fluddModel, 0);
+	createGunBody();
 
 	mFluddModel->getModel()->setBaseTRMtx(
 	    mMario->mModel->getModel()->getAnmMtx(mMario->mJointIdChest));
@@ -1330,6 +1315,22 @@ void TWaterGun::init()
 	unk1D10->init(mFluddModel->getModel(), 4);
 
 	setEmitPt();
+}
+
+void TWaterGun::createGunBody()
+{
+	MActorAnmData* watergunAnmData = new MActorAnmData();
+	watergunAnmData->init("/mario/watergun2/body", nullptr);
+	mFluddModel = new MActor(watergunAnmData);
+
+	void* fluddModelData
+	    = JKRFileLoader::getGlbResource("/mario/watergun2/body/wg_mdl1.bmd");
+	J3DModel* fluddModel = new J3DModel(
+	    J3DModelLoaderDataBase::load(fluddModelData,
+	                                 J3DMLF_MaterialPEFull
+	                                     | (4 << J3DMLF_TevStageNumShift)),
+	    0, 1);
+	mFluddModel->setModel(fluddModel, 0);
 }
 
 void TWaterGun::initInLoadAfter() { }
