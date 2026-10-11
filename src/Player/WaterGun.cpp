@@ -1727,7 +1727,7 @@ void TWaterGun::emit()
 		}
 	}
 
-	if (hasFlag(WATER_GUN_FLAG_UNK4)) {
+	if (checkFlag(WATER_GUN_FLAG_UNK4)) {
 		offFlag(WATER_GUN_FLAG_UNK4);
 		return;
 	}

@@ -147,6 +147,17 @@ public:
 	void setEmitPt();
 	s32 getMarioUpperStatus();
 
+	// Fabricated; TWaterGun::emit tests flags as bool, the nozzles as BOOL
+	bool checkFlag(u16 flag) const
+	{
+		bool ret;
+		if ((mFlags & flag) != 0)
+			ret = true;
+		else
+			ret = false;
+		return ret;
+	}
+
 	// Fabricated
 	inline BOOL hasFlag(u16 flag)
 	{
