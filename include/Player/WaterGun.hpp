@@ -207,13 +207,8 @@ public:
 	void updateUnk1C88(u8 emittedWater)
 	{
 		mIsEmitWater = emittedWater;
-		// TODO: one more inline for getting emit params
-		// rather than separate getMaxWater, getDecRate, etc. functions?
-		s16 decRate = (((const TWaterGun*)this)->getCurrentNozzle())
-		                  ->mEmitParams.mDecRate.get();
-
 		unk1C88 += 10.0f
-		           * ((f32)emittedWater * (f32)decRate
+		           * ((f32)emittedWater * (f32)getEmitParams().mDecRate.get()
 		              / mNozzleList[0]->mEmitParams.mAmountMax.get());
 	}
 
