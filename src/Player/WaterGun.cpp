@@ -1599,15 +1599,10 @@ TNozzleBase* TWaterGun::getCurrentNozzle() const
 
 void TWaterGun::setAmountToRate(f32 rate)
 {
-	// volatile u32 unused2[7]; // TODO: possibly inlined function
-	if (mCurrentNozzle == 3) {
-		TNozzleBase* currentNozzle = getCurrentNozzle();
-		s32 amountMax              = currentNozzle->mAmountMax.get();
-		mCurrentWater              = amountMax;
-	} else {
-		TNozzleBase* currentNozzle = getCurrentNozzle();
-		mCurrentWater              = rate * currentNozzle->mAmountMax.get();
-	}
+	if (mCurrentNozzle == 3)
+		mCurrentWater = getCurrentNozzle()->mAmountMax.get();
+	else
+		mCurrentWater = rate * getCurrentNozzle()->mAmountMax.get();
 }
 
 BOOL TWaterGun::isPressureOn()
@@ -1615,9 +1610,9 @@ BOOL TWaterGun::isPressureOn()
 	// volatile u32 unused2[6];
 	if (getCurrentNozzle()->getNozzleKind() == 1) {
 		TNozzleTrigger* triggerNozzle = (TNozzleTrigger*)getCurrentNozzle();
-		if (triggerNozzle->mInsidePressure > 0.0f) {
+		f32 pressure                  = triggerNozzle->mInsidePressure;
+		if (pressure > 0.0f)
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
@@ -1696,8 +1691,7 @@ void TWaterGun::triggerPressureMovement(
 {
 	mCurrentPressure = controllerWork.mAnalogR * 150.0f;
 
-	TNozzleBase* currentNozzle = getCurrentNozzle();
-	currentNozzle->movement(controllerWork);
+	getNozzle(mCurrentNozzle)->movement(controllerWork);
 
 	if (mCurrentPressure > mPreviousPressure) {
 		mPreviousPressure = mCurrentPressure;
