@@ -37,3 +37,9 @@ compile_commands.json
 /*.txt
 *.exe
 tools/mwcc_compiler
+
+# Private fork: track the game executable and the compilers we build with
+!orig/GMSJ01/sys/
+orig/GMSJ01/sys/*
+!orig/GMSJ01/sys/main.dol
+!compilers/**
