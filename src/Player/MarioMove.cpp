@@ -1475,7 +1475,7 @@ void TMario::checkController(JDrama::TGraphics*)
 		if ((s32)mWaterGun->mCurrentNozzle == TWaterGun::Turbo
 		    && ((mStatus + 0xF3C00000) == 0x201
 		        || ((mStatus + 0xFC000000) & 0xFFFFFFFF) == 0x440)) {
-			f32 propRot = mIntendedMag * 0.03125f;
+			f32 propRot = (mIntendedMag / 32.0f);
 			// TODO: wrong??? Correct offset is 0x714 which is way past
 			// the end of a TNozzleTrigger???
 			((TNozzleTrigger*)((const TWaterGun*)mWaterGun)->getCurrentNozzle())
