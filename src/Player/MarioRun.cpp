@@ -471,9 +471,8 @@ void TMario::doStopping() { }
 
 void TMario::doRunning()
 {
-	f32 sp = mIntendedMag < mRunParams.mMaxSpeed.get()
-	             ? mIntendedMag
-	             : mRunParams.mMaxSpeed.get();
+	f32 maxSpeed = mRunParams.mMaxSpeed.get();
+	f32 sp       = mIntendedMag < maxSpeed ? mIntendedMag : maxSpeed;
 
 	if (onYoshi())
 		sp *= mYoshiParams.mRunYoshiMult.get();
@@ -1029,7 +1028,7 @@ BOOL TMario::walkEnd()
 		break;
 	}
 
-	f32 rate = 0.25f * mForwardVel;
+	f32 rate = mForwardVel / 4.0f;
 	if (rate < 0.1f)
 		rate = 0.1f;
 	setAnimation(ANIM_RUN1, rate);
