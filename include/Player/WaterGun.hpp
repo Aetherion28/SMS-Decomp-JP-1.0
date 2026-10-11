@@ -142,7 +142,9 @@ public:
 	BOOL suck();
 	void triggerPressureMovement(const TMarioControllerWork&);
 
-	J3DModel* getModel() { return mFluddModel->getModel(); }
+	J3DModel* getModel();
+	void setEmitPt();
+	s32 getMarioUpperStatus();
 
 	// Fabricated
 	inline BOOL hasFlag(u16 flag)

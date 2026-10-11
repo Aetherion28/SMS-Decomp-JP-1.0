@@ -1329,16 +1329,7 @@ void TWaterGun::init()
 	unk1D10 = new TMirrorActor("水鉄砲in鏡");
 	unk1D10->init(mFluddModel->getModel(), 4);
 
-	// TODO: Definitely an inlined function
-	// Another function does the exact same thing
-	for (int i = 0; i < nozzleBmdData.getEmitterCount(mCurrentNozzle); ++i) {
-		MtxPtr emitMtx = getEmitMtx(i);
-		if (emitMtx != nullptr) {
-			mEmitPos[i].x = emitMtx[0][3];
-			mEmitPos[i].y = emitMtx[1][3];
-			mEmitPos[i].z = emitMtx[2][3];
-		}
-	}
+	setEmitPt();
 }
 
 void TWaterGun::initInLoadAfter() { }
@@ -1375,6 +1366,21 @@ MtxPtr TWaterGun::getNozzleMtx()
 {
 	return mFluddModel->getModel()->getAnmMtx(unk1CD8);
 }
+
+void TWaterGun::setEmitPt()
+{
+	for (s32 index = 0; index < nozzleBmdData.getEmitterCount(mCurrentNozzle);
+	     ++index) {
+		MtxPtr p1 = getEmitMtx(index);
+		if (p1 != nullptr) {
+			mEmitPos[index].x = p1[0][3];
+			mEmitPos[index].y = p1[1][3];
+			mEmitPos[index].z = p1[2][3];
+		}
+	}
+}
+
+J3DModel* TWaterGun::getModel() { return mFluddModel->getModel(); }
 
 void TWaterGun::changeNozzle(TNozzleType nozzleType, bool animate)
 {
@@ -1495,7 +1501,7 @@ void TWaterGun::calcAnimation(JDrama::TGraphics* graphics)
 		return;
 
 	// TODO: Wut? There's no 0x8000 flag for this state anywhere else?
-	s32 var380 = (mMario->mUpperState & 0x8000) != 0 ? 0 : mMario->mUpperState;
+	s32 var380 = getMarioUpperStatus();
 
 	switch (var380) {
 	case TMario::UPPER_STATE_PUMPING:
@@ -1577,15 +1583,7 @@ void TWaterGun::perform(u32 cue, JDrama::TGraphics* graphics)
 			p2->getModel()->setBaseTRMtx(getModel()->getAnmMtx(unk1CD8));
 		}
 
-		for (s32 index = 0;
-		     index < nozzleBmdData.getEmitterCount(mCurrentNozzle); ++index) {
-			MtxPtr p1 = getEmitMtx(index);
-			if (p1 != nullptr) {
-				mEmitPos[index].x = p1[0][3];
-				mEmitPos[index].y = p1[1][3];
-				mEmitPos[index].z = p1[2][3];
-			}
-		}
+		setEmitPt();
 	}
 
 	if (getCurrentNozzle()->getMActor()) {
@@ -1685,6 +1683,11 @@ void TWaterGun::rotateProp(f32 rotation)
 		unk1CD2         = 0;
 		mPropellerAngle = 0;
 	}
+}
+
+s32 TWaterGun::getMarioUpperStatus()
+{
+	return (mMario->mUpperState & 0x8000) != 0 ? 0 : mMario->mUpperState;
 }
 
 void TWaterGun::triggerPressureMovement(
