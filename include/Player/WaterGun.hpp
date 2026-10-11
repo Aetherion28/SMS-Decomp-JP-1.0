@@ -117,6 +117,7 @@ public:
 	void init();
 	void initInLoadAfter();
 	void createGunBody();
+	s32 getMarioUpperStatus();
 	bool isEmitting()
 	{
 		// TODO: more inlines!

@@ -31,6 +31,9 @@
 #include <M3DUtil/InfectiousStrings.hpp>
 
 // TODO: these come from some header...
+// TODO: the original .rodata also has two unreferenced 12-byte constants
+// right after these strings, @2694 = {0,0,0} and @2696 = {1,1,1} (leftover
+// local aggregate initializers); they shift every later string by 0x18.
 static const char cDirtyFileName[] = "/scene/map/pollution/H_ma_rak.bti";
 static const char cDirtyTexName[]  = "H_ma_rak_dummy";
 
@@ -1436,8 +1439,7 @@ void TWaterGun::calcAnimation(JDrama::TGraphics* graphics)
 	if (mMario == nullptr)
 		return;
 
-	// TODO: Wut? There's no 0x8000 flag for this state anywhere else?
-	s32 var380 = (mMario->mUpperState & 0x8000) != 0 ? 0 : mMario->mUpperState;
+	s32 var380 = getMarioUpperStatus();
 
 	switch (var380) {
 	case TMario::UPPER_STATE_PUMPING:
@@ -1613,6 +1615,11 @@ void TWaterGun::rotateProp(f32 rotation)
 		unk1CD2 = 0;
 		unk1CD0 = 0;
 	}
+}
+
+s32 TWaterGun::getMarioUpperStatus()
+{
+	return (mMario->mUpperState & 0x8000) != 0 ? 0 : mMario->mUpperState;
 }
 
 void TWaterGun::triggerPressureMovement(
