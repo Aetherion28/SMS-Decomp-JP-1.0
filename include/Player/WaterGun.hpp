@@ -209,10 +209,10 @@ public:
 		mEmittedWaterCount = emittedWater;
 		// TODO: one more inline for getting emit params
 		// rather than separate getMaxWater, getDecRate, etc. functions?
-		f32 decRate = getCurrentNozzle()->mDecRate.get();
 		unk1C88
 		    += 10.0f
-		       * (emittedWater * decRate / mNozzleList[0]->mAmountMax.get());
+		       * ((f32)emittedWater * (f32)getCurrentNozzle()->mDecRate.get()
+		          / mNozzleList[0]->mAmountMax.get());
 	}
 
 	// Fabricated
