@@ -369,7 +369,7 @@ void TYoshiTongue::calcAnim(MtxPtr mtx)
 	mHeadDir.z = mtx[2][0];
 
 	switch (mState) {
-	case STATE_EXTENDING: {
+	case STATE_IDLE: {
 		J3DModelData* modelData = mModel->getModelData();
 		for (u16 i = 0; i < modelData->getShapeNum(); ++i)
 			modelData->getShapeNodePointer(i)->onFlag(J3DShpFlag_Visible);
