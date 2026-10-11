@@ -1232,10 +1232,9 @@ BOOL TMario::diving()
 			if (checkFlag(MARIO_FLAG_HAS_FLUDD)) {
 				mWaterGun->unk1CC2 = -nozzleAngle;
 				mWaterGun->unk1CC4 = nozzleAngle;
-				mFaceAngle.y       = mIntendedYaw
-				               - IConverge((s16)(mIntendedYaw - mFaceAngle.y),
-				                           0, mDivingParams.mRotSp.get(),
-				                           mDivingParams.mRotSp.get());
+				s16 diff           = mIntendedYaw - mFaceAngle.y;
+				s16 rotSp          = mDivingParams.mRotSp.get();
+				mFaceAngle.y = mIntendedYaw - IConverge(diff, 0, rotSp, rotSp);
 			}
 		}
 		setAnimation(ANIM_DIVE_WAIT, 1.0f);
