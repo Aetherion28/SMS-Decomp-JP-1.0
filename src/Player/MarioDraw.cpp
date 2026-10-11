@@ -1063,6 +1063,14 @@ void TMario::loadAnmTexPattern(J3DAnmTexPattern** param_1, char* param_2,
 	(*param_1)->searchUpdateMaterialID(param_3);
 }
 
+// fabricated
+static inline void copyBodyTexture(J3DModel* model, J3DModelData* body)
+{
+	J3DModelData* data = model->getModelData();
+	data->getTexture()->setResTIMG(0, *body->getTexture()->getResTIMG(0));
+	DCFlushRange(data->getTexture()->getResTIMG(0), 0x20);
+}
+
 void TMario::initModel()
 {
 	unk394         = new J3DDrawBuffer(0x20);
@@ -1110,29 +1118,14 @@ void TMario::initModel()
 	    J3DMLF_MaterialPEFull | (16 << J3DMLF_TevStageNumShift));
 
 	// possible inlines around setting ResTIMG through J3DTexture?
-	mHandModels[0][0]->getModelData()->getTexture()->setResTIMG(
-	    0, *mBodyModelData->getTexture()->getResTIMG(0));
-	DCFlushRange(mHandModels[0][0]->getModelData()->getTexture()->getResTIMG(0),
-	             0x20);
+	copyBodyTexture(mHandModels[0][0], mBodyModelData);
 
-	mHandModels[0][1]->getModelData()->getTexture()->setResTIMG(
-	    0, *mBodyModelData->getTexture()->getResTIMG(0));
-	DCFlushRange(mHandModels[0][1]->getModelData()->getTexture()->getResTIMG(0),
-	             0x20);
+	copyBodyTexture(mHandModels[0][1], mBodyModelData);
 
-	mHandModels[1][0]->getModelData()->getTexture()->setResTIMG(
-	    0, *mBodyModelData->getTexture()->getResTIMG(0));
-	DCFlushRange(mHandModels[1][0]->getModelData()->getTexture()->getResTIMG(0),
-	             0x20);
-	mHandModels[1][1]->getModelData()->getTexture()->setResTIMG(
-	    0, *mBodyModelData->getTexture()->getResTIMG(0));
-	DCFlushRange(mHandModels[1][1]->getModelData()->getTexture()->getResTIMG(0),
-	             0x20);
+	copyBodyTexture(mHandModels[1][0], mBodyModelData);
+	copyBodyTexture(mHandModels[1][1], mBodyModelData);
 
-	mRHand4ndModel->getModelData()->getTexture()->setResTIMG(
-	    0, *mBodyModelData->getTexture()->getResTIMG(0));
-	DCFlushRange(mRHand4ndModel->getModelData()->getTexture()->getResTIMG(0),
-	             0x20);
+	copyBodyTexture(mRHand4ndModel, mBodyModelData);
 
 	mBodyModelData->getShapeNodePointer(4)->onFlag(J3DShpFlag_Visible);
 
@@ -1165,10 +1158,10 @@ void TMario::initModel()
 	for (int i = 0; i < 0x18; ++i) {
 		loadAnmTexPattern(&anmTexPattern[i], marioAnimeTexPatternFilenames[i],
 		                  mBodyModelData);
-		u16 matCount   = anmTexPattern[i]->getUpdateMaterialNum();
-		anmTexNoAnm[i] = new J3DTexNoAnm[matCount];
+		anmTexNoAnm[i]
+		    = new J3DTexNoAnm[anmTexPattern[i]->getUpdateMaterialNum()];
 
-		for (int j = 0; j < matCount; ++j) {
+		for (int j = 0; j < anmTexPattern[i]->getUpdateMaterialNum(); ++j) {
 			anmTexNoAnm[i][j].setAnmIndex(j);
 			anmTexNoAnm[i][j].setAnmTexPattern(anmTexPattern[i]);
 		}
