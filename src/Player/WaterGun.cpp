@@ -1303,6 +1303,21 @@ MtxPtr TWaterGun::getNozzleMtx()
 	return mFluddModel->getModel()->getAnmMtx(unk1CD8);
 }
 
+void TWaterGun::setEmitPt()
+{
+	for (s32 index = 0; index < nozzleBmdData.getEmitterCount(mCurrentNozzle);
+	     ++index) {
+		MtxPtr p1 = getEmitMtx(index);
+		if (p1 != nullptr) {
+			mEmitPos[index].x = p1[0][3];
+			mEmitPos[index].y = p1[1][3];
+			mEmitPos[index].z = p1[2][3];
+		}
+	}
+}
+
+J3DModel* TWaterGun::getModel() { return mFluddModel->getModel(); }
+
 void TWaterGun::changeNozzle(TNozzleType nozzleType, bool animate)
 {
 	f32 usedWater = (f32)mCurrentWater
@@ -1503,15 +1518,7 @@ void TWaterGun::perform(u32 cue, JDrama::TGraphics* graphics)
 			p2->getModel()->setBaseTRMtx(getModel()->getAnmMtx(unk1CD8));
 		}
 
-		for (s32 index = 0;
-		     index < nozzleBmdData.getEmitterCount(mCurrentNozzle); ++index) {
-			MtxPtr p1 = getEmitMtx(index);
-			if (p1 != nullptr) {
-				mEmitPos[index].x = p1[0][3];
-				mEmitPos[index].y = p1[1][3];
-				mEmitPos[index].z = p1[2][3];
-			}
-		}
+		setEmitPt();
 	}
 
 	if (getCurrentNozzle()->unk380) {

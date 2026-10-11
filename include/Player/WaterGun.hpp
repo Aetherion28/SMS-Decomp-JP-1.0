@@ -111,6 +111,7 @@ public:
 	                        JGeometry::TVec3<f32>* dir,
 	                        JGeometry::TVec3<f32>* speed);
 	MtxPtr getNozzleMtx();
+	void setEmitPt();
 	f32 getPressure();
 	f32 getPressureMax();
 	void init();
@@ -143,7 +144,7 @@ public:
 	BOOL suck();
 	void triggerPressureMovement(const TMarioControllerWork&);
 
-	J3DModel* getModel() { return mFluddModel->getModel(); }
+	J3DModel* getModel();
 
 	// Fabricated
 	inline bool hasFlag(u16 flag)
