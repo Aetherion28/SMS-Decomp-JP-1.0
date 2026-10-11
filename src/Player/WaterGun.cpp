@@ -328,21 +328,12 @@ void TNozzleBase::emit(int param_1)
 		if (emittedWater != 0) {
 			mFludd->depleteWater(emittedWater * mEmitParams.mDecRate.get());
 
-			f32 emitReactionPow = mEmitParams.mReactionPow.get();
-			f32 reactionPow     = refEmitPow * emitReactionPow;
-
-			// TODO: This section doesn't quite match here nor in derived
-			// classes. There may be some weird inlining going on here?
-			s16 faceAngleY     = mFludd->mMario->mFaceAngle.y;
-			f32 dirX           = emitInfo->mDir.get().x;
-			f32 dirZ           = emitInfo->mDir.get().z;
-			f32 cosAngle       = JMASCos(faceAngleY);
-			f32 sinAngle       = JMASSin(faceAngleY);
-			f32 directionScale = (-dirX * sinAngle - dirZ * cosAngle);
-
-			f32 velocity = reactionPow * directionScale;
-
-			mFludd->mMario->addVelocity(velocity);
+			f32 directionScale = -emitInfo->mDir.get().x
+			                         * JMASSin(mFludd->mMario->mFaceAngle.y)
+			                     - emitInfo->mDir.get().z
+			                           * JMASCos(mFludd->mMario->mFaceAngle.y);
+			f32 reactionPow = refEmitPow * mEmitParams.mReactionPow.get();
+			mFludd->mMario->addVelocity(directionScale * reactionPow);
 
 			JGeometry::TVec3<f32> const& dirVec = emitInfo->mDir.get();
 
