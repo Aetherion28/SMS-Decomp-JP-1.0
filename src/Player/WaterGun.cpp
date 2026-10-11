@@ -1073,23 +1073,7 @@ void TNozzleDeform::animation(int param)
 		if (!mactor->checkCurBckFromIndex(5))
 			mactor->setBckFromIndex(5);
 
-		bool updateAnimation = false;
-		if (mFludd->mCurrentWater == 0) {
-			updateAnimation = false;
-		} else if (mFludd->getNozzle(mFludd->mCurrentNozzle)->getNozzleKind()
-		           == 1) {
-			if (((TNozzleTrigger*)mFludd->getNozzle(mFludd->mCurrentNozzle))
-			        ->unk385
-			    == TNozzleTrigger::ACTIVE)
-				updateAnimation = true;
-			else
-				updateAnimation = false;
-		} else {
-			if (mFludd->getNozzle(mFludd->mCurrentNozzle)->unk378 > 0.0f)
-				updateAnimation = true;
-			else
-				updateAnimation = false;
-		}
+		bool updateAnimation = mFludd->isEmitting();
 
 		if (!updateAnimation)
 			unk36C = 8;
@@ -1101,21 +1085,7 @@ void TNozzleDeform::animation(int param)
 		if (!mactor->checkCurBckFromIndex(6))
 			mactor->setBckFromIndex(6);
 
-		bool updateAnimation = false;
-		if (mFludd->mCurrentWater == 0) {
-			updateAnimation = false;
-		} else if (mFludd->getCurrentNozzle()->getNozzleKind() == 1) {
-			if (((TNozzleTrigger*)mFludd->getCurrentNozzle())->unk385
-			    == TNozzleTrigger::ACTIVE)
-				updateAnimation = true;
-			else
-				updateAnimation = false;
-		} else {
-			if (mFludd->getCurrentNozzle()->unk378 > 0.0f)
-				updateAnimation = true;
-			else
-				updateAnimation = false;
-		}
+		bool updateAnimation = mFludd->isEmitting();
 
 		if (updateAnimation == true)
 			unk36C = 2;
@@ -1670,7 +1640,7 @@ void TWaterGun::perform(u32 cue, JDrama::TGraphics* graphics)
 
 TNozzleBase* TWaterGun::getCurrentNozzle() const
 {
-	return mNozzleList[mCurrentNozzle];
+	return getNozzle(mCurrentNozzle);
 }
 
 void TWaterGun::setAmountToRate(f32 rate)
@@ -1767,8 +1737,7 @@ void TWaterGun::triggerPressureMovement(
 {
 	mCurrentPressure = controllerWork.mAnalogR * 150.0f;
 
-	TNozzleBase* currentNozzle = getCurrentNozzle();
-	currentNozzle->movement(controllerWork);
+	getNozzle(mCurrentNozzle)->movement(controllerWork);
 
 	if (mCurrentPressure > mPreviousPressure) {
 		mPreviousPressure = mCurrentPressure;

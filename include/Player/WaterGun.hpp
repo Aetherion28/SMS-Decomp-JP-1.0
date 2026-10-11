@@ -169,8 +169,7 @@ public:
 	}
 
 	// Fabricated
-	TNozzleBase* getNozzle(u8 index) { return mNozzleList[index]; }
-	TNozzleBase* getCurrentNozzle() { return mNozzleList[mCurrentNozzle]; }
+	TNozzleBase* getNozzle(u8 index) const { return mNozzleList[index]; }
 	const TNozzleBase::TEmitParams& getEmitParams() const
 	{
 		return getCurrentNozzle()->mEmitParams;
