@@ -953,7 +953,7 @@ public:
 	BOOL doSliding(f32);
 	void slopeProcess();
 	void doSlipping(f32);
-	void doStopping();
+	BOOL doStopping();
 	void doRunning();
 	TSurfingParams* getSurfingParamsWater();
 	TSurfingParams* getSurfingParamsGround();

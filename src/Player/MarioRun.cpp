@@ -467,7 +467,17 @@ void TMario::slopeProcess()
 
 void TMario::doSlipping(f32) { }
 
-void TMario::doStopping() { }
+BOOL TMario::doStopping()
+{
+	BOOL zeroed = false;
+	f32 v       = FConverge(mForwardVel, 0.0f, 1.0f, 1.0f);
+	mForwardVel = v;
+	if (v == 0.0f)
+		zeroed = true;
+
+	setPlayerVelocity(mForwardVel);
+	return zeroed;
+}
 
 void TMario::doRunning()
 {
@@ -1007,16 +1017,8 @@ BOOL TMario::walkEnd()
 	if (considerRotateStart())
 		return true;
 
-	// TODO: inline
-	BOOL zeroed = false;
-	f32 v       = FConverge(mForwardVel, 0.0f, 1.0f, 1.0f);
-	mForwardVel = v;
-	if (v == 0.0f)
-		zeroed = true;
-
-	setPlayerVelocity(mForwardVel);
-
-	if (zeroed)
+	BOOL stopped = doStopping();
+	if (stopped)
 		return changePlayerStatus(MARIO_STATUS_WAIT, 0, false);
 
 	switch (walkProcess()) {
