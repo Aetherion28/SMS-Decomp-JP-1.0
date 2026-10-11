@@ -650,7 +650,7 @@ BOOL TMario::running()
 			return changePlayerStatus(0xC400209, 0, false);
 		}
 		if (mStatusTimer > 0xF0 && mForwardVel >= 16.0f
-		    && mGroundPlane->mNormal.y <= 0.17364818f) {
+		    && mGroundPlane->mNormal.y >= 0.17364818f) {
 			return changePlayerStatus(MARIO_STATUS_BRAKE, 0, false);
 		}
 		return changePlayerStatus(MARIO_STATUS_WALK_END, 0, false);
@@ -675,7 +675,7 @@ BOOL TMario::running()
 			return changePlayerStatus(0xC400209, 0, false);
 		}
 		if (mStatusTimer > 0xF0 && mForwardVel >= 16.0f
-		    && mGroundPlane->mNormal.y <= 0.17364818f) {
+		    && mGroundPlane->mNormal.y >= 0.17364818f) {
 			return changePlayerStatus(MARIO_STATUS_BRAKE, 0, false);
 		}
 		return changePlayerStatus(MARIO_STATUS_WALK_END, 0, false);
