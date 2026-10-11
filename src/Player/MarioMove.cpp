@@ -1960,9 +1960,9 @@ void TMario::thinkWaterSurface()
 		return;
 
 	BOOL wasInWater = checkFlag(MARIO_FLAG_IN_ANY_WATER);
-	bool isInWater  = false;
+	BOOL isInWater  = FALSE;
 	if (checkFlag(MARIO_FLAG_IN_ANY_WATER) == true)
-		isInWater = true;
+		isInWater = TRUE;
 	else
 		mFloorPosition.z = mPosition.y;
 
@@ -1972,7 +1972,7 @@ void TMario::thinkWaterSurface()
 	if (mGroundPlane->isPool()) {
 		mFloorPosition.z = gpPoolManager->getWaterLevel(mGroundPlane);
 		if (mFloorPosition.z > mPosition.y) {
-			isInWater = true;
+			isInWater = TRUE;
 			onFlag(MARIO_FLAG_IN_SHALLOW_WATER);
 		}
 	}
@@ -1989,14 +1989,14 @@ void TMario::thinkWaterSurface()
 	if (mWaterFloor->isWaterSurface()) {
 		mFloorPosition.z = waterFloorY;
 		if (mFloorPosition.z >= mPosition.y) {
-			isInWater = true;
+			isInWater = TRUE;
 			onFlag(MARIO_FLAG_IN_WATER);
 		}
 	} else {
 		const TBGCheckData* localBg;
 		gpMap->checkGround(mPosition.x, mPosition.y, mPosition.z, &localBg);
 		if (localBg->isCamNoclipUnk10B()) {
-			isInWater = true;
+			isInWater = TRUE;
 			onFlag(MARIO_FLAG_IN_WATER);
 		}
 	}
