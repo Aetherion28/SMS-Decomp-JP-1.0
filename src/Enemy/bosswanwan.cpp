@@ -200,7 +200,7 @@ void TBWLeashNode::perform(u32 cue, JDrama::TGraphics* graphics)
 		if (mLeash->mOwner->mHitPoints != 0 && mIndex < 8) {
 			for (int i = 0; i < mColCount; ++i) {
 				THitActor* actor = mCollisions[i];
-				if (actor->isActorType(ACTOR_TYPE_MARIO))
+				if (actor->getActorType() == ACTOR_TYPE_MARIO)
 					actor->receiveMessage(this, HIT_MESSAGE_BURN);
 			}
 		}
@@ -362,27 +362,27 @@ TBWPicket::TBWPicket(TBossWanwan* owner, const char* name)
 
 BOOL TBWPicket::receiveMessage(THitActor* sender, u32 message)
 {
-	if (!sender->isActorType(ACTOR_TYPE_MARIO))
-		return false;
+	if (sender->getActorType() == ACTOR_TYPE_MARIO) {
+		if (message == HIT_MESSAGE_HIP_DROP) {
+			// Ground pounding the picket stakes it back into the ground.
+			TBossWanwan* owner = mOwner;
+			owner->unk17C      = 1;
+			owner->unk184      = 0;
+			SMSGetMSound()->startSoundActor(MSD_SE_BS_WANWAN_LOCK, &mPosition,
+			                                0, nullptr, 0, 4);
+			return true;
+		}
 
-	if (message == HIT_MESSAGE_HIP_DROP) {
-		// Ground pounding the picket stakes it back into the ground.
-		mOwner->unk17C = 1;
-		mOwner->unk184 = 0;
-		SMSGetMSound()->startSoundActor(MSD_SE_BS_WANWAN_LOCK, &mPosition, 0,
-		                          nullptr, 0, 4);
-		return true;
-	}
+		if (message == HIT_MESSAGE_TAKE) {
+			mOwner->releasePicket();
+			mHolder = (TTakeActor*)sender;
+			return true;
+		}
 
-	if (message == HIT_MESSAGE_TAKE) {
-		mOwner->releasePicket();
-		mHolder = (TTakeActor*)sender;
-		return true;
-	}
-
-	if (message == HIT_MESSAGE_THROWN || message == HIT_MESSAGE_DETACH) {
-		mHolder = nullptr;
-		return true;
+		if (message == HIT_MESSAGE_THROWN || message == HIT_MESSAGE_DETACH) {
+			mHolder = nullptr;
+			return true;
+		}
 	}
 
 	return false;
@@ -508,8 +508,8 @@ void TBWHit::perform(u32 cue, JDrama::TGraphics* graphics)
 		for (int i = 0; i < mColCount; ++i) {
 			THitActor* actor = mCollisions[i];
 			if (mOwner->mHitPoints != 0
-			    && actor->isActorType(ACTOR_TYPE_MARIO))
-				actor->receiveMessage(this, HIT_MESSAGE_BURN);
+			    && actor->getActorType() == ACTOR_TYPE_MARIO)
+				actor->receiveMessage(mOwner, HIT_MESSAGE_BURN);
 		}
 	}
 
@@ -862,10 +862,10 @@ void TBossWanwan::shakeCamera(int mode)
 
 BOOL TBossWanwan::receiveMessage(THitActor* sender, u32 message)
 {
-	if (sender->isActorType(ACTOR_TYPE_MARIO))
+	if (sender->getActorType() == ACTOR_TYPE_MARIO)
 		return false;
 
-	if (sender->isActorType(ACTOR_TYPE_WATER)) {
+	if (sender->getActorType() == ACTOR_TYPE_WATER) {
 		if (unk18C != 0)
 			return true;
 
@@ -931,7 +931,8 @@ void TBossWanwan::releasePicket()
 		JPABaseEmitter* emitter = gpMarioParticleManager->emit(
 		    BWANWAN_JPA_MS_BWAN_JUMP_SMOKE, &mPicket->mPosition, 0, nullptr);
 		if (emitter != nullptr) {
-			emitter->setGlobalScale(JGeometry::TVec3<f32>(0.3f, 0.5f, 0.3f));
+			JGeometry::TVec3<f32> scale(0.3f, 0.5f, 0.3f);
+			emitter->setGlobalScale(scale);
 		}
 	}
 
@@ -1016,17 +1017,18 @@ void TBossWanwan::rollNextGraphNode()
 
 void TBossWanwan::slideToCurPathNode(f32 speed, f32 turn_speed)
 {
-	JGeometry::TVec3<f32> toGoal = unkF4.getPoint();
+	JGeometry::TVec3<f32> toGoal = getUnkF4().getPoint();
 	toGoal -= mPosition;
 	f32 dist = VECMag(&toGoal);
 
-	f32 target = MsAngleWrap(MsGetRotFromZaxisY(toGoal));
+	f32 target = MsWrap(MsGetRotFromZaxisY(toGoal), 0.0f, 360.0f);
 	f32 diff   = MsAngleDiff(target, mRotation.y);
+	f32 turn;
 	if (diff > 0.0f)
-		diff = MsMin(diff, turn_speed);
+		turn = MsMin(diff, turn_speed);
 	else
-		diff = MsMax(diff, -turn_speed);
-	mRotation.y = MsAngleWrap(mRotation.y + diff);
+		turn = MsMax(diff, -turn_speed);
+	mRotation.y = MsWrap(mRotation.y + turn, 0.0f, 360.0f);
 
 	JGeometry::TVec3<f32> delta = mPositionDelta;
 	if (dist > 0.0f)
