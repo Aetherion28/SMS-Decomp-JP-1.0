@@ -179,7 +179,7 @@ public:
 	void moveHeadAndTail(const JGeometry::TVec3<f32>&,
 	                     const JGeometry::TVec3<f32>&);
 
-private:
+public:
 	/* 0x00 */ u16 mNumPoints;
 	/* 0x04 */ TRopePoint* mPoints;
 	/* 0x08 */ f32 unk8;
