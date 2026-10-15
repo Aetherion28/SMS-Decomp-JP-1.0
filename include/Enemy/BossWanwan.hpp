@@ -6,6 +6,8 @@
 #include <JSystem/JDrama/JDRViewObj.hpp>
 #include <JSystem/JGeometry.hpp>
 #include <M3DUtil/M3UJoint.hpp>
+#include <M3DUtil/MActorData.hpp>
+#include <Strategic/ObjModel.hpp>
 #include <Strategic/Binder.hpp>
 #include <Strategic/Nerve.hpp>
 #include <Strategic/Spine.hpp>
@@ -133,6 +135,11 @@ public:
 
 	void joinAnm(int);
 
+	// fabricated: the original keeps getMActorAnmData and getAnmPtr as calls
+	// at every joinAnm site, which only a 1-statement wrapper around the
+	// lookup reproduces (it puts the lookup one inline level deeper).
+	J3DAnmTransformKey* getBckAnmPtr(int index) const;
+
 public:
 	/* 0x64 */ TBossWanwan* mOwner;
 };
@@ -193,6 +200,11 @@ public:
 	/* 0x1B0 */ s32 unk1B0;
 	/* 0x1B4 */ s16 unk1B4;
 };
+
+inline J3DAnmTransformKey* TBossWanwanMtxCalc::getBckAnmPtr(int index) const
+{
+	return mOwner->mMActorKeeper->getMActorAnmData()->mBckAnms->getAnmPtr(index);
+}
 
 class TBossWanwanManager : public TEnemyManager {
 public:

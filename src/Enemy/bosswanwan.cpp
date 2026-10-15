@@ -691,9 +691,7 @@ TBossWanwanMtxCalc::TBossWanwanMtxCalc(TBossWanwan* owner)
 
 void TBossWanwanMtxCalc::joinAnm(int index)
 {
-	M3UMtxCalcSIAnmBlendQuat::joinAnm(
-	    mOwner->getActorKeeper()->getMActorAnmData()->getUnk2C()->getAnmPtr(
-	        index));
+	M3UMtxCalcSIAnmBlendQuat::joinAnm(getBckAnmPtr(index));
 }
 
 void TBossWanwanMtxCalc::calc(u16 joint_no)
@@ -944,8 +942,10 @@ void TBossWanwan::changeBck(int index)
 {
 	mMtxCalc->joinAnm(index);
 	mMActor->setBckFrameCtrl(index);
-	unk178 = 10.0f / mMActor->getFrameCtrl(0)->getEnd();
-	setAnmSound(bwanwan_bastable[index]);
+	J3DFrameCtrl* ctrl = mMActor->getFrameCtrl(0);
+	unk178              = 10.0f / (f32)ctrl->getEnd();
+	const char* bas     = bwanwan_bastable[index];
+	setAnmSound(bas);
 }
 
 void TBossWanwan::startGoldBrk() { }
@@ -983,12 +983,15 @@ void TBossWanwan::calcRootMatrix()
 
 void TBossWanwan::reverseNextGraphNode()
 {
-	int ahead = unk124->mPrevIdx;
+	TGraphTracer* tracer = unk124;
+	int ahead            = tracer->mPrevIdx;
+	int cur              = tracer->mCurrIdx;
+	TGraphWeb* graph     = tracer->getGraph();
 
 	JGeometry::TVec3<f32> toMario = SMS_GetMarioPos();
 	toMario -= mPosition;
-	unk124->mPrevIdx = unk124->getGraph()->getAimToDirNextIndex(
-	    ahead, unk124->mCurrIdx, toMario, mPosition, 0xffffffff);
+	unk124->mPrevIdx = graph->getAimToDirNextIndex(ahead, cur, toMario,
+	                                               mPosition, 0xffffffff);
 	unk124->mCurrIdx = ahead;
 
 	setGoalPathFromGraph();
@@ -1007,7 +1010,11 @@ void TBossWanwan::rollNextGraphNode()
 	    && gpMarDirector->mMoveTickCount >= 14400)
 		showMessage(0xE001C);
 
-	JGeometry::TVec3<f32> front = fromPolar(mRotation.y, 1.0f);
+	// TODO: the original keeps set<float> out of line here but inlines both
+	// table lookups; the inline chain that produces that is not known yet.
+	JGeometry::TVec3<f32> front(1.0f * JMASSin(mRotation.y * (65536.0f / 360.0f)),
+	                            0.0f,
+	                            1.0f * JMASCos(mRotation.y * (65536.0f / 360.0f)));
 	unk124->moveTo(graph->getEscapeDirLimited(cur, prev, front, mPosition,
 	                                          100.0f, 0xffffffff));
 	setGoalPathFromGraph();
@@ -1418,6 +1425,7 @@ DEFINE_NERVE(TNerveBWRoll, TLiveActor)
 
 	if (self->isReachedToGoal()) {
 		spine->pushAfterCurrent(&TNerveBWGraphWander::theNerve());
+		self->getMActor()->getFrameCtrl(0)->setRate(SMSGetAnmFrameRate());
 		return true;
 	}
 
@@ -1460,8 +1468,10 @@ DEFINE_NERVE(TNerveBWJump, TLiveActor)
 	TBossWanwan* self = (TBossWanwan*)spine->getBody();
 
 	if (spine->getTime() == 0) {
-		self->mVelocity = self->calcVelocityToJumpToY(
-		    self->unk104.getPoint(), self->unk124->unkC, self->getGravityY());
+		const JGeometry::TVec3<f32>& goal = self->getUnk104().getPoint();
+		f32 speed                         = self->unk124->unkC;
+		self->mVelocity
+		    = self->calcVelocityToJumpToY(goal, speed, self->getGravityY());
 		self->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		self->unk16C = 0;
 	}
@@ -1499,6 +1509,7 @@ DEFINE_NERVE(TNerveBWStun, TLiveActor)
 	}
 
 	if (spine->getTime() > self->getBWParams()->mSLStunTimer.get()) {
+		self->mHitPoints = self->getBWParams()->mSLBWHitPointMax.get();
 		spine->pushAfterCurrent(&TNerveBWWakeup::theNerve());
 		return true;
 	}
@@ -1638,8 +1649,8 @@ DEFINE_NERVE(TNerveBWJumpAway, TLiveActor)
 
 	if (self->isReachedToGoal()) {
 		self->mPosition = BW_HEAD_START;
-		self->unk124->mCurrIdx = -1;
-		self->unk124->mPrevIdx = -1;
+		self->unk124->reset();
+		self->unk124->reset2();
 		self->goToShortestNextGraphNode();
 		spine->pushAfterCurrent(&TNerveBWGraphWander::theNerve());
 		return true;
@@ -1672,8 +1683,9 @@ DEFINE_NERVE(TNerveBWFall, TLiveActor)
 	TBossWanwan* self = (TBossWanwan*)spine->getBody();
 
 	if (spine->getTime() == 0) {
-		JGeometry::TVec3<f32> vel = self->calcVelocityToJumpToY(
-		    self->mPicket->mPosition, 5.0f, self->getGravityY());
+		const JGeometry::TVec3<f32>& goal = self->mPicket->mPosition;
+		JGeometry::TVec3<f32> vel
+		    = self->calcVelocityToJumpToY(goal, 5.0f, self->getGravityY());
 		self->setGoalPath(TPathNode(self->mPicket->mPosition));
 		self->mVelocity = vel;
 		self->onLiveFlag(LIVE_FLAG_AIRBORNE);
@@ -1681,9 +1693,9 @@ DEFINE_NERVE(TNerveBWFall, TLiveActor)
 	}
 
 	if (self->isReachedToGoal()) {
-		self->mPosition        = self->mPicket->mPosition;
-		self->unk124->mCurrIdx = -1;
-		self->unk124->mPrevIdx = -1;
+		self->mPosition = self->mPicket->mPosition;
+		self->unk124->reset();
+		self->unk124->reset2();
 		self->goToShortestNextGraphNode();
 		spine->pushAfterCurrent(&TNerveBWGraphWander::theNerve());
 		return true;
