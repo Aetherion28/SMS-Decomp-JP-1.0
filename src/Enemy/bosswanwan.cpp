@@ -203,8 +203,8 @@ void TBWLeashNode::perform(u32 cue, JDrama::TGraphics* graphics)
 		calcMatrix();
 
 		if (mLeash->mOwner->mHitPoints != 0 && mIndex < 8) {
-			for (int i = 0; i < mColCount; ++i) {
-				THitActor* actor = mCollisions[i];
+			for (int i = 0; i < getColNum(); ++i) {
+				THitActor* actor = getCollision(i);
 				if (actor->getActorType() == ACTOR_TYPE_MARIO)
 					actor->receiveMessage(this, HIT_MESSAGE_BURN);
 			}
@@ -518,8 +518,8 @@ void TBWHit::perform(u32 cue, JDrama::TGraphics* graphics)
 		if (mJointIndex >= 0)
 			mOwner->getJointTransByIndex(mJointIndex, &mPosition);
 
-		for (int i = 0; i < mColCount; ++i) {
-			THitActor* actor = mCollisions[i];
+		for (int i = 0; i < getColNum(); ++i) {
+			THitActor* actor = getCollision(i);
 			if (mOwner->mHitPoints != 0
 			    && actor->getActorType() == ACTOR_TYPE_MARIO)
 				actor->receiveMessage(mOwner, HIT_MESSAGE_BURN);
@@ -951,8 +951,8 @@ void TBossWanwan::releasePicket()
 void TBossWanwan::changeBck(int index)
 {
 	mMtxCalc->joinAnm(index);
-	mMActor->setBckFrameCtrl(index);
-	J3DFrameCtrl* ctrl = mMActor->getFrameCtrl(0);
+	getMActor()->setBckFrameCtrl(index);
+	J3DFrameCtrl* ctrl = getMActor()->getFrameCtrl(0);
 	unk178              = 10.0f / (f32)ctrl->getEnd();
 	const char* bas     = bwanwan_bastable[index];
 	setAnmSound(bas);
@@ -1697,8 +1697,8 @@ DEFINE_NERVE(TNerveBWFall, TLiveActor)
 
 	if (self->isReachedToGoal()) {
 		self->mPosition = self->mPicket->mPosition;
-		self->unk124->reset();
-		self->unk124->reset2();
+		self->getTracer()->reset();
+		self->getTracer()->reset2();
 		self->goToShortestNextGraphNode();
 		spine->pushAfterCurrent(&TNerveBWGraphWander::theNerve());
 		return true;
