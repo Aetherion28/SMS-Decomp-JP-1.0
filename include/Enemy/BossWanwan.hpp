@@ -104,7 +104,7 @@ public:
 
 public:
 	/* 0x70 */ TBossWanwan* mOwner;
-	/* 0x74 */ JGeometry::TMatrix34<JGeometry::SMatrix34C<f32> > mTakingMtx;
+	/* 0x74 */ TPosition3f mTakingMtx;
 	/* 0xA4 */ MActor* mMActor;
 };
 

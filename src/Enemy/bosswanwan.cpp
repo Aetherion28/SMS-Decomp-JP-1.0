@@ -1365,12 +1365,10 @@ DEFINE_NERVE(TNerveBWGraphWander, TLiveActor)
 		if (VECMag(&toNode) < 400.0f)
 			self->reverseNextGraphNode();
 
-		self->slideToCurPathNode(
-		    3.0f
-		        * ((f32)self->mHitPoints
-		           / (f32)self->getBWParams()->mSLBWHitPointMax.get()
-		           * self->mMarchSpeed),
-		    self->mTurnSpeed);
+		f32 heat = (f32)self->mHitPoints
+		           / (f32)self->getBWParams()->mSLBWHitPointMax.get();
+		self->slideToCurPathNode(3.0f * (heat * self->mMarchSpeed),
+		                         self->mTurnSpeed);
 		return false;
 	}
 
@@ -1396,12 +1394,12 @@ DEFINE_NERVE(TNerveBWGraphWander, TLiveActor)
 		fromMario -= gpMarioOriginal->mPosition;
 		VECNormalize(&fromMario, &fromMario);
 
-		f32 rate = 1.0f
-		           - (gpMarioOriginal->mIntendedMag * (1.0f / 32.0f)) * 0.75
-		                 * -fromMario.dot(stick);
+		f32 pull = gpMarioOriginal->mIntendedMag / 32.0f * 0.75;
+		pull *= -fromMario.dot(stick);
+		f32 rate = 1.0f - pull;
 		if (rate < 0.0f)
 			rate = 0.0f;
-		else if (rate > 1.5f)
+		else if (1.5f < rate)
 			rate = 1.5f;
 
 		self->slideToCurPathNode(rate * (heat * self->mMarchSpeed),
@@ -1598,7 +1596,7 @@ DEFINE_NERVE(TNerveBWDie, TLiveActor)
 	}
 
 	// Cool down completely first.
-	if (self->mHitPoints != 0) {
+	if (self->getHitPoints() != 0) {
 		self->decHitPoints();
 		J3DFrameCtrl* ctrl = mactor->getFrameCtrl(0);
 		ctrl->setFrame(0.0f);
@@ -1608,7 +1606,7 @@ DEFINE_NERVE(TNerveBWDie, TLiveActor)
 	}
 
 	if (spine->getTime() == 0) {
-		gpMarDirector->fireStartDemoCamera("bwanwan_down_camera", nullptr, -1,
+		SMSGetMarDirector()->fireStartDemoCamera("bwanwan_down_camera", nullptr, -1,
 		                                   0.0f, true, nullptr, 0, nullptr, 0);
 		self->takeBath();
 		self->changeBck(1);
