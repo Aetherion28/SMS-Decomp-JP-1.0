@@ -65,7 +65,11 @@ static JGeometry::TVec3<f32> BW_BATH_POS(-1000.0f, 4.5f, -6217.2f);
 static JGeometry::TVec3<f32> BW_PICKET_START(6012.84f, 0.0f, 7323.15f);
 static JGeometry::TVec3<f32> BW_HEAD_START(5741.72f, -100.0f, 6311.62f);
 
-// fabricated
+// fabricated (the same helper is faked in bgtentacle.cpp and bossgesso.cpp,
+// so the real one probably lives in a shared header)
+// TODO: the original emits the out-of-line TVec3::set<f> right after
+// TNerveBWRoll::execute, ours right after TNerveBWGraphWander::execute;
+// validate-symbol-order reports this.
 static inline JGeometry::TVec3<f32> fromPolar(f32 theta, f32 radius)
 {
 	return JGeometry::TVec3<f32>(radius * JMASSin(theta * (65536.0f / 360.0f)),
