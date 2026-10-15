@@ -1357,7 +1357,7 @@ DEFINE_NERVE(TNerveBWGraphWander, TLiveActor)
 		int ahead            = tracer->mPrevIdx;
 
 		JGeometry::TVec3<f32> toNode;
-		graph->getGraphNode(ahead).getPoint(&toNode);
+		tracer->getPrevious().getPoint(&toNode);
 		toNode -= self->mPosition;
 		if (VECMag(&toNode) < 400.0f && ahead == graph->unk10) {
 			spine->pushAfterCurrent(&TNerveBWJumpToBath::theNerve());
@@ -1499,7 +1499,7 @@ DEFINE_NERVE(TNerveBWStun, TLiveActor)
 		int ahead            = tracer->mPrevIdx;
 
 		JGeometry::TVec3<f32> toNode;
-		graph->getGraphNode(ahead).getPoint(&toNode);
+		tracer->getPrevious().getPoint(&toNode);
 		toNode -= self->mPosition;
 		if (VECMag(&toNode) < 100.0f) {
 			if (ahead == graph->unk10) {
