@@ -1014,13 +1014,8 @@ void TBossWanwan::rollNextGraphNode()
 	    && gpMarDirector->mMoveTickCount >= 14400)
 		showMessage(0xE001C);
 
-	// TODO: the original keeps set<float> out of line here but inlines both
-	// table lookups; the inline chain that produces that is not known yet.
-	JGeometry::TVec3<f32> front(1.0f * JMASSin(mRotation.y * (65536.0f / 360.0f)),
-	                            0.0f,
-	                            1.0f * JMASCos(mRotation.y * (65536.0f / 360.0f)));
-	unk124->moveTo(graph->getEscapeDirLimited(cur, prev, front, mPosition,
-	                                          100.0f, 0xffffffff));
+	unk124->moveTo(graph->getEscapeDirLimited(
+	    cur, prev, fromPolar(mRotation.y, 1.0f), mPosition, 100.0f, 0xffffffff));
 	setGoalPathFromGraph();
 	unk128 = 0;
 	unk12C = 0.0f;
