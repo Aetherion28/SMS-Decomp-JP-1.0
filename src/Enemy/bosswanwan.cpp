@@ -228,7 +228,8 @@ void TBWLeashNode::perform(u32 cue, JDrama::TGraphics* graphics)
 			else if (heat < 0.0f)
 				heat = 0.0f;
 
-			ctrl->setFrame(end * heat);
+			end *= heat;
+			ctrl->setFrame(end);
 			ctrl->setRate(0.0f);
 		}
 	}
@@ -416,9 +417,10 @@ void TBWPicket::perform(u32 cue, JDrama::TGraphics* graphics)
 		ensureTakeSituation();
 
 		if (mHolder != nullptr) {
+			TBWLeash* leash = mOwner->mLeash;
 			JGeometry::TVec3<f32> front;
 			front.set(mHolder->mPosition);
-			front -= mOwner->mLeash->mRope->mPoints[0].unkC;
+			front -= leash->mRope->mPoints[0].unkC;
 			JGeometry::TVec3<f32> up(0.0f, 1.0f, 0.0f);
 			JGeometry::TVec3<f32> side;
 			side.cross(up, front);
@@ -449,9 +451,10 @@ void TBWPicket::perform(u32 cue, JDrama::TGraphics* graphics)
 		MtxPtr mtx = mMActor->getModel()->getBaseTRMtx();
 		MTXIdentity(mtx);
 
-		TRope* rope                 = mOwner->mLeash->mRope;
-		JGeometry::TVec3<f32> front = mPosition;
-		front -= rope->mPoints[rope->mNumPoints - 3].unkC;
+		TBWLeash* leash = mOwner->mLeash;
+		JGeometry::TVec3<f32> front;
+		front.set(mPosition);
+		front -= leash->mRope->mPoints[leash->mRope->mNumPoints - 3].unkC;
 		if (front.squared() <= 3.814697265625e-06f)
 			front.set(0.0f, 0.0f, 1.0f);
 
@@ -1072,12 +1075,12 @@ void TBossWanwan::control()
 
 void TBossWanwan::emitEffects()
 {
-	bool landed = false;
+	BOOL landed = FALSE;
 	if (mMActor->checkCurBckFromIndex(4) || mMActor->checkCurBckFromIndex(5)) {
 		if (mMActor->checkBckPass(8.0f))
-			landed = true;
+			landed = TRUE;
 	} else if (mMActor->checkCurBckFromIndex(2) && mMActor->checkBckPass(38.0f)) {
-		landed = true;
+		landed = TRUE;
 	}
 
 	if (landed) {
@@ -1100,16 +1103,16 @@ void TBossWanwan::emitEffects()
 		}
 	}
 
-	bool sparks = false;
+	BOOL sparks = FALSE;
 	if (mMActor->checkCurBckFromIndex(0)) {
 		if (mMActor->checkBckPass(72.0f))
-			sparks = true;
+			sparks = TRUE;
 	} else if (mMActor->checkCurBckFromIndex(4)
 	           || mMActor->checkCurBckFromIndex(5)) {
 		if (mMActor->checkBckPass(6.0f) || mMActor->checkBckPass(12.0f))
-			sparks = true;
+			sparks = TRUE;
 	} else if (mMActor->checkCurBckFromIndex(2) && mMActor->checkBckPass(4.0f)) {
-		sparks = true;
+		sparks = TRUE;
 	}
 
 	if (sparks)
