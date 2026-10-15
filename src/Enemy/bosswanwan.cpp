@@ -1473,8 +1473,9 @@ DEFINE_NERVE(TNerveBWJump, TLiveActor)
 	if (spine->getTime() == 0) {
 		const JGeometry::TVec3<f32>& goal = self->getUnk104().getPoint();
 		f32 speed                         = self->unk124->unkC;
-		self->mVelocity
+		JGeometry::TVec3<f32> vel
 		    = self->calcVelocityToJumpToY(goal, speed, self->getGravityY());
+		self->mVelocity = vel;
 		self->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		self->unk16C = 0;
 	}
