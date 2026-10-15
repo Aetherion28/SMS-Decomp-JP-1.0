@@ -175,6 +175,12 @@ public:
 		return static_cast<TBWParams*>(getSaveParam());
 	}
 
+	// fabricated, same shape as TBossPakkun::getLatestNerve
+	const TNerveBase<TLiveActor>* getLatestNerve() const
+	{
+		return mSpine->getLatestNerve();
+	}
+
 public:
 	/* 0x150 */ TBossWanwanMtxCalc* mMtxCalc;
 	/* 0x154 */ TBWLeash* mLeash;

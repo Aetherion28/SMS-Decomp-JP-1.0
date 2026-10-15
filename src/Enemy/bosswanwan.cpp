@@ -118,7 +118,8 @@ void TBWLeashNode::calcTemperature()
 	if (mIndex == 0)
 		return;
 
-	f32 diff = mLeash->mNodes[mIndex - 1]->mTemperature - mTemperature;
+	int prevIndex = mIndex - 1;
+	f32 diff = mLeash->mNodes[prevIndex]->mTemperature - mTemperature;
 	f32 step;
 	if (diff < 0.0f) {
 		if (diff < -0.1f)
@@ -276,7 +277,8 @@ void TBWLeash::invalidateAllCollision()
 
 void TBWLeash::pullTail(const JGeometry::TVec3<f32>& tail)
 {
-	JGeometry::TVec3<f32> head = mRope->mPoints[0].unkC;
+	JGeometry::TVec3<f32> head;
+	head = mRope->mPoints[0].unkC;
 	mRope->constraintTail(tail);
 	head -= mRope->mPoints[0].unkC;
 	head.negate();
@@ -307,13 +309,16 @@ void TBWLeash::perform(u32 cue, JDrama::TGraphics* graphics)
 				mOwner->unk188 = 1;
 			}
 
-			f32 target = MsAngleWrap(MsGetRotFromZaxisY(toHead));
+			f32 target
+			    = MsWrap(MsGetRotFromZaxisY(toHead) + 180.0f, 0.0f, 360.0f);
 			f32 diff   = MsAngleDiff(target, mOwner->mRotation.y);
+			f32 turn;
 			if (diff > 0.0f)
-				diff = MsMin(diff, 1.5f * mOwner->mTurnSpeed);
+				turn = MsMin(diff, 1.5f * mOwner->mTurnSpeed);
 			else
-				diff = MsMax(diff, 1.5f * -mOwner->mTurnSpeed);
-			mOwner->mRotation.y = MsAngleWrap(mOwner->mRotation.y + diff);
+				turn = MsMax(diff, 1.5f * -mOwner->mTurnSpeed);
+			mOwner->mRotation.y
+			    = MsWrap(mOwner->mRotation.y + turn, 0.0f, 360.0f);
 		}
 	}
 
@@ -390,8 +395,8 @@ BOOL TBWPicket::receiveMessage(THitActor* sender, u32 message)
 
 BOOL TBWPicket::moveRequest(const JGeometry::TVec3<f32>& where_to)
 {
-	if (mOwner->mSpine->isNerve(&TNerveBWJumpToBath::theNerve())
-	    || mOwner->mSpine->isNerve(&TNerveBWDie::theNerve()))
+	if (mOwner->getLatestNerve() == &TNerveBWJumpToBath::theNerve()
+	    || mOwner->getLatestNerve() == &TNerveBWDie::theNerve())
 		return false;
 
 	if (mOwner->mHitPoints != 0)
@@ -411,7 +416,8 @@ void TBWPicket::perform(u32 cue, JDrama::TGraphics* graphics)
 		ensureTakeSituation();
 
 		if (mHolder != nullptr) {
-			JGeometry::TVec3<f32> front = mHolder->mPosition;
+			JGeometry::TVec3<f32> front;
+			front.set(mHolder->mPosition);
 			front -= mOwner->mLeash->mRope->mPoints[0].unkC;
 			JGeometry::TVec3<f32> up(0.0f, 1.0f, 0.0f);
 			JGeometry::TVec3<f32> side;
@@ -526,7 +532,7 @@ void TBWBinder::bind(TLiveActor* actor)
 	JGeometry::TVec3<f32> next  = bw->mPosition;
 	next += delta;
 
-	if (bw->checkLiveFlag(LIVE_FLAG_AIRBORNE)) {
+	if (bw->isAirborne()) {
 		JGeometry::TVec3<f32> vel = bw->mVelocity;
 		next += vel;
 		vel.y -= bw->getGravityY();
@@ -537,26 +543,22 @@ void TBWBinder::bind(TLiveActor* actor)
 
 	if (bw->mSpine->isNerve(&TNerveBWJumpToBath::theNerve())
 	    || bw->mSpine->isNerve(&TNerveBWDie::theNerve())) {
-		JGeometry::TVec3<f32> d = next;
-		d.sub(bw->mPosition);
-		bw->mPositionDelta = d;
+		bw->mPositionDelta = next - bw->mPosition;
 		return;
 	}
 
-	if (bw->checkLiveFlag(LIVE_FLAG_AIRBORNE)) {
+	if (bw->isAirborne()) {
 		const TBGCheckData* ground;
-		f32 oldY = bw->mPosition.y;
-		f32 groundY
-		    = gpMap->checkGround(next.x, next.y + bw->mBodyScale * bw->mHeadHeight,
-		                         next.z, &ground)
-		      + 1.0f;
-		if (oldY > next.y && !ground->isEnemyThrough()) {
+		f32 groundY = gpMap->checkGround(next.x, next.y + bw->getHeadHeight(),
+		                                 next.z, &ground);
+		groundY += 1.0f;
+		if (bw->mPosition.y > next.y && !ground->isEnemyThrough()) {
 			const TBGCheckData* ground2;
 			f32 groundY2
 			    = gpMap->checkGround(next.x,
-			                         oldY + bw->mBodyScale * bw->mHeadHeight,
-			                         next.z, &ground2)
-			      + 1.0f;
+			                         bw->mPosition.y + bw->getHeadHeight(),
+			                         next.z, &ground2);
+			groundY2 += 1.0f;
 			if (groundY2 > groundY) {
 				groundY = groundY2;
 				ground  = ground2;
@@ -578,29 +580,26 @@ void TBWBinder::bind(TLiveActor* actor)
 		bw->mGroundPlane  = ground;
 	}
 
-	JGeometry::TVec3<f32> d = next;
-	d.sub(bw->mPosition);
-	delta = d;
+	delta = next - bw->mPosition;
 
 	// Only allow movement along the current graph link.
-	if (!bw->checkLiveFlag(LIVE_FLAG_AIRBORNE)) {
+	if (!bw->isAirborne()) {
 		TGraphTracer* tracer = bw->unk124;
 		if (tracer->getGraph() != nullptr) {
 			int cur  = tracer->mCurrIdx;
 			int prev = tracer->mPrevIdx;
 			if (cur >= 0 && prev >= 0 && cur != prev) {
-				TGraphWeb* graph = tracer->getGraph();
+				TGraphNode& curNode  = tracer->getCurrent();
+				TGraphNode& prevNode = tracer->getPrevious();
 				JGeometry::TVec3<f32> a;
 				JGeometry::TVec3<f32> b;
-				graph->getGraphNode(cur).getPoint(&a);
-				graph->getGraphNode(prev).getPoint(&b);
+				curNode.getPoint(&a);
+				prevNode.getPoint(&b);
 				a -= b;
 				VECNormalize(&a, &a);
 
-				f32 len = 0.0f;
 				f32 sq  = a.squared();
-				if (sq != 0.0f)
-					len = delta.dot(a) / sq;
+				f32 len = sq == 0.0f ? 0.0f : delta.dot(a) / sq;
 
 				f32 speed = len;
 				if (len < 0.0f) {
@@ -617,7 +616,7 @@ void TBWBinder::bind(TLiveActor* actor)
 	}
 
 	// Roll the body by the distance it moved.
-	if (!bw->checkLiveFlag(LIVE_FLAG_AIRBORNE)) {
+	if (!bw->isAirborne()) {
 		JGeometry::TVec3<f32> moved = delta;
 		f32 dist                    = VECMag(&moved);
 		if (dist != 0.0f) {
@@ -628,24 +627,27 @@ void TBWBinder::bind(TLiveActor* actor)
 			roll *= 2.0f;
 
 			if (bw->unk16C != 0) {
-				bw->unk168 = MsWrap(roll + bw->unk168, 0.0f, 360.0f);
-			} else if (bw->unk168 != 0.0f) {
-				f32 angle = bw->unk168 + roll;
-				if (angle > 360.0f)
-					angle = 0.0f;
-				bw->unk168 = angle;
+				bw->unk168 = MsAngleWrap(roll + bw->unk168);
+			} else {
+				f32 angle = bw->unk168;
+				if (angle != 0.0f) {
+					angle += roll;
+					if (angle > 360.0f)
+						angle = 0.0f;
+					bw->unk168 = angle;
+				}
 			}
 		}
 	}
 
 	// While staked, the chomp can never go further than the chain allows.
 	if (bw->unk17C != 0) {
-		TRope* rope                    = bw->mLeash->mRope;
-		JGeometry::TVec3<f32> pos      = bw->mPosition;
-		JGeometry::TVec3<f32> nextPos  = pos;
-		JGeometry::TVec3<f32> origPos  = pos;
+		TBWLeash* leash               = bw->mLeash;
+		JGeometry::TVec3<f32> pos     = bw->mPosition;
+		JGeometry::TVec3<f32> nextPos = pos;
+		JGeometry::TVec3<f32> origPos = pos;
 		nextPos += delta;
-		JGeometry::TVec3<f32> anchor = rope->mPoints[3].unkC;
+		JGeometry::TVec3<f32> anchor = leash->mRope->mPoints[3].unkC;
 		nextPos -= anchor;
 		if (VECMag(&nextPos) > 860.0f) {
 			VECNormalize(&nextPos, &nextPos);
@@ -657,13 +659,15 @@ void TBWBinder::bind(TLiveActor* actor)
 	}
 
 	// Pull it back onto the current link.
-	if (!bw->checkLiveFlag(LIVE_FLAG_AIRBORNE)) {
+	if (!bw->isAirborne()) {
 		TGraphTracer* tracer = bw->unk124;
 		TGraphWeb* graph     = tracer->getGraph();
+		TGraphNode& curNode  = graph->getGraphNode(tracer->mCurrIdx);
+		TGraphNode& prevNode = graph->getGraphNode(tracer->mPrevIdx);
 		JGeometry::TVec3<f32> a;
 		JGeometry::TVec3<f32> b;
-		graph->getGraphNode(tracer->mCurrIdx).getPoint(&a);
-		graph->getGraphNode(tracer->mPrevIdx).getPoint(&b);
+		curNode.getPoint(&a);
+		prevNode.getPoint(&b);
 		JGeometry::TVec3<f32> foot = MsPerpendicFootToLineR(b, a, bw->mPosition);
 		a -= b;
 		foot -= bw->mPosition;
@@ -696,7 +700,7 @@ void TBossWanwanMtxCalc::joinAnm(int index)
 
 void TBossWanwanMtxCalc::calc(u16 joint_no)
 {
-	if (joint_no == 0 && mOwner->checkLiveFlag(LIVE_FLAG_AIRBORNE)) {
+	if (joint_no == 0 && mOwner->isAirborne()) {
 		// While airborne the root joint ignores the animation's translation.
 		j3dSys.setCurrentMtxCalc(this);
 
@@ -718,12 +722,11 @@ void TBossWanwanMtxCalc::calc(u16 joint_no)
 
 		if (joint_no == 1) {
 			// Rolling the ball by unk168 degrees.
+			// TODO: the original keeps &rot pinned in r29 across getModel()
+			// (and has a 0x10 bigger frame); not found what causes that yet.
 			TPosition3f rot;
 			rot.zero();
-			f32 s = JMASSin(mOwner->unk168 * (65536.0f / 360.0f));
-			f32 c = JMASCos(mOwner->unk168 * (65536.0f / 360.0f));
-			rot.set(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, c, -s, 0.0f, 0.0f, s, c,
-			        0.0f);
+			MsMtxSetRotX(rot, mOwner->unk168);
 
 			MtxPtr mtx = mOwner->getModel()->getAnmMtx(joint_no);
 			MTXConcat(mtx, rot, mtx);
@@ -840,7 +843,7 @@ void TBossWanwan::shakeCamera(int mode)
 	f32 lenMax    = getBWParams()->mSLShakeLengthMax.get();
 	f32 lenMaxHP0 = getBWParams()->mSLShakeLengthMaxHP0.get();
 	f32 heat;
-	if (mMActor->checkCurBckFromIndex(0))
+	if (getMActor()->checkCurBckFromIndex(0))
 		heat = 1.0f;
 	else
 		heat = (f32)mHitPoints / (f32)getBWParams()->mSLBWHitPointMax.get();
@@ -975,10 +978,8 @@ void TBossWanwan::calcRootMatrix()
 	J3DModel* model = getModel();
 	model->setBaseScale(mScaling);
 	MsMtxSetXYZRPH(getModel()->getBaseTRMtx(), mPosition.x,
-	               mPosition.y + 500.0f, mPosition.z,
-	               mRotation.x * (65536.0f / 360.0f),
-	               mRotation.y * (65536.0f / 360.0f),
-	               mRotation.z * (65536.0f / 360.0f));
+	               mPosition.y + 500.0f, mPosition.z, mRotation.x, mRotation.y,
+	               mRotation.z);
 }
 
 void TBossWanwan::reverseNextGraphNode()
@@ -1055,13 +1056,14 @@ void TBossWanwan::control()
 		JGeometry::TVec3<f32> away = mPosition;
 		away -= mLeash->mRope->mPoints[3].unkC;
 
-		f32 target = MsAngleWrap(MsGetRotFromZaxisY(away));
+		f32 target = MsWrap(MsGetRotFromZaxisY(away), 0.0f, 360.0f);
 		f32 diff   = MsAngleDiff(target, mRotation.y);
+		f32 turn;
 		if (diff > 0.0f)
-			diff = MsMin(diff, 4.0f * mTurnSpeed);
+			turn = MsMin(diff, 4.0f * mTurnSpeed);
 		else
-			diff = MsMax(diff, 4.0f * -mTurnSpeed);
-		mRotation.y = MsAngleWrap(mRotation.y + diff);
+			turn = MsMax(diff, 4.0f * -mTurnSpeed);
+		mRotation.y = MsWrap(mRotation.y + turn, 0.0f, 360.0f);
 	}
 
 	unk15C.zero();
@@ -1425,7 +1427,8 @@ DEFINE_NERVE(TNerveBWRoll, TLiveActor)
 
 	if (self->isReachedToGoal()) {
 		spine->pushAfterCurrent(&TNerveBWGraphWander::theNerve());
-		self->getMActor()->getFrameCtrl(0)->setRate(SMSGetAnmFrameRate());
+		J3DFrameCtrl* ctrl = self->getMActor()->getFrameCtrl(0);
+		ctrl->setRate(SMSGetAnmFrameRate());
 		return true;
 	}
 
