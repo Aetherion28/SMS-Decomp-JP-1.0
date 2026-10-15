@@ -157,8 +157,8 @@ public:
 	void showMessage(u32);
 	void checkTakeMsg();
 	void changeBck(int);
-	bool inSightAngle(f32);
-	f32 inSight();
+	BOOL inSightAngle(f32);
+	BOOL inSight();
 	BOOL is2ndFightNow() const;
 	void stopIfRoll();
 	void changeAttackMode(int new_mode);
@@ -172,7 +172,7 @@ public:
 	void launchPolDrop();
 	void setEyeDamageBtp(int);
 	BOOL tentacleHeld() const;
-	void tentacleAttack();
+	BOOL tentacleAttack();
 	BOOL beakHeld() const;
 	void tentacleWait();
 	void doAttackSingle();
