@@ -853,7 +853,7 @@ void TBossWanwan::shakeCamera(int mode)
 	if (getMActor()->checkCurBckFromIndex(0))
 		heat = 1.0f;
 	else
-		heat = (f32)mHitPoints / (f32)getBWParams()->mSLBWHitPointMax.get();
+		heat = (f32)getHitPoints() / (f32)getBWParams()->mSLBWHitPointMax.get();
 
 	f32 length = lenMax * heat + lenMaxHP0 * (1.0f - heat);
 	f32 left   = length - dist;
