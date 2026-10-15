@@ -85,6 +85,23 @@ extern TNozzleBmdData nozzleBmdData;
 
 class TWaterGun {
 public:
+	// TODO: UNUSED parameter class; member layout is unknown.
+	class TDeParams {
+	public:
+		TDeParams();
+	};
+
+	// TODO: UNUSED methods; return types still need reconstruction.
+	void endDashEffect();
+	void startDashEffect();
+	void getMarioUpperStatus();
+	void getWillBeEmitted();
+	void getWaterGunAnmID(int);
+	void setEmitPt();
+	void finalDrawInitialize();
+	void entryAll();
+	void createGunBody();
+
 	enum TNozzleType {
 		Spray            = 0,
 		Rocket           = 1,
@@ -115,7 +132,6 @@ public:
 	f32 getPressureMax();
 	void init();
 	void initInLoadAfter();
-	void createGunBody();
 	bool isEmitting()
 	{
 		// TODO: more inlines!
@@ -143,20 +159,7 @@ public:
 	BOOL suck();
 	void triggerPressureMovement(const TMarioControllerWork&);
 
-	J3DModel* getModel();
-	void setEmitPt();
-	s32 getMarioUpperStatus();
-
-	// Fabricated; TWaterGun::emit tests flags as bool, the nozzles as BOOL
-	bool checkFlag(u16 flag) const
-	{
-		bool ret;
-		if ((mFlags & flag) != 0)
-			ret = true;
-		else
-			ret = false;
-		return ret;
-	}
+	J3DModel* getModel() { return mFluddModel->getModel(); }
 
 	// Fabricated
 	inline BOOL hasFlag(u16 flag)
@@ -223,10 +226,10 @@ public:
 		mEmittedWaterCount = emittedWater;
 		// TODO: one more inline for getting emit params
 		// rather than separate getMaxWater, getDecRate, etc. functions?
+		f32 decRate = getCurrentNozzle()->mDecRate.get();
 		unk1C88
 		    += 10.0f
-		       * ((f32)emittedWater * (f32)getCurrentNozzle()->mDecRate.get()
-		          / mNozzleList[0]->mAmountMax.get());
+		       * (emittedWater * decRate / mNozzleList[0]->mAmountMax.get());
 	}
 
 	// Fabricated

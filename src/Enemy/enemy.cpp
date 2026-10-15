@@ -167,7 +167,7 @@ void TSpineEnemy::calcRootMatrix()
 
 TSpineEnemyParams* TSpineEnemy::getSaveParam() const
 {
-	return ((TEnemyManager*)mManager)->unk38;
+	return ((TEnemyManager*)mManager)->getSaveParam();
 }
 
 void TSpineEnemy::resetToPosition(const JGeometry::TVec3<f32>& position)
@@ -176,7 +176,7 @@ void TSpineEnemy::resetToPosition(const JGeometry::TVec3<f32>& position)
 	offLiveFlag(LIVE_FLAG_UNK8);
 	offLiveFlag(LIVE_FLAG_DEAD);
 	reset();
-	mHitPoints = getSaveParam() ? getSaveParam()->mSLHitPointMax.get() : 1;
+	resetHitPoints();
 	offHitFilter(HIT_FILTER_NO_COLLISION);
 	mVelocity = JGeometry::TVec3<f32>(0.0f, 5.0f, 0.0f);
 	onLiveFlag(LIVE_FLAG_UNK8000);
@@ -193,9 +193,9 @@ void TSpineEnemy::resetSRTV(const JGeometry::TVec3<f32>& position,
 	offLiveFlag(LIVE_FLAG_UNK8);
 	offLiveFlag(LIVE_FLAG_DEAD);
 	reset();
-	mRotation  = rotation;
-	mScaling   = scaling;
-	mHitPoints = getSaveParam() ? getSaveParam()->mSLHitPointMax.get() : 1;
+	mRotation = rotation;
+	mScaling  = scaling;
+	resetHitPoints();
 	offHitFilter(HIT_FILTER_NO_COLLISION);
 	mVelocity = velocity;
 	onLiveFlag(LIVE_FLAG_UNK8000);
@@ -458,22 +458,8 @@ void TSpineEnemy::walkToCurPathNode(f32 march_speed, f32 turn_speed,
 	f32 angle = MsWrap(param_3 + MsGetRotFromZaxisY(tmp), 0.0f, 360.0f);
 	f32 fVar2 = MsAngleDiff(angle, mRotation.y);
 
-	// TODO: identical to a piece of code below, what is this?
-	f32 fVar3;
-	if (turn_speed >= 90.0f) {
-		fVar3 = 0.0f;
-	} else {
-		f32 s = MsSin(turn_speed);
-		if (fVar3 == 0.0f) {
-			fVar3 = 100000.0f;
-		} else {
-			fVar3 = march_speed * MsSin(90.0f - turn_speed * 0.5f) / s;
-		}
-	}
-
-	// TODO: tons of thi stuff should actually be inlines
 	f32 fVar5 = fVar2;
-	if (fVar7 > fVar3 * 2.0f) {
+	if (fVar7 > calcMinimumTurnRadius(march_speed, turn_speed) * 2.0f) {
 		if (fVar2 > 0.0f) {
 			fVar5 = MsMin(fVar2, turn_speed);
 		} else {
@@ -628,7 +614,7 @@ void TSpineEnemy::perform(u32 cue, JDrama::TGraphics* graphics)
 	if (mgr != nullptr) {
 		if ((cue & CUE_CALC_ANIM)
 		    && !checkLiveFlag(LIVE_FLAG_HIDDEN | LIVE_FLAG_CLIPPED_OUT)
-		    && TEnemyManager::mIsCopyAnmMtx && mgr->unk4C >= 0) {
+		    && TEnemyManager::mIsCopyAnmMtx && mgr->getUnk4C() >= 0) {
 			if (checkLiveFlag(LIVE_FLAG_DEAD | LIVE_FLAG_UNK200))
 				return;
 

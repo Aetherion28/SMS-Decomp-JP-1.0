@@ -44,19 +44,19 @@ void TMario::getGesso(THitActor* param_1)
 		emitGetEffect();
 		switch (param_1->getActorType()) {
 		case ACTOR_TYPE_SURF_GESO_RED:
-			mSurfGesso     = gpMapObjManager->mRedGesso;
+			mSurfGesso     = gpMapObjManager->getRedGesso();
 			mSurfGessoType = SURF_GESSO_TYPE_RED;
 			break;
 
 		case ACTOR_TYPE_SURF_GESO_YELLOW:
-			mSurfGesso     = gpMapObjManager->mYellowGesso;
+			mSurfGesso     = gpMapObjManager->getYellowGesso();
 			mSurfGessoType = SURF_GESSO_TYPE_YELLOW;
 			break;
 
 		default:
 		case ACTOR_TYPE_SURF_GESO_GREEN:
 			mSurfGessoType = SURF_GESSO_TYPE_GREEN;
-			mSurfGesso     = gpMapObjManager->mGreenGesso;
+			mSurfGesso     = gpMapObjManager->getGreenGesso();
 			break;
 		}
 		mSurfGesso->setBck("surfgeso_run1");
@@ -192,8 +192,8 @@ BOOL TMario::receiveMessage(THitActor* sender, u32 message)
 		case ACTOR_TYPE_MUSHROOM1UP_X:
 			if (message == HIT_MESSAGE_ATTACK) {
 				TMushroom1up* mushroom = static_cast<TMushroom1up*>(sender);
-				if (mushroom->unk13A == 0
-				    && !(mushroom->unk13C < 120 ? true : false)) {
+				if (!(mushroom->unk13A == 0
+				      && (mushroom->unk13C < 120 ? true : false))) {
 					mHealth = mDeParams.mHPMax.get();
 					if (checkFlag(MARIO_FLAG_HAS_FLUDD)) {
 						mWaterGun->addWater(mWaterGun->getMaxWater());
@@ -690,7 +690,7 @@ BOOL TMario::receiveMessage(THitActor* sender, u32 message)
 	case ACTOR_TYPE_COASTER_KILLER:
 	case ACTOR_TYPE_BOSS_EEL_TOOTH:
 	case ACTOR_TYPE_BOSS_EEL_COLLISION:
-	case ACTOR_TYPE_BOSS_UNK27:
+	case ACTOR_TYPE_TIN_KOOPA_FLAME:
 	case ACTOR_TYPE_HANE_HAMU_KURI:
 	case ACTOR_TYPE_ENEMY_UNK35:
 		switch (message) {

@@ -30,9 +30,6 @@
 template <class T> static inline T min(T a, T b) { return a < b ? a : b; }
 template <class T> static inline T max(T a, T b) { return a < b ? b : a; }
 
-MSound* MSGMSound  = 0;
-JAIBasic* MSGBasic = 0;
-
 u16 MSSeCallBack::smTrackCategory[32] = {
 	(u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1,
 	(u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1, (u16)-1,
@@ -100,7 +97,8 @@ static bool loadWaveBackword(JASystem::WaveArcLoader::TObject* obj)
 		return false;
 
 	JASystem::Kernel::THeap* root = JASystem::WaveArcLoader::getRootHeap();
-	if (!heap->selfAlloc(root, extent, (u32)root->mBase + root->unk10 - extent))
+	if (!heap->selfAlloc(root, extent,
+	                     (uintptr_t)root->mBase + root->unk10 - extent))
 		return false;
 
 	u32* ptr = obj->getLoadFlagPtr();
@@ -270,10 +268,6 @@ u16 MSSeCallBack::setParameterSeqSync(JASystem::TTrack* param_1, u16 param_2)
 		return ukuleleFlag;
 
 	case 121:
-	case 123:
-	case 124:
-	case 125:
-	case 126:
 		return ukuleleFlag;
 
 	// TODO: how to get bge? :(
@@ -283,6 +277,9 @@ u16 MSSeCallBack::setParameterSeqSync(JASystem::TTrack* param_1, u16 param_2)
 
 	return JAIBasic::setParameterSeqSync(param_1, param_2);
 }
+
+MSound* MSGMSound  = 0;
+JAIBasic* MSGBasic = 0;
 
 MSound* MSound::getMSound() { return MSGMSound; }
 

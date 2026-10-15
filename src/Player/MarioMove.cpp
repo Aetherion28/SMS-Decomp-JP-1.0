@@ -455,7 +455,7 @@ u32 TMario::setStatusToJumping(u32 status, u32 arg)
 			}
 		}
 
-		if (unk370 > mDeParams.mFeelDeep.get() ? true : false)
+		if (isFeelDeep())
 			startVoice(MSD_SE_MV19_JMP_PT_01);
 		else
 			startVoice(MSD_SE_MV21_JUMP_SMALL_01);
@@ -620,20 +620,12 @@ u32 TMario::setStatusToJumping(u32 status, u32 arg)
 			f32 jumpPower = (f32)unkF6 * mWireParams.mJumpRate.get() * 1.0f;
 			mVel.y        = jumpPower * JMASSin(0xE000);
 
-			mForwardVel = jumpPower * -JMASCos(0xE000);
-			mSlideVelX  = mForwardVel * JMASSin(mFaceAngle.y);
-			mSlideVelZ  = mForwardVel * JMASCos(mFaceAngle.y);
-			mVel.x      = mSlideVelX;
-			mVel.z      = mSlideVelZ;
+			setPlayerVelocity(jumpPower * -JMASCos(0xE000));
 		} else {
 			f32 jumpPower = (f32)unkF6 * mWireParams.mJumpRate.get() * 1.0f;
 			mVel.y        = jumpPower * JMASSin(0x6000);
 
-			mForwardVel = jumpPower * -JMASCos(0x6000);
-			mSlideVelX  = mForwardVel * JMASSin(mFaceAngle.y);
-			mSlideVelZ  = mForwardVel * JMASCos(mFaceAngle.y);
-			mVel.x      = mSlideVelX;
-			mVel.z      = mSlideVelZ;
+			setPlayerVelocity(jumpPower * -JMASCos(0x6000));
 		}
 		startVoice(MSD_SE_MV24_JUMP_SPECIAL_01);
 		break;

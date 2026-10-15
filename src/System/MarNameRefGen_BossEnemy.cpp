@@ -9,6 +9,9 @@
 #include <Enemy/Hinokuri2.hpp>
 #include <Enemy/LimitKoopaJr.hpp>
 #include <Enemy/SleepBossHanachan.hpp>
+#include <Enemy/TinKoopa.hpp>
+#include <Enemy/BossTelesa.hpp>
+#include <Enemy/BossHanachan.hpp>
 #include <System/MarNameRefGen.hpp>
 
 JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
@@ -19,13 +22,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 	if (strcmp(name, "EMarioManager") == 0)
 		return new TEMarioManager;
 
-	// TODO:
-	// if ( strcmp( name, "BossHanachan" ) == 0 )
-	//     return new TBossHanachan("?");
+	if (strcmp(name, "BossHanachan") == 0)
+		return new TBossHanachan("?");
 
-	// TODO:
-	// if ( strcmp( name, "BossHanachanManager" ) == 0 )
-	//     return new TBossHanachanManager("?");
+	if (strcmp(name, "BossHanachanManager") == 0)
+		return new TBossHanachanManager("?");
 
 	if (strcmp(name, "SleepBossHanachan") == 0)
 		return new TSleepBossHanachan;
@@ -62,13 +63,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 	if (strcmp(name, "BossGessoManager") == 0)
 		return new TBossGessoManager;
 
-	// TODO:
-	// if ( strcmp( name, "TinKoopa" ) == 0 )
-	//     return new TTinKoopa("メカクッパ");
+	if (strcmp(name, "TinKoopa") == 0)
+		return new TTinKoopa("メカクッパ");
 
-	// TODO:
-	// if ( strcmp( name, "TinKoopaManager" ) == 0 )
-	//     return new TTinKoopaManager("メカクッパマネージャ");
+	if (strcmp(name, "TinKoopaManager") == 0)
+		return new TTinKoopaManager("メカクッパマネージャ");
 
 	if (strcmp(name, "CoasterKillerManager") == 0)
 		return new TCoasterKillerManager;
@@ -139,17 +138,14 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 	if (strcmp(name, "KBossPakkunManager") == 0)
 		return new TBossPakkunManager("ボスパックン軽マネージャ", 1);
 
-	// TODO:
-	// if ( strcmp( name, "BossTelesa" ) == 0 )
-	//     return new TBossTelesa("ボステレサ");
+	if (strcmp(name, "BossTelesa") == 0)
+		return new TBossTelesa;
 
-	// TODO:
-	// if ( strcmp( name, "BossTelesaManager" ) == 0 )
-	//     return new TBossTelesaManager("ボステレサマネージャー");
+	if (strcmp(name, "BossTelesaManager") == 0)
+		return new TBossTelesaManager;
 
-	// TODO:
-	// if ( strcmp( name, "BubbleManager" ) == 0 )
-	//     return new TBubbleManager("バブルマネージャー");
+	if (strcmp(name, "BubbleManager") == 0)
+		return new TBubbleManager;
 
 	if (strcmp(name, "OilBall") == 0)
 		return new TOilBall;

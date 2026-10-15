@@ -158,6 +158,7 @@ BOOL TBGBeakHit::moveRequest(const JGeometry::TVec3<f32>& where_to)
 	unkA4 += delta;
 
 	mPosition = where_to;
+	return false;
 }
 
 BOOL TBGBeakHit::receiveMessage(THitActor* sender, u32 message)
@@ -168,8 +169,8 @@ BOOL TBGBeakHit::receiveMessage(THitActor* sender, u32 message)
 
 		mOwner->gotEyeDamage();
 
-		gpMarioParticleManager->emit(PARTICLE_MS_ENM_WATHIT, &mPosition, 0,
-		                             nullptr);
+		gpMarioParticleManager->emit(PARTICLE_MS_ENM_WATHIT, &sender->mPosition,
+		                             0, nullptr);
 		return true;
 	}
 
@@ -231,7 +232,7 @@ void TBGBeakHit::perform(u32 cue, JDrama::TGraphics* graphics)
 
 		if (mHolder != nullptr) {
 			JGeometry::TVec3<f32> us2mario = SMS_GetMarioPos();
-			us2mario -= mPosition;
+			us2mario -= mOwner->mPosition;
 			if (!us2mario.isZero())
 				VECNormalize(&us2mario, &us2mario);
 			else

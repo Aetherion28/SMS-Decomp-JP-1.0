@@ -172,6 +172,12 @@ void THamuKuriManager::load(JSUMemoryInputStream& stream)
 {
 	unk38 = new THamuKuriSaveLoadParams("/enemy/hamukuri.prm");
 	TSmallEnemyManager::load(stream);
+
+	static const char* anmlist[] = {
+		"hamukuri_walk",
+		"hamukuri_run",
+		nullptr,
+	};
 }
 
 void THamuKuriManager::loadAfter()
@@ -193,14 +199,6 @@ void THamuKuriManager::loadAfter()
 		}
 	}
 }
-
-static const char* anmlist[] = {
-	"hamukuri_walk",
-	"hamukuri_run",
-	// TODO: this shouldn't be here but rodata ordering looks like it should?!
-	// "default.bmd",
-	"hanekuri_wait",
-};
 
 void THamuKuriManager::createModelData()
 {
@@ -343,6 +341,8 @@ void THaneHamuKuriManager::load(JSUMemoryInputStream& stream)
 {
 	unk38 = new THaneHamuKuriSaveLoadParams("/enemy/hanehamukuri.prm");
 	TSmallEnemyManager::load(stream);
+
+	static const char* anmlist[] = { "hanekuri_wait", nullptr };
 }
 
 TSpineEnemy* THaneHamuKuriManager::createEnemyInstance()
@@ -2244,7 +2244,7 @@ bool TFireHamuKuri::isHitValid(u32 param_1)
 
 void TFireHamuKuri::recoverFire()
 {
-	mHitPoints = getMaxHitPoints();
+	resetHitPoints();
 	unk150 &= ~0x2;
 	unk150 |= 0x1;
 	unk214 = 0;
@@ -2516,7 +2516,7 @@ DEFINE_NERVE(TNerveHamuKuriWallDie, TLiveActor)
 		SMSGetMSound()->startSoundActor(MSD_SE_EN_HAMUKURI_CRUSHED,
 		                                &self->mPosition, 0, nullptr, 0, 4);
 		self->onHitFilter(HIT_FILTER_NO_COLLISION);
-		self->mHitPoints = 0;
+		self->setHitPoints(0);
 	} else {
 		int pTVar7 = self->getManager()->unk5C;
 		if (self->checkCurAnmEnd(0)) {

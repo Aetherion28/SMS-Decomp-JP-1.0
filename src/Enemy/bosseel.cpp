@@ -80,8 +80,6 @@ static const char* bosseel_bastable[] = {
 static const char* bossEelTears_bastable[]
     = { nullptr, nullptr, nullptr, nullptr };
 
-static f32 testHeight;
-
 TBEelTearsDrop::TBEelTearsDrop(TBEelTears* owner, int jointIndex,
                                SDLModelData* modelData, const char* name)
     : THitActor(name)
@@ -281,7 +279,7 @@ void TBEelTears::init(TLiveManager* manager)
 {
 	TSpineEnemy::init(manager);
 	mActorType = ACTOR_TYPE_BOSS_EEL;
-	onHitFilter(HIT_CATEGORY_BOSS);
+	onHitFilter(HIT_CATEGORY_PLAYER);
 	setMActorAndKeeper();
 	mTearsParams = static_cast<TBEelTearsSaveLoadParams*>(getSaveParam());
 	mSpine->initWith(&TNerveBEelTearsGenerate::theNerve());
@@ -2033,7 +2031,7 @@ void ExecSpinNerve_Sub(TBossEel* eel)
 	CLBChaseGeneralConstantSpecifySpeed(&spinSpeed,
 	                                    eel->mSaveParams->mSLSpinMaxSpeed.get(),
 	                                    eel->mSaveParams->mSLSpinAccel.get());
-	eel->mTurnSpeed = spinSpeed;
+	eel->setTurnSpeed(spinSpeed);
 	gpCameraShake->keepShake(static_cast<EnumCamShakeMode>(0x18), 1.0f);
 
 	if (eel->checkLiveFlag(TBossEel::LIVE_FLAG_UNK10000)) {
@@ -2056,7 +2054,7 @@ DEFINE_NERVE(TNerveBossEelFirstSpin, TLiveActor)
 {
 	TBossEel* eel = static_cast<TBossEel*>(spine->getBody());
 	if (spine->getTime() == 0) {
-		eel->mTurnSpeed = 0.0f;
+		eel->setTurnSpeed(0.0f);
 		SMSGetMSound()->startSoundActorWithInfo(MSD_SE_BS_UNG_ROLL,
 		                                        &eel->mPosition, nullptr, 2.0f,
 		                                        0, 0, nullptr, 0, 4);
@@ -2083,8 +2081,8 @@ DEFINE_NERVE(TNerveBossEelSecondSpin, TLiveActor)
 		eel->setBckAnm(10);
 		JGeometry::TVec2<s32>* spinTimer = eel->mSpinTimer;
 		spinTimer->x                     = 0;
-		spinTimer->y    = static_cast<s32>(MsRandF() * 960.0f) + 241;
-		eel->mTurnSpeed = 0.0f;
+		spinTimer->y = static_cast<s32>(MsRandF() * 960.0f) + 241;
+		eel->setTurnSpeed(0.0f);
 		SMSGetMSound()->startSoundActorWithInfo(MSD_SE_BS_UNG_ROLL,
 		                                        &eel->mPosition, nullptr, 2.0f,
 		                                        0, 0, nullptr, 0, 4);
@@ -2110,7 +2108,11 @@ DEFINE_NERVE(TNerveBossEelSecondSpin, TLiveActor)
 	return false;
 }
 
-DEFINE_NERVE(TNerveBossEelAppear, TLiveActor)
+DEFINE_NERVE_INSTANCE(TNerveBossEelAppear)
+
+static f32 testHeight;
+
+DEFINE_NERVE_EXECUTE(TNerveBossEelAppear, TLiveActor)
 {
 	TBossEel* eel = static_cast<TBossEel*>(spine->getBody());
 	if (spine->getTime() == 0) {
@@ -2133,7 +2135,9 @@ DEFINE_NERVE(TNerveBossEelAppear, TLiveActor)
 		eel->mAppearOffset
 		    += eel->mSaveParams->mSLAppearMoveDistY.get() / duration;
 
-		f32 sp = eel->mTurnSpeed *= 0.98f;
+		f32 sp = eel->getTurnSpeed();
+		sp *= 0.98f;
+		eel->setTurnSpeed(sp);
 
 		if (eel->checkLiveFlag(TBossEel::LIVE_FLAG_UNK10000))
 			eel->mRotation.y -= sp;

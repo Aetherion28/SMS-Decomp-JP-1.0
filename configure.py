@@ -15,7 +15,7 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from tools.project import (
     Object,
@@ -29,8 +29,11 @@ from tools.project import (
 # Game versions
 DEFAULT_VERSION = 0
 VERSIONS = [
-    "GMSJ01",  # 0
-    "GMSP01",  # 1
+    "GMSJ01",     # 0
+    "GMSP01",     # 1
+    "GMSE01",     # 2
+    "GMSJ01_01",  # 3
+    "GMSP01_NX",  # 4 (Switch 3D all stars version)
 ]
 
 parser = argparse.ArgumentParser()
@@ -325,6 +328,9 @@ def MatchingFor(*versions):
 def PCHObject(completed: bool, name: str) -> Object:
     return Object(completed, name, extra_cflags=["-prefix SMS.mch"])
 
+# Object only exists in the listed versions; skipped entirely elsewhere
+def ObjectFor(versions, obj: Object) -> Optional[Object]:
+    return obj if config.version in versions else None
 
 config.warn_missing_config = True
 config.warn_missing_source = False
@@ -914,9 +920,9 @@ config.libs = [
         "objects": [
             PCHObject(NonMatching, "Strategic/liveactor.cpp"),
             PCHObject(NonMatching, "Strategic/liveinterp.cpp"),
-            PCHObject(Matching, "Strategic/livemanager.cpp"),
+            PCHObject(NonMatching, "Strategic/livemanager.cpp"),
             Object(NonMatching, "Strategic/ObjHitCheck.cpp"),
-            PCHObject(NonMatching, "Strategic/objmanager.cpp"),
+            PCHObject(Matching, "Strategic/objmanager.cpp"),
             PCHObject(NonMatching, "Strategic/ObjModel.cpp"),
             Object(NonMatching, "Strategic/spcinterp.cpp"),
             PCHObject(Matching, "Strategic/Strategy.cpp"),
@@ -1144,6 +1150,7 @@ config.libs = [
             PCHObject(NonMatching, "GC2D/MovieSubtitle.cpp"),
             PCHObject(NonMatching, "GC2D/Option.cpp"),
             PCHObject(NonMatching, "GC2D/MovieRumble.cpp"),
+            ObjectFor(["GMSP01_NX"], Object(MatchingFor("GMSP01_NX"), "GC2D/Helpers.cpp")),
         ],
     },
     {
@@ -1199,14 +1206,14 @@ config.libs = [
             PCHObject(NonMatching, "Enemy/hanasambo.cpp"),
             PCHObject(NonMatching, "Enemy/popo.cpp"),
             PCHObject(NonMatching, "Enemy/SleepBossHanachan.cpp"),
-            PCHObject(NonMatching, "Enemy/DemoBossHanachanBase.cpp"),
+            PCHObject(Matching, "Enemy/DemoBossHanachanBase.cpp"),
             PCHObject(NonMatching, "Enemy/fruitsboat.cpp"),
             PCHObject(NonMatching, "Enemy/BossHanachanSub.cpp"),
             PCHObject(NonMatching, "Enemy/BossHanachanMain.cpp"),
             PCHObject(NonMatching, "Enemy/BossHanachanNerve.cpp"),
             Object(NonMatching, "Enemy/BossHanachanAnm.cpp"),
             PCHObject(NonMatching, "Enemy/BossHanachanParts.cpp"),
-            PCHObject(NonMatching, "Enemy/BossHanachanSave.cpp"),
+            PCHObject(Matching, "Enemy/BossHanachanSave.cpp"),
             PCHObject(NonMatching, "Enemy/amiNoko.cpp"),
             PCHObject(NonMatching, "Enemy/gatekeeper.cpp"),
             PCHObject(NonMatching, "Enemy/BossHanachanEffect.cpp"),
@@ -1295,6 +1302,9 @@ config.libs = [
         ],
     },
 ]
+
+for lib in config.libs:
+    lib["objects"] = [o for o in lib["objects"] if o is not None]
 
 for lib in config.libs:
     for obj in lib["objects"]:

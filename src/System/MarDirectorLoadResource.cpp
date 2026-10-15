@@ -73,7 +73,7 @@ int TMarDirector::loadResource()
 	gpMarioParticleManager->unk3B8 = new JPAEmitterManager(
 	    gpResourceManager, particleNum, emitterNum, emitterNum * 2, nullptr);
 	gpEmitterManager4D2 = new JPAEmitterManager(
-	    nullptr, VERSION_SELECT(GMSJ01(200), GMSP01(270)), 0x20, 0x40, nullptr);
+	    nullptr, VERSION_SELECT(270, GMSJ01(200)), 0x20, 0x40, nullptr);
 	loadParticle();
 
 	void* rawArch = SMSLoadArchive("/data/yoshi.arc", nullptr, 0, nullptr);
@@ -272,9 +272,8 @@ void TMarDirector::loadParticle()
 	this_00->unmountFixed();
 
 	if (mMap == 4 && unk7D == 2) {
-		void* hanachanJpaArch = SMSLoadArchive("/data/bosshanachanJpa.arc",
-		                                       pvVar1, 0x200000, nullptr);
-		this_00->mountFixed(hanachanJpaArch, MBF_0);
+		SMSLoadArchive("/data/bosshanachanJpa.arc", pvVar1, 0x200000, nullptr);
+		this_00->mountFixed(pvVar1, MBF_0);
 		this_00->becomeCurrent("/");
 		TBossHanachan::staticLoadParticle();
 		this_00->unmountFixed();

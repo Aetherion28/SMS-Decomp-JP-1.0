@@ -676,8 +676,6 @@ void TYoshi::emitTongue()
 			break;
 		++tries;
 	} while (tries < 10);
-
-	unkDC = 3;
 }
 
 void TYoshi::doSearch()
@@ -704,6 +702,7 @@ void TYoshi::doSearch()
 		mEggRotSpeed = prev + delta;
 		if (delta > -256 && delta < 256) {
 			emitTongue();
+			unkDC = 3;
 			changeAnimation(3);
 		}
 		break;
@@ -712,6 +711,7 @@ void TYoshi::doSearch()
 	case 2:
 		if (mTongue->findTarget(false, true) != nullptr) {
 			emitTongue();
+			unkDC = 3;
 		} else {
 			unkDE = (s16)((f32)(unkEA - unkE8) * MsRandF() + (f32)unkE8);
 			unkDC = 0;

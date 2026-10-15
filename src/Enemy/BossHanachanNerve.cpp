@@ -3,12 +3,12 @@
 #include <GC2D/GCConsole2.hpp>
 #include <MSound/MSModBgm.hpp>
 #include <MSound/MSound.hpp>
-#include <MSound/MSoundBGM.hpp>
 #include <Strategic/Spine.hpp>
 #include <System/MarDirector.hpp>
 
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
+#include <MSound/MSoundBGM.hpp>
 
 DEFINE_NERVE(TNerveBossHanachanGraphWander, TLiveActor)
 {
@@ -89,7 +89,7 @@ DEFINE_NERVE(TNerveBossHanachanSnort, TLiveActor)
 	    && hanachan->checkLiveFlag(LIVE_FLAG_UNK20000)) {
 		hanachan->offLiveFlag(LIVE_FLAG_UNK20000);
 		MSBgm::startBGM(MSD_BGM_BOSSGESO_2DN3RD);
-		switch (hanachan->mHitPoints) {
+		switch (hanachan->getHitPoints()) {
 		case 2:
 			SMSGetMSound()->unk98->changeTempo(0, 1);
 			break;

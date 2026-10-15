@@ -53,6 +53,10 @@
 #include <MSound/MSSetSound.hpp>
 #include <MSound/MSoundBGM.hpp>
 
+u8 TSamboHead::mBodyJntIndex;
+
+static TSamboHead* gpCurSamboHead;
+
 static const char* sambo_bastable[] = {
 	"/scene/sambo/bas/sambo_down.bas",
 	0,
@@ -189,7 +193,7 @@ void TSamboLeaf::perform(u32 param_1, JDrama::TGraphics* param_2)
 		unk14 += unk38;
 
 		if (unk38.y > -20.0f)
-			unk38.y -= ((TSamboFlowerSaveLoadParams*)unk48->unk38)
+			unk38.y -= ((TSamboFlowerSaveLoadParams*)unk48->getSaveParam())
 			               ->mSLLeafGravity.get();
 
 		const TBGCheckData* ground;
@@ -992,10 +996,6 @@ DEFINE_NERVE(TNerveHanaSamboFreeze, TLiveActor)
 
 	return false;
 }
-
-u8 TSamboHead::mBodyJntIndex;
-
-static TSamboHead* gpCurSamboHead;
 
 static int SamboHeadRollCallback(J3DNode* param_1, int param_2)
 {
