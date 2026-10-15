@@ -692,18 +692,43 @@ f32 TBossGesso::lenFromToeToMario()
 	return min;
 }
 
-void TBossGesso::showMessage(u32 param_1)
+void TBossGesso::showMessage(u32 message)
 {
-	u32 idx  = param_1 == 0xE0028 ? 3 : param_1 - 0xE0003;
-	u32 flag = param_1 == 0xE0003 ? 0 : 1 << idx;
+	u32 idx;
+	if (message == 0xE0028)
+		idx = 3;
+	else
+		idx = message - 0xE0003;
+
+	u32 flag;
+	if (message == 0xE0003)
+		flag = 0;
+	else
+		flag = 1 << idx;
 
 	if ((unk198 & flag) == 0)
-		SMSGetMarDirector()->getConsole()->startAppearBalloon(param_1, true);
+		SMSGetMarDirector()->getConsole()->startAppearBalloon(message, true);
 
 	unk198 |= flag;
 }
 
-void TBossGesso::checkTakeMsg() { }
+// Before the fight starts properly (the container phase), show a hint once
+// Mario has stayed near Gooper Blooper for 20 seconds.
+void TBossGesso::checkTakeMsg()
+{
+	if (!unk1A0 && !is2ndFightNow() && mAttackMode == 6) {
+		JGeometry::TVec3<f32> toMario = SMS_GetMarioPos();
+		toMario -= mPosition;
+
+		if (toMario.squared() < 4000000.0f) {
+			unk19C++;
+			if (unk19C >= 1200) {
+				showMessage(0xE0004);
+				unk1A0 = 1;
+			}
+		}
+	}
+}
 
 void TBossGesso::changeBck(int param_1)
 {
@@ -1152,16 +1177,21 @@ void TBossGesso::doAttackShoot()
 		return;
 	}
 
-	if (inSight()) {
-		JGeometry::TVec3<f32> delta = SMS_GetMarioPos();
-		delta -= mPosition;
+	// The original is long enough that MWCC does not auto-inline it into
+	// moveObject (more than 15 statements).
+	if (!inSight())
+		return;
 
-		f32 singleAttackLen = getSaveParams()->mSLSingleAttackLen.get();
-		if (delta.squared() < singleAttackLen * singleAttackLen) {
-			changeAttackMode(ASTATE_SINGLE);
-		}
+	JGeometry::TVec3<f32> delta = SMS_GetMarioPos();
+	delta -= mPosition;
+
+	f32 singleAttackLen = getSaveParams()->mSLSingleAttackLen.get();
+	if (delta.squared() < singleAttackLen * singleAttackLen) {
+		changeAttackMode(ASTATE_SINGLE);
+		return;
 	}
 }
+
 
 // TODO: inline seems sus here, probably needed cuz inSight is wrong
 void TBossGesso::doAttackGuard()
@@ -1322,18 +1352,7 @@ void TBossGesso::perform(u32 cue, JDrama::TGraphics* graphics)
 	}
 
 	if (cue & CUE_MOVE) {
-		if (!unk1A0 && !is2ndFightNow() && mAttackMode == 6) {
-			JGeometry::TVec3<f32> toMario = SMS_GetMarioPos();
-			toMario -= mPosition;
-
-			if (toMario.squared() < 4000000.0f) {
-				unk19C++;
-				if (unk19C >= 1200) {
-					showMessage(0xE0004);
-					unk1A0 = 1;
-				}
-			}
-		}
+		checkTakeMsg();
 
 		if (mBeak->getHolder() != nullptr
 		    && mTimeInCurrentAttackMode % 4 == 0) {
@@ -1366,7 +1385,7 @@ void TBossGesso::perform(u32 cue, JDrama::TGraphics* graphics)
 	}
 
 	if (cue & CUE_ENTRY) {
-		if (mSpine->getLatestNerve() == &TNerveBGBeakDamage::theNerve()) {
+		if (mSpine->isNerve(&TNerveBGBeakDamage::theNerve())) {
 			SMS_AddDamageFogEffect(mMActor->getModel()->getModelData(),
 			                       mPosition, graphics);
 		} else {
@@ -1458,7 +1477,7 @@ void TBossGesso::perform(u32 cue, JDrama::TGraphics* graphics)
 
 	for (int i = 0; i < TENTACLE_NUM; ++i) {
 		if (cue & CUE_ENTRY) {
-			if (mSpine->getLatestNerve() == &TNerveBGBeakDamage::theNerve()) {
+			if (mSpine->isNerve(&TNerveBGBeakDamage::theNerve())) {
 				mTentacles[i]->unk2C->offMakeDL();
 				SMS_AddDamageFogEffect(
 				    mTentacles[i]->unk2C->getModel()->getModelData(), mPosition,
@@ -1475,23 +1494,18 @@ void TBossGesso::perform(u32 cue, JDrama::TGraphics* graphics)
 	if (cue & CUE_CALC_ANIM) {
 		if (mMActor->checkCurBckFromIndex(14)
 		    || mMActor->checkCurBckFromIndex(15)) {
-			f32 len = lenFromToeToMario();
-			SMSGetMSound()->startSoundActorWithInfo(MSD_SE_BS_GESO_ROLL,
-			                                        &mPosition, nullptr, len, 0,
-			                                        0, nullptr, 0, 4);
+			SMSGetMSound()->startSoundActorWithInfo(
+			    MSD_SE_BS_GESO_ROLL, &mPosition, nullptr, lenFromToeToMario(),
+			    0, 0, nullptr, 0, 4);
+
 		}
 	}
 
 	if (cue & CUE_MOVE) {
 		if (mBeak->getHolder() != nullptr && unk190.color.a == 0) {
-			int left  = mTentacles[1]->mState;
-			int right = mTentacles[3]->mState;
-
-			if (!((left == 4 || left == 6 || left == 3)
-			      && (right == 4 || right == 6 || right == 3))) {
+			if (!mTentacles[1]->isThing() || !mTentacles[3]->isThing())
 				SMSGetMarDirector()->getConsole()->startAppearBalloon(0xE0003,
 				                                                      true);
-			}
 		}
 	}
 }
