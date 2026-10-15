@@ -334,12 +334,14 @@ DEFINE_NERVE_EXECUTE(TNerveBubbleLive, TLiveActor)
 		bubble->setBckAnm(10);
 	}
 
+	f32 addPosBase = bubble->unk194->mSLAddPosBase.get();
 	if (!bubble->unk1D0) {
-		if (bubble->unk1CC < bubble->unk194->mSLAddPosBase.get())
+		if (bubble->unk1CC < addPosBase)
 			bubble->unk1CC += 2.0f;
 	} else {
 		if (spine->getTime() > 40 && bubble->unk1D1) {
-			JGeometry::TVec3<f32> velocity = bubble->mVelocity;
+			JGeometry::TVec3<f32> velocity;
+			velocity.set(bubble->getVelocity());
 			velocity.scale(0.98f);
 			bubble->mVelocity = velocity;
 		} else {
@@ -348,7 +350,7 @@ DEFINE_NERVE_EXECUTE(TNerveBubbleLive, TLiveActor)
 
 		if (spine->getTime() == 80) {
 			bubble->unk1D1 = 0;
-			bubble->mVelocity.set(0.0f, 0.0f, 0.0f);
+			bubble->mVelocity = JGeometry::TVec3<f32>(0.0f, 0.0f, 0.0f);
 		}
 	}
 
@@ -1559,36 +1561,33 @@ void TBossTelesa::tongueHitWater()
 
 bool TBossTelesa::rouletteFall()
 {
-	TRoulette* roulette0 = mRoulettes[0];
-	TRoulette* roulette1 = mRoulettes[1];
+	if (mRoulettes[0]->mPosition.y > mRoulettes[1]->mPosition.y) {
+		mRoulettes[0]->mPosition.y -= 2.0f;
+		mRoulettes[0]->mMActor->setBck("rulet00");
 
-	if (roulette0->mPosition.y > roulette1->mPosition.y) {
-		roulette0->mPosition.y -= 2.0f;
-		roulette0->mMActor->setBck("rulet00");
-	} else {
-		roulette0->mPosition.y = roulette1->mPosition.y;
-		return TRUE;
-	}
-
-	if (roulette0->mPosition.y > roulette1->mPosition.y + 3.0f) {
-		if (SMS_SendMessageToMario(this, HIT_MESSAGE_TAKE))
-			mHeldObject = (TTakeActor*)SMS_GetMarioHitActor();
-	} else {
-		if (SMS_SendMessageToMario(this, HIT_MESSAGE_DETACH)) {
-			SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_RLT_SET,
-			                                &mPosition, 0, nullptr, 0, 4);
-			mHeldObject = nullptr;
+		if (mRoulettes[0]->mPosition.y > mRoulettes[1]->mPosition.y + 3.0f) {
+			if (SMS_SendMessageToMario(this, HIT_MESSAGE_TAKE))
+				mHeldObject = (TTakeActor*)SMS_GetMarioHitActor();
+		} else {
+			if (SMS_SendMessageToMario(this, HIT_MESSAGE_DETACH)) {
+				SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_RLT_SET,
+				                                &mPosition, 0, nullptr, 0, 4);
+				mHeldObject = nullptr;
+			}
 		}
+
+		SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_V_LAUGH1B, &mPosition,
+		                                0, nullptr, 0, 4);
+
+		SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_RLT_DOWN, &mPosition,
+		                                0, nullptr, 0, 4);
+
+		gpMarioOriginal->mGamePad->onNeutralMarioKey();
+		return FALSE;
 	}
 
-	SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_V_LAUGH1B, &mPosition, 0,
-	                                nullptr, 0, 4);
-
-	SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_RLT_DOWN, &mPosition, 0,
-	                                nullptr, 0, 4);
-
-	gpMarioOriginal->mGamePad->onNeutralMarioKey();
-	return FALSE;
+	mRoulettes[0]->mPosition.y = mRoulettes[1]->mPosition.y;
+	return TRUE;
 }
 
 bool TBossTelesa::slotFall()
@@ -1602,12 +1601,10 @@ bool TBossTelesa::slotFall()
 
 	if (mSlot->mPosition.y < mRoulettes[0]->mPosition.y - 900.0f) {
 		int rolling = 0;
-		if (mRoulettes[0]->unk13C != 0.0f)
-			rolling = 1;
-		if (mRoulettes[1]->unk13C != 0.0f)
-			++rolling;
-		if (mRoulettes[2]->unk13C != 0.0f)
-			++rolling;
+		for (int i = 0; i < 3; ++i) {
+			if (mRoulettes[i]->unk13C != 0.0f)
+				rolling++;
+		}
 
 		if (rolling != 3)
 			rouletteStart();
@@ -1631,59 +1628,32 @@ void TBossTelesa::flashItem(int result)
 
 	int index = 0;
 	for (int i = 0; i < 5; ++i) {
-		TLiveActor* actor = mFruits[index++];
-		if (!actor->checkLiveFlag(LIVE_FLAG_DEAD)
-		    && actor->mHolder == nullptr) {
-			if (phase < 8)
-				actor->onLiveFlag(LIVE_FLAG_HIDDEN);
-			else
-				actor->offLiveFlag(LIVE_FLAG_HIDDEN);
-		}
-
-		actor = mFruits[index++];
-		if (!actor->checkLiveFlag(LIVE_FLAG_DEAD)
-		    && actor->mHolder == nullptr) {
-			if (phase < 8)
-				actor->onLiveFlag(LIVE_FLAG_HIDDEN);
-			else
-				actor->offLiveFlag(LIVE_FLAG_HIDDEN);
-		}
-
-		actor = mFruits[index++];
-		if (!actor->checkLiveFlag(LIVE_FLAG_DEAD)
-		    && actor->mHolder == nullptr) {
-			if (phase < 8)
-				actor->onLiveFlag(LIVE_FLAG_HIDDEN);
-			else
-				actor->offLiveFlag(LIVE_FLAG_HIDDEN);
-		}
-
-		actor = mFruits[index++];
-		if (!actor->checkLiveFlag(LIVE_FLAG_DEAD)
-		    && actor->mHolder == nullptr) {
-			if (phase < 8)
-				actor->onLiveFlag(LIVE_FLAG_HIDDEN);
-			else
-				actor->offLiveFlag(LIVE_FLAG_HIDDEN);
+		for (int j = 0; j < 4; ++j) {
+			if (!mFruits[index]->checkLiveFlag(LIVE_FLAG_DEAD)
+			    && mFruits[index]->mHolder == nullptr) {
+				if (phase < 8)
+					mFruits[index]->onLiveFlag(LIVE_FLAG_HIDDEN);
+				else
+					mFruits[index]->offLiveFlag(LIVE_FLAG_HIDDEN);
+			}
+			index++;
 		}
 	}
 
 	for (int i = 0; i < 10; ++i) {
-		TLiveActor* actor = mRedPeppers[i];
-		if (!actor->checkLiveFlag(LIVE_FLAG_DEAD)
-		    && actor->mHolder == nullptr) {
+		if (!mRedPeppers[i]->checkLiveFlag(LIVE_FLAG_DEAD)
+		    && mRedPeppers[i]->mHolder == nullptr) {
 			if (phase < 8)
-				actor->onLiveFlag(LIVE_FLAG_HIDDEN);
+				mRedPeppers[i]->onLiveFlag(LIVE_FLAG_HIDDEN);
 			else
-				actor->offLiveFlag(LIVE_FLAG_HIDDEN);
+				mRedPeppers[i]->offLiveFlag(LIVE_FLAG_HIDDEN);
 		}
 
-		actor = mCoins[i];
-		if (!actor->checkLiveFlag(LIVE_FLAG_DEAD)) {
+		if (!mCoins[i]->checkLiveFlag(LIVE_FLAG_DEAD)) {
 			if (phase < 8)
-				actor->onLiveFlag(LIVE_FLAG_HIDDEN);
+				mCoins[i]->onLiveFlag(LIVE_FLAG_HIDDEN);
 			else
-				actor->offLiveFlag(LIVE_FLAG_HIDDEN);
+				mCoins[i]->offLiveFlag(LIVE_FLAG_HIDDEN);
 		}
 	}
 }
