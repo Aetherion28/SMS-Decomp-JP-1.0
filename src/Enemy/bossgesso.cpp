@@ -360,11 +360,15 @@ TBossGessoMtxCalc::TBossGessoMtxCalc(TBossGesso* owner)
 	mMotionBlendRatio = 0.0f;
 }
 
+inline J3DAnmTransformKey* TBossGessoMtxCalc::getBckAnmPtr(int index) const
+{
+	return mOwner->mMActorKeeper->getMActorAnmData()->mBckAnms->getAnmPtr(
+	    index);
+}
+
 void TBossGessoMtxCalc::joinAnm(int param_1)
 {
-	M3UMtxCalcSIAnmBlendQuat::joinAnm(
-	    mOwner->getActorKeeper()->getMActorAnmData()->getUnk2C()->getAnmPtr(
-	        param_1));
+	M3UMtxCalcSIAnmBlendQuat::joinAnm(getBckAnmPtr(param_1));
 }
 
 void TBossGessoMtxCalc::setAnm(int param_1) { }
@@ -1869,13 +1873,13 @@ DEFINE_NERVE(TNerveBGDie, TLiveActor)
 			SMSGetMarDirector()->fireStartDemoCamera(
 			    "bgeso_fall_camera3", nullptr, -1, 0.0f, true, nullptr, 0,
 			    nullptr, JDrama::TFlagT<u16>(0));
-		} else if (SMSGetMarDirector()->unk7D == 4) {
+		} else if (!self->is2ndFightNow()) {
 			SMSGetMarDirector()->fireStartDemoCamera(
-			    "bgeso_fall_camera2", nullptr, -1, 0.0f, true, nullptr, 0,
+			    "bgeso_fall_camera", nullptr, -1, 0.0f, true, nullptr, 0,
 			    nullptr, JDrama::TFlagT<u16>(0));
 		} else {
 			SMSGetMarDirector()->fireStartDemoCamera(
-			    "bgeso_fall_camera", nullptr, -1, 0.0f, true, nullptr, 0,
+			    "bgeso_fall_camera2", nullptr, -1, 0.0f, true, nullptr, 0,
 			    nullptr, JDrama::TFlagT<u16>(0));
 		}
 
@@ -1911,18 +1915,10 @@ DEFINE_NERVE(TNerveBGDie, TLiveActor)
 		self->changeBck(6);
 		self->changeAllTentacleState(8);
 
-		JGeometry::TVec3<f32> local_24;
-		local_24.x = self->mPosition.x;
-		local_24.y = -5000.0f;
-		local_24.z = self->mPosition.z + 7000.0f;
+		JGeometry::TVec3<f32> local_24(self->mPosition.x, -5000.0f,
+		                               self->mPosition.z + 7000.0f);
 
-		self->unkF4.unk0 = nullptr;
-		self->unkF4.unk4 = local_24;
-
-		self->unk104.unk0 = nullptr;
-		self->unk104.unk4 = local_24;
-
-		self->unk114.clear();
+		self->setGoalPath(TPathNode(local_24));
 
 		self->mVelocity
 		    = self->calcVelocityToJumpToY(local_24, 50.0f, self->getGravityY());
@@ -1931,6 +1927,8 @@ DEFINE_NERVE(TNerveBGDie, TLiveActor)
 	}
 
 	if (self->isReachedToGoal()) {
+		// TODO: the original copies one zero temporary into mVelocity and
+		// then into mPositionDelta, instead of copying mVelocity.
 		self->mPositionDelta = self->mVelocity
 		    = JGeometry::TVec3<f32>(0.0f, 0.0f, 0.0f);
 		self->onLiveFlag(LIVE_FLAG_UNK10);
@@ -2052,9 +2050,9 @@ DEFINE_NERVE(TNerveBGRoll, TLiveActor)
 			self->changeBck(19);
 
 		if (mactor->curAnmEndsNext()) {
-			if (mactor->checkCurBckFromIndex(13)) {
+			if (mactor->checkCurBckFromIndex(14)) {
 				if (self->unk196 < 3) {
-					self->changeBck(13);
+					self->changeBck(14);
 					self->unk196 += 1;
 				} else {
 					self->changeBck(18);
@@ -2062,7 +2060,7 @@ DEFINE_NERVE(TNerveBGRoll, TLiveActor)
 				}
 			} else {
 				if (mactor->checkCurBckFromIndex(19))
-					self->changeBck(13);
+					self->changeBck(14);
 				else
 					return true;
 			}

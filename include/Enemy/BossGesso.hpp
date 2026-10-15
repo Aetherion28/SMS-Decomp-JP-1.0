@@ -10,6 +10,7 @@
 #include <JSystem/J3D/J3DGraphBase/Components/J3DGXColor.hpp>
 
 class TBGTentacle;
+class J3DAnmTransformKey;
 class TBGPolDrop;
 class TBossGesso;
 
@@ -102,6 +103,11 @@ public:
 	void joinAnm(int);
 	void setAnm(int);
 	void calc(u16);
+
+	// fabricated: same as TBossWanwanMtxCalc::getBckAnmPtr. The original keeps
+	// getMActorAnmData and getAnmPtr as calls at every inlined joinAnm site,
+	// which this extra inline level reproduces.
+	J3DAnmTransformKey* getBckAnmPtr(int index) const;
 
 private:
 	/* 0x64 */ TBossGesso* mOwner;
