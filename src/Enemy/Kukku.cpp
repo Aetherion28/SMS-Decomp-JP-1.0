@@ -571,8 +571,13 @@ void TKukkuManager::createModelData()
 
 const char** TKukku::getBasNameTable() const { return tori_bastable; }
 
-// TODO: 75.3%, the target inlines a different set of helpers (getUnusedBall,
-// isFindOutMario, shotBall) than ours does.
+// TODO: 75.3%. In the target the helpers inside shotBall and isFindOutMario
+// (getUnusedBall, the sub in -=, setLength's body) sit one inline level
+// shallower than doFlyToCurPathNode puts them, and updateRotation stays a
+// call. Writing doFlyToCurPathNode's body straight into this nerve lines all
+// of that up but then calcMomentum's own helpers inline too deeply, and the
+// map sizes of doFlyToCurPathNode (0x2C8) and doRecoverToCurPathNode (0xA0)
+// still disagree, so the real layout is not known yet.
 DEFINE_NERVE(TNerveKukkuGraphWander, TLiveActor)
 {
 	TKukku* self = (TKukku*)spine->getBody();
