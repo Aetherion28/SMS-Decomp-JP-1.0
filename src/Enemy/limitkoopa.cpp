@@ -182,7 +182,8 @@ DEFINE_NERVE_EXECUTE(TNerveLimitKoopaGetDown, TLiveActor)
 
 	case KOOPA_ANM_DOWN_LOOP:
 		if (koopa->endsAnm())
-			koopa->changeBck(KOOPA_ANM_GETUP, koopa->getParam()->downSpeed.get());
+			koopa->changeBck(KOOPA_ANM_GETUP,
+			                 koopa->getParam()->downSpeed.get());
 		break;
 
 	case KOOPA_ANM_GETUP:
@@ -423,8 +424,9 @@ void TLimitKoopa::perform(u32 cue, JDrama::TGraphics* graphics)
 		if (isBreathing()) {
 			JGeometry::TVec3<f32> scale(getParam()->flameScale.get());
 
-			JPABaseEmitter* emitter = gpMarioParticleManager->emitAndBindToMtxPtr(
-			    SCENE_KOOPA_JPA_MS_KP_FIRE_E, getHeadMtx(), 3, this);
+			JPABaseEmitter* emitter
+			    = gpMarioParticleManager->emitAndBindToMtxPtr(
+			        SCENE_KOOPA_JPA_MS_KP_FIRE_E, getHeadMtx(), 3, this);
 			if (emitter)
 				emitter->setGlobalScale(scale);
 
@@ -528,7 +530,7 @@ f32 TLimitKoopa::calcTargetDirection()
 void TLimitKoopa::makeDirection(f32 dir)
 {
 	f32 rotationSpeed = TDirectionCalc::d2r(getParam()->rotationSpeed.get());
-	mDirection.unk0 = mDirection.calcTurnDirection(dir, rotationSpeed);
+	mDirection.unk0   = mDirection.calcTurnDirection(dir, rotationSpeed);
 }
 
 f32 TLimitKoopa::getGravityY() const
@@ -575,7 +577,7 @@ void TLimitKoopa::setUpHitActors()
 		for (int i = 0; i < ARRAY_COUNT(mFlames); i++) {
 			f32 height = getParam()->flameHeight.get();
 			f32 radius = getParam()->flameRadius.get();
-			f32 dist = 0.8f * ((2.0f + i * 2) * radius) * rate;
+			f32 dist   = 0.8f * ((2.0f + i * 2) * radius) * rate;
 			JGeometry::TVec3<f32> offset(dist, 0.0f, 0.0f);
 			JGeometry::TVec3<f32> pos;
 			((TPosition3f*)head)->mult(offset, pos);
@@ -642,7 +644,8 @@ void TLimitKoopa::getDown()
 		return;
 
 	if (&TNerveLimitKoopaStagger::theNerve() == mSpine->getCurrentNerve()
-	    || &TNerveLimitKoopaGetShowered::theNerve() == mSpine->getCurrentNerve())
+	    || &TNerveLimitKoopaGetShowered::theNerve()
+	           == mSpine->getCurrentNerve())
 		mSpine->setNext(&TNerveLimitKoopaGetDown::theNerve());
 	mSpine->pushNerve(&TNerveLimitKoopaGetDown::theNerve());
 }
@@ -664,7 +667,8 @@ void TLimitKoopa::getShowered()
 // matches the map's.
 void TLimitKoopa::stagger(bool force)
 {
-	if (!force && &TNerveLimitKoopaFlame::theNerve() == mSpine->getCurrentNerve())
+	if (!force
+	    && &TNerveLimitKoopaFlame::theNerve() == mSpine->getCurrentNerve())
 		return;
 	if (&TNerveLimitKoopaTumble::theNerve() == mSpine->getCurrentNerve())
 		return;
