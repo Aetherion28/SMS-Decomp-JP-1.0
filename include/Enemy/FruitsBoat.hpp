@@ -9,8 +9,8 @@
 class J3DAnmTransform;
 class J3DFrameCtrl;
 
-// The boats with bouncy fruit-shaped sails in Ricco Harbor. Member names come
-// from the .prm strings.
+// The fruit boats of Delfino Plaza ("dolpic", as in the ShipDolpic models and
+// TBellDolpic). Member names come from the .prm strings.
 class TFruitsBoatParams : public TSpineEnemyParams {
 public:
 	TFruitsBoatParams(const char* path);
