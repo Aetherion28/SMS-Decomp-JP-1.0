@@ -422,7 +422,8 @@ static inline JGeometry::TVec3<f32> polarXZ(f32 theta, f32 radius)
 }
 
 // Scatter a few coins around the bird, and a 1-up once ten have dropped.
-// TODO: 47.3%, the coin spread math does not line up yet.
+// TODO: 98.9%, mRotation.y is loaded after getParam() here, before it in
+// the target.
 void TKukku::dropCoins()
 {
 	if (mDroppedNum > 10)
@@ -432,8 +433,7 @@ void TKukku::dropCoins()
 		mDroppedNum++;
 		mOneUp->appear();
 		mOneUp->JSGSetTranslation(mPosition);
-		mOneUp->mVelocity.set(0.0f, 0.0f, 0.0f);
-		mOneUp->offLiveFlag(LIVE_FLAG_UNK10);
+		mOneUp->setVelocityAndFlag10(0.0f, 0.0f, 0.0f);
 		return;
 	}
 
@@ -445,26 +445,26 @@ void TKukku::dropCoins()
 	int num = cDropCoinNumTable[index];
 
 	JGeometry::TQuat4<f32> step;
-	step.setRotate(JGeometry::TVec3<f32>(0.0f, 1.0f, 0.0f), 6.2831855f / num);
+	step.setEulerY(6.2831855f / num);
 	JGeometry::TQuat4<f32> tilt;
-	tilt.setRotate(JGeometry::TVec3<f32>(1.0f, 0.0f, 0.0f),
-	               3.1415927f * getParam()->mDropAngleX.get());
+	tilt.setEulerX(3.1415927f * getParam()->mDropAngleX.get());
 
 	JGeometry::TVec3<f32> velocity
 	    = polarXZ(mRotation.y, getParam()->mDropSpeed.get());
 	tilt.rotate(velocity);
+	step.rotate(velocity);
 
 	for (int i = 0; i < num; i++) {
-		step.rotate(velocity);
 		TMapObjBase* coin = gpItemManager->makeObjAppear(ACTOR_TYPE_COIN);
 		if (!coin)
 			break;
 		coin->appear();
 		coin->JSGSetTranslation(mPosition);
-		coin->mVelocity = velocity;
+		coin->mVelocity.set(velocity);
 		coin->offLiveFlag(LIVE_FLAG_UNK10);
 		if (++mDroppedNum == 10)
 			break;
+		step.rotate(velocity);
 	}
 }
 
