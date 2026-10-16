@@ -460,6 +460,11 @@ UNUSED functions must still be reconstructed in the source because:
 - One unit per PR; leave out edits that don't change the object.
 - If the bot reports broken matches in units you didn't touch, the branch is behind main. Merge main.
 
+### Progress graph (this fork)
+
+`assets/progress.svg` is a treemap of the whole game, shown at the top of README.md together with a progress table.
+Before every commit that changes code, run `ninja` and then `python3 tools/progress_treemap.py`, and include the updated `assets/progress.svg` and `README.md` in the commit.
+
 ### Pre-PR checklist
 
 Before submitting a PR with matching work, make sure to check the following:
