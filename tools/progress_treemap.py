@@ -10,19 +10,30 @@ Units are grouped by category (game, JSystem, SDK) and then by folder.
 The script also refreshes the progress numbers in README.md between the
 <!-- progress:start --> and <!-- progress:end --> markers.
 
+It also writes build/progress/progress.html, the clickable version of the
+map (published as the "Sunshine Decomp Map" artifact linked from README.md).
+
 Usage: python3 tools/progress_treemap.py [report.json] [out.svg]
 Run `ninja` first so build/GMSJ01/report.json is current.
 """
 
+import datetime
 import json
 import os
+import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from html import escape
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPORT = os.path.join(ROOT, "build", "GMSJ01", "report.json")
 OUT = os.path.join(ROOT, "assets", "progress.svg")
 README = os.path.join(ROOT, "README.md")
+PAGE_TEMPLATE = os.path.join(ROOT, "tools", "progress_page.html")
+PAGE_OUT = os.path.join(ROOT, "build", "progress", "progress.html")
+DEMANGLE_CACHE = os.path.join(ROOT, "build", "progress", "demangle_cache.json")
+DTK = os.path.join(ROOT, "build", "tools", "dtk")
+REPO_URL = "https://github.com/Aetherion28/sms-ai-decomp"
 
 W, H = 1000, 500
 GREEN = (0, 200, 0)
@@ -203,6 +214,71 @@ def update_readme(text):
     return True
 
 
+def demangle_all(names):
+    try:
+        cache = json.load(open(DEMANGLE_CACHE))
+    except (OSError, ValueError):
+        cache = {}
+    todo = [n for n in set(names) if n not in cache]
+
+    def one(name):
+        try:
+            r = subprocess.run([DTK, "demangle", name], capture_output=True, text=True)
+            out = r.stdout.strip()
+            return name, out if r.returncode == 0 and out else name
+        except OSError:
+            return name, name
+
+    if todo:
+        with ThreadPoolExecutor(max_workers=16) as pool:
+            for name, dem in pool.map(one, todo):
+                cache[name] = dem
+        os.makedirs(os.path.dirname(DEMANGLE_CACHE), exist_ok=True)
+        json.dump(cache, open(DEMANGLE_CACHE, "w"))
+    return cache
+
+
+def write_page(data):
+    names = [f["name"] for u in data["units"] for f in u.get("functions", [])]
+    dem = demangle_all(names)
+    units = []
+    for u in data["units"]:
+        m = u["measures"]
+        md = u.get("metadata", {})
+        fns = sorted(u.get("functions", []), key=lambda f: int(f.get("address", 0) or 0))
+        units.append({
+            "n": u["name"].replace("mario/", "", 1),
+            "p": md.get("source_path") or u["name"],
+            "cat": (md.get("progress_categories") or ["other"])[0],
+            "c": int(m.get("total_code", 0) or 0),
+            "m": int(m.get("matched_code", 0) or 0),
+            "f": round(float(m.get("fuzzy_match_percent", 0) or 0), 2),
+            "fn": [[dem.get(f["name"], f["name"]), int(f.get("size", 0) or 0),
+                    round(float(f["fuzzy_match_percent"]), 2) if "fuzzy_match_percent" in f else -1]
+                   for f in fns],
+        })
+    tm = data["measures"]
+    page = {
+        "repo": REPO_URL,
+        "built": datetime.date.today().isoformat(),
+        "catNames": {c["id"]: c["name"] for c in data.get("categories", [])},
+        "total": {
+            "matched": float(tm["matched_code_percent"]),
+            "fuzzy": float(tm["fuzzy_match_percent"]),
+            "fns": int(tm["total_functions"]),
+            "mfn": int(tm["matched_functions"]),
+            "units": int(tm["total_units"]),
+            "done": int(tm["complete_units"]),
+        },
+        "units": units,
+    }
+    html = open(PAGE_TEMPLATE, encoding="utf-8").read()
+    blob = json.dumps(page, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    html = html.replace("/*DATA*/null", blob, 1)
+    os.makedirs(os.path.dirname(PAGE_OUT), exist_ok=True)
+    open(PAGE_OUT, "w", encoding="utf-8").write(html)
+
+
 def main():
     report = sys.argv[1] if len(sys.argv) > 1 else REPORT
     out = sys.argv[2] if len(sys.argv) > 2 else OUT
@@ -211,6 +287,7 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     open(out, "w").write(svg + "\n")
     update_readme(summary(data["measures"], data.get("categories", [])))
+    write_page(data)
     m = data["measures"]
     print(
         f"wrote {os.path.relpath(out, ROOT)}: "

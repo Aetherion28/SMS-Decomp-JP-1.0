@@ -1,11 +1,11 @@
 Super Mario Sunshine
 =============
 
-[<img src="assets/progress.svg" width="1000" height="500">](assets/progress.svg)
+[<img src="assets/progress.svg" width="1000" height="500">](https://claude.ai/artifact/P341LnYJBNsiWYKJcdJKdV)
 
 Each box is one source file, sized by its code.
 Green: every function matches. Blue: partly matched (brighter is closer). Dark grey: not started.
-Open the image on its own to see each file's name and percentage on hover.
+Click the graph to open the [interactive map](https://claude.ai/artifact/P341LnYJBNsiWYKJcdJKdV), where each box opens that file's function list and source.
 Regenerate it with `python3 tools/progress_treemap.py` after `ninja`.
 
 <!-- progress:start -->
