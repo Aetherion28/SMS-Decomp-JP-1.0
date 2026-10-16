@@ -330,7 +330,7 @@ void TMario::checkCollision()
 		case ACTOR_TYPE_EFFECT_OBJ:
 		case ACTOR_TYPE_HAUNT_LEG:
 		case ACTOR_TYPE_KUKKU:
-		case ACTOR_TYPE_ENEMY_UNK31:
+		case ACTOR_TYPE_BEE_HIVE:
 		case ACTOR_TYPE_DORO_HANE_KURI:
 		case ACTOR_TYPE_CASINORULET:
 			hitNormal(mCollisions[i]);

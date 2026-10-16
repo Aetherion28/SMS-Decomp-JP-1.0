@@ -38,6 +38,8 @@ public:
 	int getBoidNum() const { return mNumBoids; }
 
 	void setFleeTarget(const TPathNode& target) { mFleeTarget = target; }
+	// fabricated
+	void setGoal(const TPathNode& goal) { mGoal = goal; }
 
 public:
 	enum {

@@ -487,7 +487,7 @@ BOOL TMario::receiveMessage(THitActor* sender, u32 message)
 		case ACTOR_TYPE_KUMOKUN:
 		case ACTOR_TYPE_AMENBO:
 		case ACTOR_TYPE_KUKKU:
-		case ACTOR_TYPE_ENEMY_UNK2F:
+		case ACTOR_TYPE_BEE:
 		case ACTOR_TYPE_DEBU_TELESA:
 		case ACTOR_TYPE_ENEMY_DAMAGE_OBJ:
 			if (message == HIT_MESSAGE_ATTACK && !isInvincible()) {
