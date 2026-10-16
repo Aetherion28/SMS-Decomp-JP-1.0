@@ -157,6 +157,21 @@ inline f32 MsAngleDiff(f32 alpha, f32 beta)
 // fabricated
 inline f32 MsAngleWrap(f32 angle) { return MsWrap(angle, 0.0f, 360.0f); }
 
+// fabricated: wraps `value` into [lo, hi) with std::fmodf. The "- lo" and
+// "lo +" survive in the asm even when lo is 0, so the bounds were parameters
+// of a helper. Seen in Enemy/koopajr.cpp and MoveBG/MapObjCorona.cpp, where
+// std::fmodf is never inlined.
+inline f32 MsWrapFmodf(f32 value, f32 lo, f32 hi)
+{
+	return lo + std::fmodf((hi - lo) + (value - lo), hi - lo);
+}
+
+// fabricated: same as MsWrapFmodf, through JGeometry::TUtil<f32>::mod
+inline f32 MsWrapMod(f32 value, f32 lo, f32 hi)
+{
+	return lo + JGeometry::TUtil<f32>::mod((hi - lo) + (value - lo), hi - lo);
+}
+
 // fabricated
 inline f32 MsAngleBetween(const JGeometry::TVec3<f32>& a,
                           const JGeometry::TVec3<f32>& b)
