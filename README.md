@@ -1,15 +1,23 @@
 Super Mario Sunshine
-[![Build Status]][actions] [![Code Progress]][progress] [![Discord Badge]][discord]
-=============
-[<img src="https://decomp.dev/doldecomp/sms.svg?w=512&h=256" width="512" height="256">][Progress]
 =============
 
-[Build Status]: https://github.com/doldecomp/sms/actions/workflows/build.yml/badge.svg
-[actions]: https://github.com/doldecomp/sms/actions/workflows/build.yml
-[Code Progress]: https://decomp.dev/doldecomp/sms.svg?mode=shield&measure=code&label=Code
-[progress]: https://decomp.dev/doldecomp/sms
-[Discord Badge]: https://img.shields.io/discord/727908905392275526?color=%237289DA&logo=discord&logoColor=%23FFFFFF
-[discord]: https://discord.gg/hKx3FJJgrV
+[<img src="assets/progress.svg" width="1000" height="500">](assets/progress.svg)
+
+Each box is one source file, sized by its code.
+Green: every function matches. Blue: partly matched (brighter is closer). Dark grey: not started.
+Open the image on its own to see each file's name and percentage on hover.
+Regenerate it with `python3 tools/progress_treemap.py` after `ninja`.
+
+<!-- progress:start -->
+| | Code matched | Fuzzy | Functions matched | Units complete |
+|---|---|---|---|---|
+| **Total** | 49.44% | 94.50% | 10061 / 12881 | 406 / 736 |
+| Game Code | 38.19% | 93.07% | 6126 / 8857 | 88 / 387 |
+| JSystem Middleware | 87.29% | 99.74% | 2923 / 3009 | 172 / 200 |
+| SDK Code | 98.88% | 99.97% | 1012 / 1015 | 146 / 149 |
+<!-- progress:end -->
+
+Upstream project: [doldecomp/sms](https://github.com/doldecomp/sms) ([upstream progress](https://decomp.dev/doldecomp/sms)).
 
 A work-in-progress decompilation of Super Mario Sunshine.
 
