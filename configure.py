@@ -118,6 +118,12 @@ parser.add_argument(
     help="builds equivalent (but non-matching) or modded objects",
 )
 parser.add_argument(
+    "--all-source",
+    dest="all_source",
+    action="store_true",
+    help="with --non-matching, also link NonMatching objects from source (playable build)",
+)
+parser.add_argument(
     "--no-progress",
     dest="progress",
     action="store_false",
@@ -315,7 +321,7 @@ def DolphinLibUnpatched(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 
 
 Matching = True                   # Object matches and should be linked
-NonMatching = False               # Object does not match and should not be linked
+NonMatching = config.non_matching and args.all_source  # Object does not match; only linked in the all-source (playable) build
 Equivalent = config.non_matching  # Object should be linked when configured with --non-matching
 
 

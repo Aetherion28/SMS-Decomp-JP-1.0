@@ -460,6 +460,14 @@ UNUSED functions must still be reconstructed in the source because:
 - One unit per PR; leave out edits that don't change the object.
 - If the bot reports broken matches in units you didn't touch, the branch is behind main. Merge main.
 
+### Playable build (this fork)
+
+`python3 tools/build_playable.py` builds a DOL from our own source, writing `build_play/GMSJ01/playable/mario.dol`.
+It configures with `--non-matching --all-source`, so NonMatching units are compiled and linked too, then restores the normal `build.ninja`.
+Units whose source is still missing (our `.text` more than 512 bytes smaller than the original) get the original split object instead; the script lists them, and `--pure` turns that off.
+It also weakens the "UNREFERENCED DUPLICATE" globals the original got away with by linking from libraries, and links `tools/playable/glue.cpp` for weak functions those original objects expect.
+The DOL fits in the retail disc's DOL slot (offset 0x1E000, before the FST at 0x40A900), so a disc image is made by writing it over the retail DOL.
+
 ### Progress graph (this fork)
 
 `assets/progress.svg` is a treemap of the whole game, shown at the top of README.md together with a progress table.
