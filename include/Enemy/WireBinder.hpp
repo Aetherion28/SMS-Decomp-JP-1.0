@@ -7,13 +7,13 @@
 
 class TMapWire;
 
-class TWireBinder : TBinder {
+class TWireBinder : public TBinder {
 public:
 	bool init(const JGeometry::TVec3<f32>&);
 	bool reset(const JGeometry::TVec3<f32>&);
 
 	void bind(TLiveActor*);
-	JGeometry::TVec3<f32> getDir() const { return mDir; }
+	const JGeometry::TVec3<f32>& getDir() const { return mDir; }
 	JGeometry::TVec3<f32> getDirAtPos(const JGeometry::TVec3<f32>&, f32) const;
 	void getPoint(JGeometry::TVec3<f32>*, f32) const;
 	void getPoint(JGeometry::TVec3<f32>*, const JGeometry::TVec3<f32>&) const;
@@ -21,7 +21,7 @@ public:
 	static bool isOnWire(const JGeometry::TVec3<f32>&);
 	f32 getRangePos(const JGeometry::TVec3<f32>&) const;
 	TMapWire* getWire() const;
-	void isStartWire(const JGeometry::TVec3<f32>&, f32) const;
+	bool isStartWire(const JGeometry::TVec3<f32>&, f32) const;
 	bool isEndWire(const JGeometry::TVec3<f32>&, f32) const;
 	void getStartRangePos(f32);
 	static f32 getEndRangePos(f32);

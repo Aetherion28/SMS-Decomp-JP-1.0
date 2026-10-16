@@ -20,6 +20,7 @@
 #include <Enemy/FireWanwan.hpp>
 #include <Enemy/FruitsBoat.hpp>
 #include <Enemy/Killer.hpp>
+#include <Enemy/WireTrap.hpp>
 #include <Enemy/beam.hpp>
 #include <Enemy/Amenbo.hpp>
 #include <Enemy/Kumokun.hpp>
@@ -347,13 +348,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 	// if ( strcmp(name, "TabePuku") == 0)
 	//     return new TTabePuku;
 
-	// TODO:
-	// if ( strcmp(name, "WireTrapManager") == 0)
-	//     return new TWireTrapManager;
+	if (strcmp(name, "WireTrapManager") == 0)
+		return new TWireTrapManager;
 
-	// TODO:
-	// if ( strcmp(name, "WireTrap") == 0)
-	//     return new TWireTrap;
+	if (strcmp(name, "WireTrap") == 0)
+		return new TWireTrap;
 
 	if (strcmp(name, "RocketManager") == 0)
 		return new TRocketManager("ロケットマネージャー");
