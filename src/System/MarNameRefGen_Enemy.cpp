@@ -19,6 +19,7 @@
 #include <Enemy/WalkerEnemy.hpp>
 #include <Enemy/FireWanwan.hpp>
 #include <Enemy/FruitsBoat.hpp>
+#include <Enemy/Killer.hpp>
 #include <Enemy/beam.hpp>
 #include <Enemy/Amenbo.hpp>
 #include <Enemy/Kumokun.hpp>
@@ -375,13 +376,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 	if (strcmp(name, "BombHei") == 0)
 		return new TBombHei;
 
-	// TODO:
-	// if ( strcmp(name, "KillerManager") == 0)
-	//     return new TKillerManager;
+	if (strcmp(name, "KillerManager") == 0)
+		return new TKillerManager("キラーマネージャー");
 
-	// TODO:
-	// if ( strcmp( name, "Killer" ) == 0 )
-	//     return new TKiller;
+	if (strcmp(name, "Killer") == 0)
+		return new TKiller;
 
 	if (strcmp(name, "AmiNokoManager") == 0)
 		return new TAmiNokoManager;
