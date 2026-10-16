@@ -403,7 +403,7 @@ void TMario::checkCollision()
 		case ACTOR_TYPE_BOSS_UNK14:
 		case ACTOR_TYPE_BOSS_UNK15:
 		case ACTOR_TYPE_SAMBO_FLOWER:
-		case ACTOR_TYPE_ENEMY_UNK35:
+		case ACTOR_TYPE_TABE_PUKU:
 			keepDistance(*mCollisions[i], 0.0f);
 			break;
 

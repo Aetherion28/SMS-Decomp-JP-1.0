@@ -27,6 +27,7 @@
 #include <Enemy/Kumokun.hpp>
 #include <Enemy/EggGen.hpp>
 #include <Enemy/Igaiga.hpp>
+#include <Enemy/TabePuku.hpp>
 #include <Enemy/TobiPuku.hpp>
 #include <Animal/AnimalBase.hpp>
 #include <Animal/AnimalManager.hpp>
@@ -341,13 +342,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 	if (strcmp(name, "MoePuku") == 0)
 		return new TMoePuku;
 
-	// TODO:
-	// if ( strcmp(name, "TabePukuManager") == 0)
-	//     return new TTabePukuManager;
+	if (strcmp(name, "TabePukuManager") == 0)
+		return new TTabePukuManager;
 
-	// TODO:
-	// if ( strcmp(name, "TabePuku") == 0)
-	//     return new TTabePuku;
+	if (strcmp(name, "TabePuku") == 0)
+		return new TTabePuku;
 
 	if (strcmp(name, "WireTrapManager") == 0)
 		return new TWireTrapManager;
