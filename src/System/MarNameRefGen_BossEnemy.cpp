@@ -9,6 +9,7 @@
 #include <Enemy/BossWanwan.hpp>
 #include <Enemy/Hinokuri2.hpp>
 #include <Enemy/Koopa.hpp>
+#include <Enemy/LimitKoopa.hpp>
 #include <Enemy/LimitKoopaJr.hpp>
 #include <Enemy/SleepBossHanachan.hpp>
 #include <Enemy/TinKoopa.hpp>
@@ -98,13 +99,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 	if (strcmp(name, "LimitKoopaJr") == 0)
 		return new TLimitKoopaJr;
 
-	// TODO:
-	// if ( strcmp( name, "LimitKoopaManager" ) == 0 )
-	//     return new TLimitKoopaManager("クッパマネージャー");
+	if (strcmp(name, "LimitKoopaManager") == 0)
+		return new TLimitKoopaManager("クッパマネージャー");
 
-	// TODO:
-	// if ( strcmp( name, "LimitKoopa" ) == 0 )
-	//     return new TLimitKoopa("クッパ");
+	if (strcmp(name, "LimitKoopa") == 0)
+		return new TLimitKoopa("クッパ");
 
 	if (strcmp(name, "BathtubKillerManager") == 0)
 		return new TBathtubKillerManager;
