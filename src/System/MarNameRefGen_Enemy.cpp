@@ -21,6 +21,7 @@
 #include <Enemy/FruitsBoat.hpp>
 #include <Enemy/Killer.hpp>
 #include <Enemy/WireTrap.hpp>
+#include <Enemy/Kukku.hpp>
 #include <Enemy/beam.hpp>
 #include <Enemy/Amenbo.hpp>
 #include <Enemy/Kumokun.hpp>
@@ -437,13 +438,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 		return gpBeamManager;
 	}
 
-	// TODO:
-	// if ( strcmp( name, "KukkuManager" ) == 0 )
-	//     return new TKukkuManager;
+	if (strcmp(name, "KukkuManager") == 0)
+		return new TKukkuManager;
 
-	// TODO:
-	// if ( strcmp( name, "Kukku" ) == 0 )
-	//     return new TKukku;
+	if (strcmp(name, "Kukku") == 0)
+		return new TKukku;
 
 	if (strcmp(name, "KumokunManager") == 0)
 		return new TKumokunManager;

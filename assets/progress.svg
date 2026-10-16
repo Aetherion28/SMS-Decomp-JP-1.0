@@ -44,7 +44,7 @@
 <rect x="147.43" y="303.88" width="39.71" height="39.87" fill="rgb(0,112,192)"><title>Enemy/effectObj: 99.83% fuzzy, 87.54% matched, 11368 bytes</title></rect>
 <rect x="187.14" y="303.88" width="39.60" height="39.87" fill="rgb(2,109,186)"><title>Enemy/enemy: 97.62% fuzzy, 31.97% matched, 11336 bytes</title></rect>
 <rect x="226.73" y="303.88" width="38.44" height="39.87" fill="rgb(0,112,192)"><title>Enemy/bombhei: 99.95% fuzzy, 64.41% matched, 11004 bytes</title></rect>
-<rect x="265.17" y="303.88" width="36.55" height="39.87" fill="rgb(52,52,52)"><title>Enemy/Kukku: 0.00% fuzzy, 0.00% matched, 10464 bytes</title></rect>
+<rect x="265.17" y="303.88" width="36.55" height="39.87" fill="rgb(12,98,160)"><title>Enemy/Kukku: 86.78% fuzzy, 38.72% matched, 10464 bytes</title></rect>
 <rect x="147.43" y="343.75" width="40.79" height="34.82" fill="rgb(1,111,189)"><title>Enemy/Amenbo: 98.92% fuzzy, 31.61% matched, 10200 bytes</title></rect>
 <rect x="188.22" y="343.75" width="39.69" height="34.82" fill="rgb(1,111,189)"><title>Enemy/wireTrap: 98.95% fuzzy, 38.98% matched, 9924 bytes</title></rect>
 <rect x="227.91" y="343.75" width="37.07" height="34.82" fill="rgb(0,112,192)"><title>Enemy/conductor: 99.89% fuzzy, 57.49% matched, 9268 bytes</title></rect>
@@ -189,7 +189,7 @@
 <rect x="301.72" y="450.34" width="67.14" height="49.66" fill="rgb(2,110,186)"><title>System/MarNameRefGen: 97.85% fuzzy, 55.24% matched, 23940 bytes</title></rect>
 <rect x="368.86" y="362.72" width="39.98" height="62.03" fill="rgb(2,110,187)"><title>System/MarNameRefGen_MapObj: 98.31% fuzzy, 20.19% matched, 17808 bytes</title></rect>
 <rect x="368.86" y="424.76" width="39.98" height="38.78" fill="rgb(0,112,191)"><title>System/MarDirectorDirect: 99.82% fuzzy, 9.41% matched, 11132 bytes</title></rect>
-<rect x="368.86" y="463.53" width="39.98" height="36.47" fill="rgb(6,105,175)"><title>System/MarNameRefGen_Enemy: 93.45% fuzzy, 19.79% matched, 10468 bytes</title></rect>
+<rect x="368.86" y="463.53" width="39.98" height="36.47" fill="rgb(5,106,178)"><title>System/MarNameRefGen_Enemy: 94.64% fuzzy, 19.79% matched, 10468 bytes</title></rect>
 <rect x="408.84" y="362.72" width="40.02" height="34.27" fill="rgb(0,112,191)"><title>System/Application: 99.69% fuzzy, 37.49% matched, 9848 bytes</title></rect>
 <rect x="448.86" y="362.72" width="39.80" height="34.27" fill="rgb(0,112,191)"><title>System/MarDirectorSetupObjects: 99.63% fuzzy, 7.97% matched, 9792 bytes</title></rect>
 <rect x="488.66" y="362.72" width="38.58" height="34.27" fill="rgb(0,112,191)"><title>System/MSoundMainSide: 99.73% fuzzy, 25.71% matched, 9492 bytes</title></rect>
