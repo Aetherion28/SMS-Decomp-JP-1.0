@@ -1,4 +1,5 @@
 #include <Enemy/BathtubKiller.hpp>
+#include <Enemy/BathtubPeach.hpp>
 #include <Enemy/BossGesso.hpp>
 #include <Enemy/CoasterKiller.hpp>
 #include <Enemy/Emario.hpp>
@@ -111,13 +112,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 	if (strcmp(name, "BathtubKiller") == 0)
 		return new TBathtubKiller;
 
-	// TODO:
-	// if ( strcmp( name, "BathtubPeachManager" ) == 0 )
-	//     return new TBathtubPeachManager("バスタブピーチマネージャー");
+	if (strcmp(name, "BathtubPeachManager") == 0)
+		return new TBathtubPeachManager("バスタブピーチマネージャー");
 
-	// TODO:
-	// if ( strcmp( name, "BathtubPeach" ) == 0 )
-	//     return new TBathtubPeach("バスタブピーチ");
+	if (strcmp(name, "BathtubPeach") == 0)
+		return new TBathtubPeach("バスタブピーチ");
 
 	if (strcmp(name, "BossWanwan") == 0)
 		return new TBossWanwan("ボスワンワン");
