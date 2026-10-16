@@ -1282,7 +1282,7 @@ void TKoopa::calcRootMatrix()
 	mPosition += offset;
 	mtx.setTrans(mPosition);
 
-	MTXCopy(mtx, getModel()->getBaseTRMtx());
+	getModel()->setBaseTRMtx(mtx);
 	getModel()->setBaseScale(JGeometry::TVec3<f32>(1.0f, 1.0f, 1.0f));
 	mScaling.set(1.0f, 1.0f, 1.0f);
 }

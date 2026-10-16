@@ -151,31 +151,17 @@ public:
 	// Assumes unit quaternion. These were renamed to "transform" in SMG.
 	void rotate(const TVec3<T>& v, TVec3<T>& rDest) const
 	{
-		// Incollect regalloc
-		f32 vx = v.x;
-		f32 vy = v.y;
-		f32 vz = v.z;
-
-		T w = this->w;
-		T z = this->z;
-		T y = this->y;
-		T x = this->x;
-
 		// clang-format off
 		TQuat4 q;
-		q.x =  w *  0 + y * vz - z * vy + w * vx;
-		q.y = -x * vz + y *  0 + z * vx + w * vy;
-		q.z =  x * vy - y * vx + z *  0 + w * vz;
-		q.w = -x * vx - y * vy - z * vz + w *  0;
+		q.x =  this->y * v.z - this->z * v.y + this->w * v.x;
+		q.y = -this->x * v.z + this->z * v.x + this->w * v.y;
+		q.z =  this->x * v.y - this->y * v.x + this->w * v.z;
+		q.w = -this->x * v.x - this->y * v.y - this->z * v.z;
 
-		TQuat4 q2;
-		q2.x =  q.x *  w + q.y * -z - q.z * -y + q.w * -x;
-		q2.y = -q.x * -z + q.y *  w + q.z * -x + q.w * -y;
-		q2.z =  q.x * -y - q.y * -x + q.z *  w + q.w * -z;
+		rDest.set( q.x *  this->w + q.y * -this->z - q.z * -this->y + q.w * -this->x,
+		          -q.x * -this->z + q.y *  this->w + q.z * -this->x + q.w * -this->y,
+		           q.x * -this->y - q.y * -this->x + q.z *  this->w + q.w * -this->z);
 		// clang-format on
-
-		// This set wasn't inlined in SMG, so should be real?
-		rDest.set(q2.x, q2.y, q2.z);
 	}
 
 	void rotate(TVec3<T>& rDest) const { rotate(rDest, rDest); }

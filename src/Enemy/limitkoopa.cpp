@@ -83,10 +83,6 @@ DEFINE_NERVE_EXECUTE(TNerveLimitKoopaHipDropJump, TLiveActor)
 	return false;
 }
 
-// TODO: nonmatching, the target calls startHipDrop out of line while this
-// version inlines it. The target's startHipDrop also has a 0x20 bigger frame,
-// so the original body is heavier than this one in some way that keeps it
-// over the auto-inline limit.
 DEFINE_NERVE_EXECUTE(TNerveLimitKoopaHipDropStart, TLiveActor)
 {
 	TLimitKoopa* koopa = (TLimitKoopa*)spine->getBody();
@@ -480,6 +476,8 @@ void TLimitKoopa::moveStop()
 }
 
 // Jump towards the spot below Mario.
+// The speedY and gravity locals are a guess: the target never inlines this
+// function, so its body has at least 15 statements.
 // TODO: nonmatching, the target reuses the squared length from length()
 // for normalize(), and its frame is 0x20 bigger.
 void TLimitKoopa::startHipDrop()
@@ -494,8 +492,9 @@ void TLimitKoopa::startHipDrop()
 	JGeometry::TVec3<f32> dest;
 	dest.add(mPosition, diff);
 
-	velocity = calcVelocityToJumpToY(dest, velocity.y,
-	                                 getParam()->hipDropGravityY.get());
+	f32 speedY  = velocity.y;
+	f32 gravity = getParam()->hipDropGravityY.get();
+	velocity    = calcVelocityToJumpToY(dest, speedY, gravity);
 	if (velocity.length() > 200.0f) {
 		velocity.normalize();
 		velocity.scale(200.0f);

@@ -126,38 +126,27 @@ public:
 	}
 	void setQuat(const JGeometry::TQuat4<f32>& qt)
 	{
-		// f5 = qt.x
-		// f3 = qt.y
-		// f4 = qt.z
-		// f0 = qt.w
+		f32 yy = 2.0f * qt.y * qt.y;
+		f32 zz = 2.0f * qt.z * qt.z;
+		f32 xx = 2.0f * qt.x * qt.x;
+		f32 xy = 2.0f * qt.x * qt.y;
+		f32 xz = 2.0f * qt.x * qt.z;
+		f32 yz = 2.0f * qt.y * qt.z;
+		f32 wz = 2.0f * qt.w * qt.z;
+		f32 wy = 2.0f * qt.w * qt.y;
+		f32 wx = 2.0f * qt.w * qt.x;
 
-		// TODO: regswap >:(
-		f32 f2  = 2.0f * qt.x * qt.x;
-		f32 f9  = 2.0f * qt.y * qt.y;
-		f32 f10 = 2.0f * qt.z * qt.z;
+		this->ref(0, 0) = 1.0f - yy - zz;
+		this->ref(0, 1) = xy - wz;
+		this->ref(0, 2) = xz + wy;
 
-		f32 f6 = 1.0f - f2;
-		f32 f0 = 1.0f - f9;
+		this->ref(1, 0) = xy + wz;
+		this->ref(1, 1) = 1.0f - xx - zz;
+		this->ref(1, 2) = yz - wx;
 
-		f32 f11 = 2.0f * qt.x * qt.y;
-		f32 f7  = 2.0f * qt.y * qt.z;
-		f32 f12 = 2.0f * qt.x * qt.z;
-
-		f32 f5  = 2.0f * qt.w * qt.x;
-		f32 f3  = 2.0f * qt.w * qt.y;
-		f32 f13 = 2.0f * qt.w * qt.z;
-
-		this->ref(0, 0) = f0 - f10;
-		this->ref(0, 1) = f11 - f13;
-		this->ref(0, 2) = f12 + f3;
-
-		this->ref(1, 0) = f11 + f13;
-		this->ref(1, 1) = f6 - f10;
-		this->ref(1, 2) = f7 - f5;
-
-		this->ref(2, 0) = f12 - f3;
-		this->ref(2, 1) = f7 + f5;
-		this->ref(2, 2) = f6 - f9;
+		this->ref(2, 0) = xz - wy;
+		this->ref(2, 1) = yz + wx;
+		this->ref(2, 2) = 1.0f - xx - yy;
 	}
 
 	void getQuat(JGeometry::TQuat4<f32>& quat) const

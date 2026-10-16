@@ -228,7 +228,7 @@ void TWireTrap::calcRootMatrix()
 
 	mtx.setQuat(rot);
 	mtx.setTrans(mPosition);
-	MTXCopy(mtx, getModel()->getBaseTRMtx());
+	getModel()->setBaseTRMtx(mtx);
 
 	JGeometry::TVec3<f32> scale = mScaling;
 	scale.scale(mAppearScale);

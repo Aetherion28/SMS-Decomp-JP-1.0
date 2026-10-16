@@ -245,31 +245,28 @@ void TKukku::control()
 	TLiveActor::control();
 }
 
-// TODO: 52.6%, the quaternion math is close but the registers and
-// scheduling differ.
+// TODO: 96%, register allocation only.
 void TKukku::calcRootMatrix()
 {
 	if (isDying()) {
 		// Lie down flat on whatever the bird fell on.
 		JGeometry::TVec3<f32> up;
 		if (mGroundPlane) {
-			up = mGroundPlane->getNormal();
+			up.set(mGroundPlane->getNormal());
 			up.normalize();
 		} else {
 			up.set(0.0f, 1.0f, 0.0f);
 		}
 
 		JGeometry::TQuat4<f32> yaw;
-		yaw.setRotate(JGeometry::TVec3<f32>(0.0f, 1.0f, 0.0f),
-		              0.017453294f * mRotation.y);
+		yaw.setEulerY(0.017453294f * mRotation.y);
 		JGeometry::TQuat4<f32> tilt;
-		tilt.setRotate(JGeometry::TVec3<f32>(0.0f, 1.0f, 0.0f), up);
+		tilt.setRotate(JGeometry::TVec3<f32>(0.0f, 1.0f, 0.0f), up, 1.0f);
 		tilt.mul(tilt, yaw);
 
 		TPosition3f mtx;
-		mtx.setQuat(tilt);
-		mtx.setTrans(mPosition);
-		MTXCopy(mtx, getModel()->getBaseTRMtx());
+		mtx.setQT(tilt, mPosition);
+		getModel()->setBaseTRMtx(mtx);
 		getModel()->setBaseScale(mScaling);
 	} else {
 		TSpineEnemy::calcRootMatrix();

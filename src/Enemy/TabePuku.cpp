@@ -413,7 +413,7 @@ void TTabePuku::prepareDrag()
 	mDragDir.set(0.0f, 0.0f, 1.0f);
 	JGeometry::TQuat4<f32> rot;
 	rot.setEulerY(MsRandF() * 6.2831855f);
-	rot.rotate(mDragDir, mDragDir);
+	rot.rotate(mDragDir);
 	setGoalPath(TPathNode(mPosition));
 	mMarchSpeed = getParam()->mDiveSpeed.get();
 }
@@ -423,14 +423,16 @@ bool TTabePuku::doDrag()
 {
 	swimTo(mDragDir);
 	if (mTouchedWall || isTouchedPlane()
-	    || (unk104.getPoint() - mPosition).length()
-	           > getParam()->mDragLength.get()) {
+	    || getParam()->mDragLength.get()
+	           < (unk104.getPoint() - mPosition).length()) {
 		detach();
 		return true;
 	}
 	return false;
 }
 
+// The cosAngle and front locals are a guess; the body has to be at least 15
+// statements long, or the compiler would auto-inline it into doDrag.
 void TTabePuku::swimTo(const JGeometry::TVec3<f32>& target)
 {
 	JGeometry::TVec3<f32> dir = target;
@@ -442,12 +444,14 @@ void TTabePuku::swimTo(const JGeometry::TVec3<f32>& target)
 
 	dir.normalize();
 	JGeometry::TQuat4<f32> rot;
+	f32 cosAngle = dir.dot(JGeometry::TVec3<f32>(0.0f, 0.0f, 1.0f));
 	if (JGeometry::TUtil<f32>::epsilonEquals(
-	        -1.0f, dir.dot(JGeometry::TVec3<f32>(0.0f, 0.0f, 1.0f)),
-	        JGeometry::TUtil<f32>::epsilon()))
+	        -1.0f, cosAngle, JGeometry::TUtil<f32>::epsilon())) {
 		rot.setEulerY(JGeometry::TUtil<f32>::PI());
-	else
-		rot.setRotate(JGeometry::TVec3<f32>(0.0f, 0.0f, 1.0f), dir, 1.0f);
+	} else {
+		JGeometry::TVec3<f32> front(0.0f, 0.0f, 1.0f);
+		rot.setRotate(front, dir, 1.0f);
+	}
 
 	mQuat.slerp(rot, getParam()->mTurnSlerpRate.get());
 	mQuat.normalize();
@@ -567,7 +571,7 @@ DEFINE_NERVE(TNerveTabePukuAttack, TLiveActor)
 	}
 
 	// TODO: the target calls TVec3::dot out of line inside isMissMario's
-	// length(); ours inlines it (inline depth).
+	// length(), one inline level deeper than here.
 	if (puku->isMissMario() || puku->mTouchedWall) {
 		spine->pushAfterCurrent(&TNerveTabePukuRecoverGraph::theNerve());
 		return true;
@@ -603,8 +607,8 @@ DEFINE_NERVE(TNerveTabePukuDive, TLiveActor)
 DEFINE_NERVE(TNerveTabePukuDrag, TLiveActor)
 {
 	TTabePuku* puku = (TTabePuku*)spine->getBody();
-	// TODO: the target inlines TQuat4::rotate here (with an out-of-line
-	// TVec4 ctor) but calls swimTo from doDrag; ours does the opposite.
+	// TODO: 96.6%, the target calls TVec3::dot out of line in doDrag's
+	// length(), one inline level deeper than here.
 	if (spine->getTime() == 0)
 		puku->prepareDrag();
 

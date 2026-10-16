@@ -365,6 +365,31 @@ plain `TGameSequence() { set(0, 0, 0); }` both are expanded and the function
 is at 36%. The default-argument form gives 100%. `inline_trace.py` shows the
 wrapper as `__ct__XFv [1 stmt]` one pass above the real constructor.
 
+## Which functions MWCC inlines at all
+
+Measured with small test files compiled with the game flags (`-inline auto,deferred`):
+
+- A function declared inline (defined in its class, or with `inline`) is inlined wherever the pass ladder above allows it.
+  At the top level its size does not matter.
+- A plain non-template function that is not declared inline (a member defined in the `.cpp`) is still auto-inlined, but only when its body has at most 14 statements.
+  At 15 it is always called.
+  Deeper levels follow the same ladder as declared inlines.
+- A template function that is not declared inline is never inlined, however small it is.
+  This covers a template member defined outside its class, `template <class T> void TRotation3<T>::setSQ(...) { ... }`.
+  MWCC 1.2.5 refuses out-of-class definitions of member templates of an explicit specialisation such as `TVec3<f32>`, so those stay in the class.
+
+Statement counting: each expression statement, declaration with an initializer, `return`, and `if` counts one, and so does every statement inside an `if` body.
+The bodies of the inlines a function calls do not count towards its own size.
+
+What this tells you:
+
+- The target calls a weak JGeometry template helper that our build inlines, at every call site, even at the top level: the original defined it outside the class.
+  `TRotation3::setSQ` is the example; moving it out of the class made both `BeeHive.cpp` and the helper itself match.
+- The target calls a `.cpp` member out of line where our build inlines it: the original body has at least 15 statements, even if ours compiles to the same code.
+  `TTabePuku::swimTo` and `TLimitKoopa::startHipDrop` needed two more named locals; with them the UNUSED callers got their map sizes and the HipDropStart nerve went from 0% to 100%.
+- The target expands a helper that ours calls: the original reached it through one wrapper fewer, for example `setRotate(a, b, 1.0f)` instead of the two-argument form.
+  The target calls a small helper that ours expands: the original went through one wrapper more, for example `setQT(q, t)` instead of `setQuat(q)` plus `setTrans(t)`, or `rotate(v)` instead of `rotate(v, v)`.
+
 ## A member function called on a bare global substitutes `this`; called through an accessor it binds it
 
 When an inline member function is called on a global object written by name,
