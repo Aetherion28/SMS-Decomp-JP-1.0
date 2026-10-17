@@ -9,6 +9,7 @@
 #include <Enemy/BossWanwan.hpp>
 #include <Enemy/Hinokuri2.hpp>
 #include <Enemy/Koopa.hpp>
+#include <Enemy/KoopaJr.hpp>
 #include <Enemy/LimitKoopa.hpp>
 #include <Enemy/LimitKoopaJr.hpp>
 #include <Enemy/SleepBossHanachan.hpp>
@@ -76,22 +77,17 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 	if (strcmp(name, "CoasterKiller") == 0)
 		return new TCoasterKiller;
 
-	// TODO:
-	// if ( strcmp( name, "KoopaJrManager" ) == 0 )
-	//     return new TKoopaJrManager("クッパジュニアマネージャー");
+	if (strcmp(name, "KoopaJrManager") == 0)
+		return new TKoopaJrManager;
 
-	// TODO:
-	// if ( strcmp( name, "KoopaJr" ) == 0 )
-	//     return new TKoopaJr("クッパジュニア");
+	if (strcmp(name, "KoopaJr") == 0)
+		return new TKoopaJr;
 
-	// TODO:
-	// if ( strcmp( name, "KoopaJrSubmarineManager" ) == 0 )
-	//     return new
-	//     TKoopaJrSubmarineManager("クッパジュニアサブマリンマネージャー");
+	if (strcmp(name, "KoopaJrSubmarineManager") == 0)
+		return new TKoopaJrSubmarineManager;
 
-	// TODO:
-	// if ( strcmp( name, "KoopaJrSubmarine" ) == 0 )
-	//     return new TKoopaJrSubmarine("クッパジュニアサブマリン");
+	if (strcmp(name, "KoopaJrSubmarine") == 0)
+		return new TKoopaJrSubmarine;
 
 	if (strcmp(name, "LimitKoopaJrManager") == 0)
 		return new TLimitKoopaJrManager;

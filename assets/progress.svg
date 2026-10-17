@@ -20,7 +20,7 @@
 <rect x="104.12" y="196.82" width="51.84" height="58.69" fill="rgb(0,112,191)"><title>Enemy/bossManta: 99.59% fuzzy, 25.34% matched, 21848 bytes</title></rect>
 <rect x="155.96" y="196.82" width="49.09" height="58.69" fill="rgb(3,108,183)"><title>Enemy/chuuhana: 96.57% fuzzy, 37.47% matched, 20688 bytes</title></rect>
 <rect x="205.05" y="196.82" width="48.85" height="58.69" fill="rgb(0,112,191)"><title>Enemy/telesa: 99.71% fuzzy, 46.78% matched, 20588 bytes</title></rect>
-<rect x="253.90" y="196.82" width="47.82" height="58.69" fill="rgb(34,73,101)"><title>Enemy/koopajr: 5.62% fuzzy, 1.95% matched, 20152 bytes</title></rect>
+<rect x="253.90" y="196.82" width="47.82" height="58.69" fill="rgb(3,108,183)"><title>Enemy/koopajr: 96.60% fuzzy, 37.53% matched, 20152 bytes</title></rect>
 <rect x="0.00" y="255.52" width="54.45" height="51.31" fill="rgb(1,111,190)"><title>Enemy/tobiPuku: 99.15% fuzzy, 58.11% matched, 20060 bytes</title></rect>
 <rect x="0.00" y="306.83" width="54.45" height="49.92" fill="rgb(1,110,188)"><title>Enemy/gesso: 98.58% fuzzy, 53.64% matched, 19516 bytes</title></rect>
 <rect x="0.00" y="356.74" width="54.45" height="49.20" fill="rgb(3,109,184)"><title>Enemy/BathtubKiller: 96.93% fuzzy, 37.91% matched, 19236 bytes</title></rect>
@@ -202,7 +202,7 @@
 <rect x="443.52" y="429.33" width="30.49" height="23.86" fill="rgb(0,200,0)"><title>System/MarNameRefGen_NPC: 100.00% fuzzy, 100.00% matched, 5224 bytes</title></rect>
 <rect x="443.52" y="453.19" width="30.49" height="23.48" fill="rgb(0,112,191)"><title>System/GCLogoDir: 99.67% fuzzy, 30.35% matched, 5140 bytes</title></rect>
 <rect x="443.52" y="476.67" width="30.49" height="23.33" fill="rgb(0,112,191)"><title>System/MarDirectorInitECT: 99.79% fuzzy, 0.31% matched, 5108 bytes</title></rect>
-<rect x="474.01" y="429.33" width="28.31" height="18.56" fill="rgb(21,87,135)"><title>System/MarNameRefGen_BossEnemy: 71.70% fuzzy, 8.38% matched, 3772 bytes</title></rect>
+<rect x="474.01" y="429.33" width="28.31" height="18.56" fill="rgb(18,91,144)"><title>System/MarNameRefGen_BossEnemy: 77.84% fuzzy, 8.38% matched, 3772 bytes</title></rect>
 <rect x="502.32" y="429.33" width="24.92" height="18.56" fill="rgb(0,112,191)"><title>System/MarDirectorEvent: 99.71% fuzzy, 45.18% matched, 3320 bytes</title></rect>
 <rect x="474.01" y="447.89" width="19.71" height="19.22" fill="rgb(0,112,192)"><title>System/MarDirectorSetup2: 99.96% fuzzy, 28.68% matched, 2720 bytes</title></rect>
 <rect x="474.01" y="467.10" width="19.71" height="18.23" fill="rgb(0,112,192)"><title>System/MarioGamePad: 99.89% fuzzy, 9.61% matched, 2580 bytes</title></rect>
