@@ -429,7 +429,22 @@ BOOL TMario::startHangLanding(u32 status)
 
 void TMario::hangingCommon(int, int) { }
 
-void TMario::findNearestWall(const TBGWallCheckRecord&) { }
+TBGCheckData* TMario::findNearestWall(const TBGWallCheckRecord& record)
+{
+	TBGCheckData* foundWall = nullptr;
+	for (int i = 0; i < record.mResultWallsNum; i++) {
+		TBGCheckData* w = record.mResultWalls[i];
+		s16 ang = matan(w->mNormal.z, w->mNormal.x) - (mFaceAngle.y + 0x8000);
+		if (ang > -0x2000 && ang < 0x2000) {
+			JGeometry::TVec3<f32> pos = mPosition;
+			f32 d = w->mNormal.x * pos.x + w->mNormal.y * pos.y
+			        + w->mNormal.z * pos.z + w->mPlaneDistance;
+			if (d < 50.0f)
+				foundWall = record.mResultWalls[i];
+		}
+	}
+	return foundWall;
+}
 
 BOOL TMario::hanging()
 {
@@ -456,23 +471,11 @@ BOOL TMario::hanging()
 		return changePlayerStatus(MARIO_STATUS_HANG_JUMPING, 0, false);
 	}
 
-	TBGCheckData* foundWall = nullptr;
-
 	TBGWallCheckRecord record(mPosition.x, mPosition.y - 10.0f, mPosition.z,
 	                          30.0f, 4, 0);
 	gpMap->isTouchedWallsAndMoveXZ(&record);
 
-	for (int i = 0; i < record.mResultWallsNum; i++) {
-		TBGCheckData* w = record.mResultWalls[i];
-		s16 ang = matan(w->mNormal.z, w->mNormal.x) - (mFaceAngle.y + 0x8000);
-		if (ang > -0x2000 && ang < 0x2000) {
-			JGeometry::TVec3<f32> pos = mPosition;
-			f32 d = w->mNormal.x * pos.x + w->mNormal.y * pos.y
-			        + w->mNormal.z * pos.z + w->mPlaneDistance;
-			if (d < 50.0f)
-				foundWall = record.mResultWalls[i];
-		}
-	}
+	TBGCheckData* foundWall = findNearestWall(record);
 
 	if (foundWall == nullptr)
 		changePlayerStatus(MARIO_STATUS_LANDING, 0, false);
@@ -501,8 +504,9 @@ BOOL TMario::hanging()
 		if (mStatusTimer < mHangingParams.mRapidTime.get()
 		    && record.mResultWallsNum > 0) {
 			f32 moveSp = mHangingParams.mMoveSp.get();
-			JGeometry::TVec3<f32> newPos;
-			if (yawDiff > 0x400 && yawDiff < 0x71c7) {
+			Vec newPos;
+			if (yawDiff > 0x400
+ && yawDiff < 0x71c7) {
 				newPos.x = mPosition.x
 				           - moveSp * (mIntendedMag * foundWall->mNormal.z);
 				newPos.y = mPosition.y;
@@ -517,9 +521,8 @@ BOOL TMario::hanging()
 				           - moveSp * (mIntendedMag * foundWall->mNormal.x);
 			}
 
-			TBGCheckData* foundWall2 = nullptr;
-			TBGWallCheckRecord record3(newPos.x, newPos.y, newPos.z, 50.0f, 1,
-			                           0);
+			TBGWallCheckRecord record3(newPos.x, 10.0f + newPos.y, newPos.z,
+			                           50.0f, 1, 0);
 			gpMap->isTouchedWallsAndMoveXZ(&record3);
 			newPos = record3.mCenter;
 
@@ -528,23 +531,12 @@ BOOL TMario::hanging()
 			                                 newPos.z, &groundDummy);
 			if (mPosition.y - 100.0f < groundY
 			    && groundY < 50.0f + mPosition.y) {
-				TBGWallCheckRecord record4(
-				    newPos.x - 30.0f * JMASSin(mFaceAngle.y), groundY - 20.0f,
-				    newPos.z - 30.0f * JMASCos(mFaceAngle.y), 30.0f, 4, 0);
-				gpMap->isTouchedWallsAndMoveXZ(&record4);
-
-				for (int j = 0; j < record4.mResultWallsNum; j++) {
-					TBGCheckData* w = record4.mResultWalls[j];
-					s16 ang         = matan(w->mNormal.z, w->mNormal.x)
-					          - (mFaceAngle.y + 0x8000);
-					if (ang > -0x2000 && ang < 0x2000) {
-						JGeometry::TVec3<f32> pos = mPosition;
-						f32 d = w->mNormal.x * pos.x + w->mNormal.y * pos.y
-						        + w->mNormal.z * pos.z + w->mPlaneDistance;
-						if (d < 50.0f)
-							foundWall2 = record4.mResultWalls[j];
-					}
-				}
+				record3.set(newPos.x - 30.0f * JMASSin(mFaceAngle.y),
+				            groundY - 20.0f,
+				            newPos.z - 30.0f * JMASCos(mFaceAngle.y), 30.0f, 4,
+				            0);
+				gpMap->isTouchedWallsAndMoveXZ(&record3);
+				TBGCheckData* foundWall2 = findNearestWall(record3);
 
 				if (foundWall2 != nullptr
 				    && mDeParams.mHangWallMovableAngle.get()
@@ -559,9 +551,9 @@ BOOL TMario::hanging()
 					                     foundWall2->getNormal().x)
 					               + 0x8000;
 					mPosition.x
-					    = record4.mCenter.x - 40.0f * foundWall2->getNormal().x;
+					    = record3.mCenter.x - 40.0f * foundWall2->getNormal().x;
 					mPosition.z
-					    = record4.mCenter.z - 40.0f * foundWall2->getNormal().z;
+					    = record3.mCenter.z - 40.0f * foundWall2->getNormal().z;
 					const TBGCheckData* dummy2;
 					mPosition.y
 					    = gpMap->checkGround(mPosition.x, 160.0f + mPosition.y,
