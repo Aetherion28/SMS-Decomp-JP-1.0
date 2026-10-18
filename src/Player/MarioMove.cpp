@@ -2290,10 +2290,14 @@ void TMario::checkWet()
 
 void TMario::gunExec()
 {
-	if (!onYoshi())
+	bool yoshi = false;
+	if (onYoshi())
+		yoshi = true;
+	if (!yoshi)
 		gpModelWaterManager->unk5D5F = 0;
 
 	if (!checkFlag(MARIO_FLAG_HAS_FLUDD) && !onYoshi())
+
 		return;
 
 	mWaterGun->updateUnk1C88(0);

@@ -226,10 +226,10 @@ public:
 		mEmittedWaterCount = emittedWater;
 		// TODO: one more inline for getting emit params
 		// rather than separate getMaxWater, getDecRate, etc. functions?
+		const s32& amountMax = mNozzleList[0]->mAmountMax.get();
 		f32 decRate = getCurrentNozzle()->mDecRate.get();
-		unk1C88
-		    += 10.0f
-		       * (emittedWater * decRate / mNozzleList[0]->mAmountMax.get());
+		unk1C88 += 10.0f * (emittedWater * decRate / amountMax);
+
 	}
 
 	// Fabricated
