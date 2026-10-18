@@ -326,14 +326,14 @@ void TMario::slideProcess(f32 baseAcc, f32 friction)
 	f32 slopeUp;
 	f32 slopeDown;
 	getSlopeSlideAccele(&slopeUp, &slopeDown);
-	f32 acc;
 	if (angDiff > -0x4000 && angDiff < 0x4000)
-		acc = slopeUp * mag + baseAcc;
+		baseAcc += slopeUp * mag;
 	else
-		acc = slopeDown * mag + baseAcc;
+		baseAcc += slopeDown * mag;
 
-	mSlideVelX += acc * JMASSin(dirAng);
-	mSlideVelZ += acc * JMASCos(dirAng);
+	mSlideVelX += baseAcc * JMASSin(dirAng);
+	mSlideVelZ += baseAcc * JMASCos(dirAng);
+
 	mSlideVelX *= friction;
 	mSlideVelZ *= friction;
 	unk9E = matan(mSlideVelZ, mSlideVelX);
@@ -561,6 +561,7 @@ void TMario::doSurfing()
 	const TBGCheckData* below;
 	gpMap->checkGround(mPosition.x, mPosition.y - mVel.y, mPosition.z, &below);
 
+	f32 want;
 	f32 rotMin;
 	f32 rotMax;
 	f32 powMin;
@@ -578,7 +579,7 @@ void TMario::doSurfing()
 		powMax = getSurfingParamsGround()->mPowMax.get();
 	}
 
-	f32 want = 2.0f * mIntendedMag;
+	want = 2.0f * mIntendedMag;
 	if (want > powMax)
 		want = powMax;
 	if (want < powMin)
@@ -600,8 +601,8 @@ void TMario::doSurfing()
 	if (mForwardVel > powMax)
 		mForwardVel = powMax;
 
-	s16 rotSp
-	    = (((want - powMin) / (powMax - powMin)) * (rotMax - rotMin)) + rotMin;
+	f32 rate = (want - powMin) / (powMax - powMin);
+	s16 rotSp = rate * (rotMax - rotMin) + rotMin;
 	s16 diff     = mIntendedYaw - mFaceAngle.y;
 	mFaceAngle.y = mIntendedYaw - IConverge(diff, 0, rotSp, rotSp);
 	slopeProcess();
@@ -1120,8 +1121,8 @@ void TMario::slippingBasic(int statusOnStop, int statusOnFall, int slipAnim)
 				                    mWallPlane->getNormal().x);
 
 				f32 newMag
-				    = MsSqrtf(mSlideVelX * mSlideVelX + mSlideVelZ * mSlideVelZ)
-				      * 0.9;
+				    = MsSqrtf(mSlideVelX * mSlideVelX + mSlideVelZ * mSlideVelZ);
+				newMag *= 0.9;
 				if (newMag < 4.0f)
 					newMag = 4.0f;
 

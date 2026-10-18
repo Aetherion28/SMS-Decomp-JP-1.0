@@ -1077,9 +1077,10 @@ BOOL TMario::hipAttacking()
 			changePlayerStatus(MARIO_STATUS_HIP_ATTACK_END, 0, 0);
 		}
 		if (mStatusTimer < 0x28) {
-			f32 lift = (f32)(0x28 - mStatusTimer) * 0.5f;
+			f32 lift = (0x28 - mStatusTimer) / 2.0f;
+
 			if (160.0f + (mPosition.y + lift) < mFloorPosition.x) {
-				mPosition.y = lift * 0.25f + mPosition.y;
+				mPosition.y += lift / 4.0f;
 				unk104      = mPosition.y;
 			}
 		}

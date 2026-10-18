@@ -134,8 +134,8 @@
 <rect x="630.14" y="0.00" width="53.87" height="55.06" fill="rgb(3,109,185)"><title>Player/MarioSpecial: 97.37% fuzzy, 8.08% matched, 21296 bytes</title></rect>
 <rect x="684.01" y="0.00" width="52.08" height="55.06" fill="rgb(2,109,186)"><title>Player/ModelWaterManager: 97.72% fuzzy, 16.57% matched, 20588 bytes</title></rect>
 <rect x="736.09" y="0.00" width="51.30" height="55.06" fill="rgb(1,110,188)"><title>Player/WaterGun: 98.58% fuzzy, 15.17% matched, 20280 bytes</title></rect>
-<rect x="630.14" y="55.06" width="56.02" height="49.76" fill="rgb(0,112,192)"><title>Player/MarioRun: 99.83% fuzzy, 16.07% matched, 20012 bytes</title></rect>
-<rect x="630.14" y="104.82" width="56.02" height="40.91" fill="rgb(0,112,192)"><title>Player/MarioJump: 99.95% fuzzy, 22.22% matched, 16452 bytes</title></rect>
+<rect x="630.14" y="55.06" width="56.02" height="49.76" fill="rgb(0,112,192)"><title>Player/MarioRun: 99.87% fuzzy, 16.07% matched, 20012 bytes</title></rect>
+<rect x="630.14" y="104.82" width="56.02" height="40.91" fill="rgb(0,112,192)"><title>Player/MarioJump: 99.97% fuzzy, 22.22% matched, 16452 bytes</title></rect>
 <rect x="630.14" y="145.72" width="56.02" height="36.49" fill="rgb(1,111,190)"><title>Player/Yoshi: 99.44% fuzzy, 14.25% matched, 14676 bytes</title></rect>
 <rect x="686.16" y="55.06" width="35.75" height="38.78" fill="rgb(0,112,192)"><title>Player/MarioReceiveMsg: 99.98% fuzzy, 7.67% matched, 9956 bytes</title></rect>
 <rect x="721.91" y="55.06" width="33.91" height="38.78" fill="rgb(0,112,192)"><title>Player/MarioSound: 99.97% fuzzy, 11.94% matched, 9444 bytes</title></rect>
