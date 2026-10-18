@@ -128,7 +128,7 @@
 <rect x="539.47" y="161.81" width="10.40" height="20.40" fill="rgb(0,200,0)"><title>MoveBG/MapObjFloat: 100.00% fuzzy, 100.00% matched, 1524 bytes</title></rect>
 <rect x="549.87" y="161.81" width="11.41" height="10.79" fill="rgb(0,200,0)"><title>MoveBG/MapObjSample: 100.00% fuzzy, 100.00% matched, 884 bytes</title></rect>
 <rect x="549.87" y="172.59" width="11.41" height="9.62" fill="rgb(0,200,0)"><title>MoveBG/MapObjTumblePole: 100.00% fuzzy, 100.00% matched, 788 bytes</title></rect>
-<rect x="561.28" y="0.00" width="68.86" height="68.74" fill="rgb(1,111,190)"><title>Player/MarioMove: 99.27% fuzzy, 28.60% matched, 33988 bytes</title></rect>
+<rect x="561.28" y="0.00" width="68.86" height="68.74" fill="rgb(0,112,191)"><title>Player/MarioMove: 99.69% fuzzy, 28.60% matched, 33988 bytes</title></rect>
 <rect x="561.28" y="68.74" width="68.86" height="68.66" fill="rgb(0,112,192)"><title>Player/MarioInit: 100.00% fuzzy, 96.17% matched, 33948 bytes</title></rect>
 <rect x="561.28" y="137.40" width="68.86" height="44.81" fill="rgb(3,109,184)"><title>Player/MarioDraw: 97.12% fuzzy, 18.25% matched, 22156 bytes</title></rect>
 <rect x="630.14" y="0.00" width="53.87" height="55.06" fill="rgb(3,109,185)"><title>Player/MarioSpecial: 97.37% fuzzy, 8.08% matched, 21296 bytes</title></rect>
