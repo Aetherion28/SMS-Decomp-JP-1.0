@@ -1222,6 +1222,17 @@ public:
 
 	const TBGCheckData* getGroundPlane() const { return mGroundPlane; }
 
+	// fabricated: true when Mario's hands are free to grab a ledge, pole or
+	// wire (not carrying anything and not riding Yoshi). The bool converted
+	// to a BOOL shows up as a clrlwi + signed compare with 1 at its callers.
+	BOOL canHang() const
+	{
+		bool canHang = false;
+		if (mHeldObject == nullptr && !onYoshi())
+			canHang = true;
+		return canHang;
+	}
+
 	// Fabricated
 	// See E_MARIO_FLAG
 	bool checkFlag(u32 flag) const { return mFlag & flag ? true : false; }

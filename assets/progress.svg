@@ -141,7 +141,7 @@
 <rect x="721.91" y="55.06" width="33.91" height="38.78" fill="rgb(0,112,192)"><title>Player/MarioSound: 99.97% fuzzy, 11.94% matched, 9444 bytes</title></rect>
 <rect x="755.83" y="55.06" width="31.56" height="38.78" fill="rgb(0,111,191)"><title>Player/MarioParticle: 99.53% fuzzy, 48.66% matched, 8788 bytes</title></rect>
 <rect x="686.16" y="93.84" width="33.84" height="31.38" fill="rgb(0,112,192)"><title>Player/MarioWait: 99.97% fuzzy, 33.53% matched, 7624 bytes</title></rect>
-<rect x="686.16" y="125.22" width="33.84" height="28.53" fill="rgb(0,112,191)"><title>Player/MarioPhysics: 99.60% fuzzy, 21.93% matched, 6932 bytes</title></rect>
+<rect x="686.16" y="125.22" width="33.84" height="28.53" fill="rgb(0,112,191)"><title>Player/MarioPhysics: 99.74% fuzzy, 43.62% matched, 6932 bytes</title></rect>
 <rect x="686.16" y="153.75" width="33.84" height="28.46" fill="rgb(1,111,190)"><title>Player/MarioCheckCol: 99.41% fuzzy, 11.16% matched, 6916 bytes</title></rect>
 <rect x="720.00" y="93.84" width="34.64" height="26.93" fill="rgb(0,112,191)"><title>Player/MarioAutodemo: 99.58% fuzzy, 44.30% matched, 6700 bytes</title></rect>
 <rect x="754.64" y="93.84" width="32.74" height="26.93" fill="rgb(2,110,187)"><title>Player/Tongue: 98.01% fuzzy, 22.93% matched, 6332 bytes</title></rect>
