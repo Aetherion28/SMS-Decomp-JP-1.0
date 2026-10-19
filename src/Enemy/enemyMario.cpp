@@ -316,13 +316,20 @@ void TEnemyMario::initEnemyValues()
 	}
 
 	J3DModelData* specialModelData = nullptr;
-	if (modelIndex >= 0 && modelIndex < 4) {
+	switch (modelIndex) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
 		mPlayerType = PLAYER_TYPE_SHADOW_MARIO;
-	} else if (modelIndex == 4) {
+		break;
+	case 4:
 		specialModelData = J3DModelLoaderDataBase::load(
 		    JKRGetResource(bmdFileNames[modelIndex]), 0x10040000);
 		mPlayerType = PLAYER_TYPE_MONTE_MAN;
+		break;
 	}
+
 
 	mBrushModel                = nullptr;
 	mStampActor                = nullptr;
@@ -365,16 +372,22 @@ void TEnemyMario::initEnemyValues()
 		mEMario->offHitFilter(HIT_FILTER_NO_COLLISION);
 	}
 
-	if (shadowMarioEvent == 2) {
-		mPadIndex      = 1;
-		mSettingParams = new TSettingParams("/../map/pad2/Setting.prm");
-	} else if (shadowMarioEvent == 3) {
-		mPadIndex      = 2;
-		mSettingParams = new TSettingParams("/../map/pad3/Setting.prm");
-	} else if (shadowMarioEvent == 0 || shadowMarioEvent == 1) {
+	switch (shadowMarioEvent) {
+	case 0:
+	case 1:
 		mPadIndex      = 0;
 		mSettingParams = new TSettingParams("/../map/pad/Setting.prm");
+		break;
+	case 2:
+		mPadIndex      = 1;
+		mSettingParams = new TSettingParams("/../map/pad2/Setting.prm");
+		break;
+	case 3:
+		mPadIndex      = 2;
+		mSettingParams = new TSettingParams("/../map/pad3/Setting.prm");
+		break;
 	}
+
 
 	mWaterCounter          = mSettingParams->mWaterCtMax.get();
 	char** replayFileNames = nullptr;
@@ -398,8 +411,7 @@ void TEnemyMario::initEnemyValues()
 		stream.skip(2);
 		stream.readString();
 
-		u32 nodeCount;
-		stream.read(&nodeCount, sizeof(nodeCount));
+		u32 nodeCount = stream.readU32();
 		mReplayLinks    = new TReplayLink[nodeCount][3];
 		replayFileNames = new char*[nodeCount * 3];
 		for (u32 i = 0; i < nodeCount * 3; ++i) {
@@ -413,8 +425,8 @@ void TEnemyMario::initEnemyValues()
 			stream.readString();
 			for (int link = 0; link < 3; ++link) {
 				stream.skip(2);
-				u8 replayLetter;
-				stream.read(&replayLetter, sizeof(replayLetter));
+				char replayLetter = stream.readU8();
+
 				if (replayLetter == '*') {
 					mReplayLinks[node][link].mNodeIndex   = 0xff;
 					mReplayLinks[node][link].mReplayIndex = 0xff;
@@ -701,8 +713,7 @@ void TEnemyMario::emJumping()
 			unk108->mInput |= TMarioControllerWork::A;
 		}
 	} else if (mStatus & 0x600) {
-		TPollutionManager* pollution = gpPollution;
-		pollution->stamp(1, mPosition.x, mPosition.y, mPosition.z, 384.0f);
+		gpPollution->pollute(mPosition.x, mPosition.y, mPosition.z, 384.0f);
 		changeEMDoing(EM_DOING_WAITING);
 	}
 }
@@ -739,8 +750,7 @@ void TEnemyMario::emWalkAround()
 		return;
 	}
 	if (rand() < 50) {
-		TPollutionManager* pollution = gpPollution;
-		pollution->stamp(1, mPosition.x, mPosition.y, mPosition.z, 384.0f);
+		gpPollution->pollute(mPosition.x, mPosition.y, mPosition.z, 384.0f);
 		changeEMDoing(EM_DOING_HIDE);
 	}
 	if (mWallPlane != nullptr) {
