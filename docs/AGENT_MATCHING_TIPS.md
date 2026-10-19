@@ -829,3 +829,37 @@ Two symptoms of a *missing* destructor, both meaning "the target keeps this in m
 Fix: give the smallest offending value/helper type an empty `~T() {}` and re-check.
 This is a global change, so re-run the baseline — one destructor can fix (or shift) many callsites at once.
 Concrete case: adding `~TMsRange<f32>()` (a field of `TSmallEnemyParams`) took several `TFooManager::load` functions from ~95% to 100%.
+
+## Patterns found while matching Player/, Shadow Mario and Bianco (needs human review)
+
+These came up while matching Player/, Enemy/enemyMario and MoveBG/MapObjBianco.
+Each one fixed real instructions in at least one function, but treat them as leads, not rules.
+
+- **An inline getter's value is read before real calls in the same expression.**
+  `pos.y + r * sinf(a) - getObjCollisionHeightOffset()` loads the offset before the `sinf` call, while `- mYOffset` loads it after.
+  If the target loads a member into a callee-saved register before an unrelated call, try the member's inline getter (TBigWindmill::control).
+- **A literal that MWCC would fold survives if it went through an inline's parameter.**
+  `x * 1.0f` is folded away, but `helper(x, 1.0f)` with `return a * s` keeps the `fmuls` by 1.0.
+  Passing a constant through a parameter also flips the operand order from `fmuls d, const, x` to `fmuls d, x, const`.
+  Either one in the target points at an inline layer we haven't found (setStatusToJumping wire roll jump, getOnWirePosAngle, TEnemyMario::setStickToAngle).
+- **A `JGeometry::TVec3` local assigned with `=` has its address taken by `operator=`.**
+  After that, stores to it make MWCC reload `this->` members and the vector's own fields.
+  If the target keeps those in registers, the local was probably a plain `Vec` (TMario::hanging `newPos`).
+- **A compare ladder `cmpwi x,N; beq; bge; cmpwi x,0; bge; b` is a `switch`.**
+  An if/else chain on the same values gives a different ladder (TEnemyMario::initEnemyValues).
+- **`stream.read(&x, 4)` keeps `x` on the stack, while `x = stream.readU32()` keeps it in a register.**
+  `char c = stream.readU8()` gives the `lbz` + `extsb` pair the target shows.
+- **Argument loads in reverse order (`z, y, x`) mean the call went through an inline wrapper.**
+  `gpPollution->pollute(x, y, z, r)` wrapping `stamp(1, x, y, z, r)` is one example (TEnemyMario::emJumping).
+- **`clrlwi.` right after a call means the callee returns `bool`; `cmpwi r3,0` means `BOOL`/`int`.**
+  The same holds for a `bool` local built with `li 1` / `li 0` (TMapObjBase::waterHitPlane).
+  A `bool` local compared `== TRUE` gives `clrlwi` + signed `cmpwi r0,1`.
+- **The same comparison can be signed in one TU and unsigned in another.**
+  `count > 0` on a `u8` becomes `cmplwi`/`beq`; the signed `cmpwi`/`ble` in MapObjBianco/MapObjMonte means the value was an `int` there, while Player code compares it as `u8`.
+- **A signed distance to a collision plane often goes through a by-value `TVec3` parameter.**
+  That is what gives the stack copies of the position the target makes before each use (TMario::checkCurrentPlane).
+- **In very large functions, vector operators stop inlining partway.**
+  The target then calls `TVec3::__ct`, `__ami`/`__amu`, `dot` or `getPoint` out of line where ours inlines them.
+  This shows up in TYoshiTongue::movement, the MarioSpecial wire functions, TMario::damageExec and TEnemyMario::consider.
+  Changing the operator definitions in JGVec3.hpp did not reproduce it, so it may be an inlining budget rather than the operators themselves.
+  Unsolved.
