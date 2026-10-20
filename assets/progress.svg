@@ -120,7 +120,7 @@
 <rect x="499.00" y="132.83" width="22.85" height="16.75" fill="rgb(1,111,189)"><title>MoveBG/MapObjCloud: 98.97% fuzzy, 67.54% matched, 2748 bytes</title></rect>
 <rect x="499.00" y="149.57" width="22.85" height="16.55" fill="rgb(0,112,192)"><title>MoveBG/ItemManager: 99.95% fuzzy, 81.44% matched, 2716 bytes</title></rect>
 <rect x="499.00" y="166.12" width="22.85" height="16.09" fill="rgb(0,112,192)"><title>MoveBG/MapObjOption: 99.98% fuzzy, 81.67% matched, 2640 bytes</title></rect>
-<rect x="521.86" y="132.83" width="19.75" height="16.14" fill="rgb(4,108,182)"><title>MoveBG/MapObjWater: 96.18% fuzzy, 82.34% matched, 2288 bytes</title></rect>
+<rect x="521.86" y="132.83" width="19.75" height="16.14" fill="rgb(1,111,190)"><title>MoveBG/MapObjWater: 99.37% fuzzy, 82.34% matched, 2288 bytes</title></rect>
 <rect x="541.60" y="132.83" width="19.68" height="16.14" fill="rgb(0,200,0)"><title>MoveBG/MapObjAirport: 100.00% fuzzy, 100.00% matched, 2280 bytes</title></rect>
 <rect x="521.86" y="148.96" width="17.61" height="16.83" fill="rgb(1,111,189)"><title>MoveBG/MapObjPollution: 99.04% fuzzy, 91.92% matched, 2128 bytes</title></rect>
 <rect x="521.86" y="165.79" width="17.61" height="16.42" fill="rgb(0,200,0)"><title>MoveBG/MapObjPole: 100.00% fuzzy, 100.00% matched, 2076 bytes</title></rect>
