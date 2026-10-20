@@ -86,7 +86,7 @@
 <rect x="283.01" y="489.37" width="11.64" height="10.63" fill="rgb(0,112,192)"><title>Enemy/egggen: 99.98% fuzzy, 86.49% matched, 888 bytes</title></rect>
 <rect x="294.64" y="489.37" width="7.08" height="10.23" fill="rgb(0,200,0)"><title>Enemy/DemoBossHanachanBase: 100.00% fuzzy, 100.00% matched, 520 bytes</title></rect>
 <rect x="294.64" y="499.61" width="7.08" height="0.39" fill="rgb(0,200,0)"><title>Enemy/BossHanachanSound: 100.00% fuzzy, 100.00% matched, 20 bytes</title></rect>
-<rect x="301.72" y="0.00" width="48.18" height="66.51" fill="rgb(1,111,189)"><title>MoveBG/MapObjBall: 98.83% fuzzy, 28.63% matched, 23008 bytes</title></rect>
+<rect x="301.72" y="0.00" width="48.18" height="66.51" fill="rgb(1,111,191)"><title>MoveBG/MapObjBall: 99.50% fuzzy, 28.63% matched, 23008 bytes</title></rect>
 <rect x="301.72" y="66.51" width="48.18" height="58.52" fill="rgb(0,112,191)"><title>MoveBG/MapObjMamma: 99.61% fuzzy, 41.81% matched, 20244 bytes</title></rect>
 <rect x="301.72" y="125.04" width="48.18" height="57.17" fill="rgb(1,111,191)"><title>MoveBG/MapObjSirena: 99.47% fuzzy, 50.32% matched, 19776 bytes</title></rect>
 <rect x="349.90" y="0.00" width="53.53" height="49.93" fill="rgb(5,107,180)"><title>MoveBG/MapObjCorona: 95.27% fuzzy, 28.71% matched, 19188 bytes</title></rect>
