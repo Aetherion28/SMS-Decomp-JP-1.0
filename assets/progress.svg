@@ -313,7 +313,7 @@
 <rect x="601.74" y="373.90" width="15.60" height="12.57" fill="rgb(0,112,192)"><title>Camera/CameraOption: 99.89% fuzzy, 9.38% matched, 1408 bytes</title></rect>
 <rect x="601.74" y="386.46" width="15.60" height="11.71" fill="rgb(0,200,0)"><title>Camera/CubeMapTool: 100.00% fuzzy, 100.00% matched, 1312 bytes</title></rect>
 <rect x="601.74" y="398.17" width="15.60" height="11.64" fill="rgb(1,111,190)"><title>Camera/CameraMultiPlayer: 99.38% fuzzy, 32.21% matched, 1304 bytes</title></rect>
-<rect x="617.34" y="373.90" width="12.46" height="12.88" fill="rgb(3,108,183)"><title>Camera/CameraMode: 96.61% fuzzy, 87.50% matched, 1152 bytes</title></rect>
+<rect x="617.34" y="373.90" width="12.46" height="12.88" fill="rgb(0,200,0)"><title>Camera/CameraMode: 100.00% fuzzy, 100.00% matched, 1152 bytes</title></rect>
 <rect x="629.80" y="373.90" width="11.55" height="12.88" fill="rgb(0,112,192)"><title>Camera/CameraBck: 99.97% fuzzy, 57.68% matched, 1068 bytes</title></rect>
 <rect x="617.34" y="386.77" width="11.68" height="12.16" fill="rgb(0,200,0)"><title>Camera/CameraHeightPan: 100.00% fuzzy, 100.00% matched, 1020 bytes</title></rect>
 <rect x="617.34" y="398.94" width="11.68" height="10.88" fill="rgb(0,112,192)"><title>Camera/CameraMarioData: 99.97% fuzzy, 60.96% matched, 912 bytes</title></rect>

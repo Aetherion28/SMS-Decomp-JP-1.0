@@ -146,6 +146,7 @@ public:
 	}
 
 	bool isLButtonCamera() const { return isLButtonCameraSpecifyMode(mMode); }
+	bool isNormalCamera() const { return isNormalCameraSpecifyMode(mMode); }
 	bool isBckDemoCamera() const
 	{
 		return mMode == CAMERA_MODE_REPRODUCE_DEMO ? true : false;
