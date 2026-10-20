@@ -1356,7 +1356,8 @@ def generate_build_ninja(
         n.comment("Generate progress report")
         n.rule(
             name="report",
-            command=f"{objdiff} report generate $objdiff_report_args -o $out",
+            # fork: pair MWCC's renumbered local symbols first (see the script)
+            command=f"$python {config.tools_dir / 'local_symbol_mappings.py'} && {objdiff} report generate $objdiff_report_args -o $out",
             description="REPORT",
         )
         n.build(
