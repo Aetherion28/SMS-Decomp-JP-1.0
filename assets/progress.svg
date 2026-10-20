@@ -292,7 +292,7 @@
 <rect x="781.92" y="308.80" width="3.42" height="4.89" fill="rgb(0,112,192)"><title>NPC/NpcBalloon: 99.83% fuzzy, 10.00% matched, 120 bytes</title></rect>
 <rect x="785.34" y="308.80" width="2.05" height="3.53" fill="rgb(0,200,0)"><title>NPC/NpcInitData: 100.00% fuzzy, 100.00% matched, 52 bytes</title></rect>
 <rect x="785.34" y="312.33" width="2.05" height="1.36" fill="rgb(0,200,0)"><title>NPC/NpcInitAnmData: 100.00% fuzzy, 100.00% matched, 20 bytes</title></rect>
-<rect x="527.24" y="313.69" width="39.73" height="44.35" fill="rgb(7,104,173)"><title>Camera/cameragc: 92.47% fuzzy, 16.09% matched, 12652 bytes</title></rect>
+<rect x="527.24" y="313.69" width="39.73" height="44.35" fill="rgb(5,106,178)"><title>Camera/cameragc: 94.67% fuzzy, 16.31% matched, 12652 bytes</title></rect>
 <rect x="527.24" y="358.04" width="39.73" height="26.78" fill="rgb(0,200,0)"><title>Camera/camerasave: 100.00% fuzzy, 100.00% matched, 7640 bytes</title></rect>
 <rect x="527.24" y="384.83" width="39.73" height="24.99" fill="rgb(6,106,177)"><title>Camera/CameraChange: 94.13% fuzzy, 39.17% matched, 7128 bytes</title></rect>
 <rect x="566.97" y="313.69" width="34.51" height="25.52" fill="rgb(13,97,158)"><title>Camera/cameralib: 85.52% fuzzy, 32.89% matched, 6324 bytes</title></rect>

@@ -373,8 +373,9 @@ void CPolarSubCamera::onMoveApproach_()
 
 bool CPolarSubCamera::isMarioReadyGun_() const
 {
-	// NOTE: it is a complete MYSTERY to me as to why this
-	// checkStatusType isn't inlined...
+	// checkStatusType is two levels down here (this function is inlined into
+	// isMarioAimWithGun_ / isMarioCrabWalk_), and its if/return body is too
+	// big for MWCC's second inline level, so it stays a call.
 	return gpMarioOriginal->checkFlag(MARIO_FLAG_HAS_FLUDD)
 	       && gpMarioOriginal->checkStatusType(MARIO_STATUS_FLAG_UNK8000);
 }
