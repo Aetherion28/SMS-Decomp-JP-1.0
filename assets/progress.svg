@@ -308,7 +308,7 @@
 <rect x="586.57" y="375.98" width="15.17" height="18.29" fill="rgb(11,99,161)"><title>Camera/lensflare: 87.20% fuzzy, 7.63% matched, 1992 bytes</title></rect>
 <rect x="586.57" y="394.28" width="15.17" height="15.54" fill="rgb(0,200,0)"><title>Camera/CameraKindParam: 100.00% fuzzy, 100.00% matched, 1692 bytes</title></rect>
 <rect x="601.74" y="357.22" width="13.56" height="16.68" fill="rgb(0,200,0)"><title>Camera/CameraInbetween: 100.00% fuzzy, 100.00% matched, 1624 bytes</title></rect>
-<rect x="615.30" y="357.22" width="13.13" height="16.68" fill="rgb(4,107,181)"><title>Camera/CameraNormal: 95.90% fuzzy, 4.58% matched, 1572 bytes</title></rect>
+<rect x="615.30" y="357.22" width="13.13" height="16.68" fill="rgb(1,111,189)"><title>Camera/CameraNormal: 98.77% fuzzy, 4.58% matched, 1572 bytes</title></rect>
 <rect x="628.43" y="357.22" width="12.93" height="16.68" fill="rgb(0,112,192)"><title>Camera/CameraWarp: 99.91% fuzzy, 62.53% matched, 1548 bytes</title></rect>
 <rect x="601.74" y="373.90" width="15.60" height="12.57" fill="rgb(0,112,192)"><title>Camera/CameraOption: 99.89% fuzzy, 9.38% matched, 1408 bytes</title></rect>
 <rect x="601.74" y="386.46" width="15.60" height="11.71" fill="rgb(0,200,0)"><title>Camera/CubeMapTool: 100.00% fuzzy, 100.00% matched, 1312 bytes</title></rect>

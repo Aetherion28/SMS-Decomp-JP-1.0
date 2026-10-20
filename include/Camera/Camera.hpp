@@ -208,6 +208,14 @@ private:
 	void ctrlMultiPlayerCamera_();
 	void ctrlTalkCamera_();
 	void calcTowerCenterPos_(Vec* result);
+	// fabricated: some inline around this call is needed to keep
+	// calcTowerCenterPos_ out of line (see CameraNormal.cpp)
+	void noticeTowerCenter_()
+	{
+		Vec v;
+		calcTowerCenterPos_(&v);
+		calcNoticeTargetYrot_(v);
+	}
 	void ctrlNormalOrTowerCamera_();
 	TLiveActor* getNoticeActor_();
 	void execNoticeOnOffProc_(CPolarSubCamera::EnumNoticeOnOffMode);
