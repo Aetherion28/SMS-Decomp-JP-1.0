@@ -691,7 +691,27 @@ void TChuuHana::setSafeGoal()
 	unk1B2 = 1;
 }
 
-void TChuuHana::rolling() { }
+// Body taken from the copy inlined into TNerveChuuHanaRoll::execute.
+// TODO: 0x108 bytes against 0x120 in the map. The target copies the velocity
+// twice more (x is read from one copy, z from the other) and fuses the
+// speed's multiply-add; probably two more inline helpers.
+void TChuuHana::rolling()
+{
+	JGeometry::TVec3<f32> vel = getVelocity();
+	f32 dx = 0.2f * (vel.x - unk204.x);
+	f32 dz = 0.2f * (vel.z - unk204.z);
+	unk204.x += dx;
+	unk204.z += dz;
+	f32 speed = unk204.x * unk204.x + unk204.z * unk204.z;
+	speed     = JGeometry::TUtil<f32>::sqrt(speed);
+	unk1B8 = 2.0f * (speed / mBodyRadius);
+	unk210 += unk1B8;
+	if (unk210 > 360.0f)
+		unk210 -= 360.0f;
+	if (unk210 < 0.0f)
+		unk210 += 360.0f;
+}
+
 
 void TChuuHana::rollStart()
 {
