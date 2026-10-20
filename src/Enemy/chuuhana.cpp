@@ -541,7 +541,21 @@ void TChuuHana::bind()
 	mPositionDelta = next - mPosition;
 }
 
-void TChuuHana::margeVelocity(JGeometry::TVec3<f32>& param_1) { }
+// Body taken from the copies inlined into moveObject and behaveToWater.
+// The XZ speed is computed and never used; the target keeps its dead compare.
+// TODO: 0xa0 bytes against 0xc4 in the map. The target copies `cur` twice
+// more and reads x from one copy and z from the other, the same shape as in
+// rolling(). Two explicit copies reproduce it byte for byte (0xc4), so a
+// helper taking two vectors by value is likely, but it isn't known.
+void TChuuHana::margeVelocity(JGeometry::TVec3<f32>& param_1)
+{
+	JGeometry::TVec3<f32> vel = mVelocity;
+	JGeometry::TVec3<f32> cur = getVelocity();
+	f32 speed = JGeometry::TUtil<f32>::sqrt(cur.x * cur.x + cur.z * cur.z);
+	VECAdd(&vel, &param_1, &vel);
+	vel.y     = 0.0f;
+	mVelocity = vel;
+}
 
 BOOL TChuuHana::receiveMessage(THitActor* sender, u32 message)
 {
