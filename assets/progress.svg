@@ -297,7 +297,7 @@
 <rect x="527.24" y="384.83" width="39.73" height="24.99" fill="rgb(6,106,177)"><title>Camera/CameraChange: 94.13% fuzzy, 39.17% matched, 7128 bytes</title></rect>
 <rect x="566.97" y="313.69" width="34.51" height="25.52" fill="rgb(13,97,158)"><title>Camera/cameralib: 85.52% fuzzy, 32.89% matched, 6324 bytes</title></rect>
 <rect x="601.47" y="313.69" width="20.39" height="25.52" fill="rgb(0,112,191)"><title>Camera/CameraJetCoaster: 99.81% fuzzy, 24.95% matched, 3736 bytes</title></rect>
-<rect x="621.86" y="313.69" width="19.49" height="25.52" fill="rgb(11,99,162)"><title>Camera/CameraBGCheck: 87.29% fuzzy, 10.75% matched, 3572 bytes</title></rect>
+<rect x="621.86" y="313.69" width="19.49" height="25.52" fill="rgb(3,108,184)"><title>Camera/CameraBGCheck: 96.79% fuzzy, 10.75% matched, 3572 bytes</title></rect>
 <rect x="566.97" y="339.21" width="19.61" height="25.34" fill="rgb(14,96,154)"><title>Camera/sunmodel: 83.67% fuzzy, 30.72% matched, 3568 bytes</title></rect>
 <rect x="566.97" y="364.56" width="19.61" height="24.32" fill="rgb(2,110,188)"><title>Camera/camerashake: 98.34% fuzzy, 60.05% matched, 3424 bytes</title></rect>
 <rect x="566.97" y="388.88" width="19.61" height="20.94" fill="rgb(8,102,169)"><title>Camera/CameraNotice: 90.87% fuzzy, 27.41% matched, 2948 bytes</title></rect>

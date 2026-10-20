@@ -37,15 +37,21 @@ void CPolarSubCamera::calcInHouseNo_(bool param_1)
 			return;
 		}
 
-		JGeometry::TVec3<f32> local_120[18];
-		S16Vec SStack_134[9];
+		JGeometry::TVec3<f32> local_120[2][9];
+		S16Vec SStack_134;
 
-		CLBCalcNearNinePos(local_120, SStack_134, unk124, unk148,
+		CLBCalcNearNinePos(local_120[0], &SStack_134, unk124, unk148,
 		                   getFinalAngleZ(), mNear, mFovy, mAspect);
 
+		// TODO: the target unrolls this loop three times and keeps an index
+		// (base + i * 12 each copy); an index loop here unrolls eight times
+		// instead and a do-while doesn't unroll at all. The pointer loop
+		// gets the right body but its own unrolling.
 		f32 fVar1 = unk2C4;
-		for (int i = 0; i < 9; ++i) {
-			local_120[9 + i].scaleAdd(fVar1, local_120[i], unk25C);
+		JGeometry::TVec3<f32>* src = local_120[0];
+		JGeometry::TVec3<f32>* dst = local_120[1];
+		for (int i = 0; i < 9; ++i, ++src, ++dst) {
+			dst->scaleAdd(fVar1, *src, unk25C);
 		}
 
 		f32 tmp = unk2C0;
@@ -53,10 +59,10 @@ void CPolarSubCamera::calcInHouseNo_(bool param_1)
 			for (int j = 0; j < 2; ++j) {
 				f32 fVar2 = 0.0f;
 				for (int k = 0; k < 2; ++k) {
-					JGeometry::TVec3<f32> local_12C(local_120[j * 9 + i].x,
-					                                local_120[j * 9 + i].y
+					JGeometry::TVec3<f32> local_12C(local_120[j][i].x,
+					                                local_120[j][i].y
 					                                    - fVar2 + -78.0f,
-					                                local_120[j * 9 + i].z);
+					                                local_120[j][i].z);
 					const TBGCheckData* local_138;
 					gpMap->checkGroundIgnoreWaterSurface(local_12C, &local_138);
 					if (local_138 && local_138->isOob()) {
