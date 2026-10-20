@@ -348,21 +348,13 @@ static BOOL KillerBodyCallback(J3DNode* node, int calc)
 		MtxPtr anmMtx = gpCurKiller->getModel()->getAnmMtx(
 		    ((J3DJoint*)node)->getJntNo());
 
-		Mtx scaleMtx;
+		// TODO: the target keeps &rollMtx in r31 for both concats with it,
+		// as if it were read through a pointer.
+		TPosition3f scaleMtx;
 		Mtx rollMtx;
-		f32 scale      = gpCurKiller->getBodyScale();
-		scaleMtx[0][0] = scale;
-		scaleMtx[0][1] = 0.0f;
-		scaleMtx[0][2] = 0.0f;
-		scaleMtx[0][3] = 0.0f;
-		scaleMtx[1][0] = 0.0f;
-		scaleMtx[1][1] = scale;
-		scaleMtx[1][2] = 0.0f;
-		scaleMtx[1][3] = 0.0f;
-		scaleMtx[2][0] = 0.0f;
-		scaleMtx[2][1] = 0.0f;
-		scaleMtx[2][2] = scale;
-		scaleMtx[2][3] = 0.0f;
+		scaleMtx.zeroTrans();
+		f32 scale = gpCurKiller->getBodyScale();
+		scaleMtx.setScale(scale, scale, scale);
 		MsMtxSetRotZ(rollMtx, gpCurKiller->unk1B8);
 
 		MTXConcat(anmMtx, rollMtx, anmMtx);
