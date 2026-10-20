@@ -158,13 +158,18 @@ bool CPolarSubCamera::execWallCheck_(Vec* param_1)
 			for (int i = 0; i < n; ++i) {
 				TBGCheckData* wall = record.mResultWalls[i];
 				if (should_clip_fabricated(wall)) {
-					JGeometry::TVec3<f32> posArg = mCurrentTarget.mPosition;
-					JGeometry::TVec3<f32> posCam = posArg;
+					JGeometry::TVec3<f32> posArg;
+					posArg = mCurrentTarget.mPosition;
+					JGeometry::TVec3<f32> posCam;
+					posCam = posArg;
 
-					f32 sd = posCam.dot(wall->getNormal())
+					f32 sd = posCam.x * wall->getNormal().x
+					         + posCam.y * wall->getNormal().y
+					         + posCam.z * wall->getNormal().z
 					         + wall->getPlaneDistance();
-					f32 absSd = sd >= 0.0f ? sd : -sd;
-					if (absSd < radius) {
+					// TODO: the rest is register coloring only (the target keeps
+					// normal.z in a register through the push; here it is reloaded).
+					if ((sd >= 0.0f ? sd : -sd) < radius) {
 						moved      = true;
 						f32 pushSd = (radius - sd)
 						             * mSaveEx->mSLWallRevisionRatio.get();
