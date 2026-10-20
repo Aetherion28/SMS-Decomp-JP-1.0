@@ -503,17 +503,18 @@ void TMapObjBase::makeMtxRotByAxis(const JGeometry::TVec3<f32>& param_1,
 	rotation.identity();
 	rotation.setRotate(param_1, param_2);
 
-	param_3[0][0] = rotation.at(0, 0);
-	param_3[0][1] = rotation.at(0, 1);
-	param_3[0][2] = rotation.at(0, 2);
+	MtxPtr src = rotation;
+	param_3[0][0] = src[0][0];
+	param_3[0][1] = src[0][1];
+	param_3[0][2] = src[0][2];
 
-	param_3[1][0] = rotation.at(1, 0);
-	param_3[1][1] = rotation.at(1, 1);
-	param_3[1][2] = rotation.at(1, 2);
+	param_3[1][0] = src[1][0];
+	param_3[1][1] = src[1][1];
+	param_3[1][2] = src[1][2];
 
-	param_3[2][0] = rotation.at(2, 0);
-	param_3[2][1] = rotation.at(2, 1);
-	param_3[2][2] = rotation.at(2, 2);
+	param_3[2][0] = src[2][0];
+	param_3[2][1] = src[2][1];
+	param_3[2][2] = src[2][2];
 }
 
 void TMapObjBase::makeObjMtxRotByAxis(const JGeometry::TVec3<f32>& param_1,
