@@ -37,29 +37,26 @@ public:
 
 	void conjugate() { this->xyz().negate(); }
 
-	// TODO: the two mul are definitely not correct ATM
+	// The products are passed straight to set(): with temporaries the
+	// scheduler orders the fmadds chains differently (BeeHive, Kazekun).
 	void mul(const TQuat4& other)
 	{
 		// clang-format off
-		T _x = this->w * other.x + this->x * other.w + this->y * other.z - this->z * other.y;
-		T _y = this->w * other.y + this->y * other.w + this->z * other.x - this->x * other.z;
-		T _z = this->w * other.z + this->z * other.w + this->x * other.y - this->y * other.x;
-		T _w = this->w * other.w - this->x * other.x - this->y * other.y - this->z * other.z;
+		this->set(this->x * other.w + this->w * other.x + this->y * other.z - this->z * other.y,
+		          this->y * other.w + this->w * other.y + this->z * other.x - this->x * other.z,
+		          this->z * other.w + this->w * other.z + this->x * other.y - this->y * other.x,
+		          this->w * other.w - this->x * other.x - this->y * other.y - this->z * other.z);
 		// clang-format on
-
-		this->set(_x, _y, _z, _w);
 	}
 
 	void mul(const TQuat4& a, const TQuat4& b)
 	{
 		// clang-format off
-		T _x = a.x * b.w + a.w * b.x + a.y * b.z - a.z * b.y;
-		T _y = a.y * b.w + a.w * b.y + a.z * b.x - a.x * b.z;
-		T _z = a.z * b.w + a.w * b.z + a.x * b.y - a.y * b.x;
-		T _w = a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z;
+		this->set(a.x * b.w + a.w * b.x + a.y * b.z - a.z * b.y,
+		          a.y * b.w + a.w * b.y + a.z * b.x - a.x * b.z,
+		          a.z * b.w + a.w * b.z + a.x * b.y - a.y * b.x,
+		          a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z);
 		// clang-format on
-
-		this->set(_x, _y, _z, _w);
 	}
 
 	// NOTE: SMG contains a "normalize" implementation here that reset the
