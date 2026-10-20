@@ -240,7 +240,7 @@
 <rect x="572.73" y="219.60" width="26.65" height="32.42" fill="rgb(0,112,192)"><title>Map/PollutionLayer: 99.92% fuzzy, 51.45% matched, 6204 bytes</title></rect>
 <rect x="572.73" y="252.02" width="26.65" height="31.82" fill="rgb(10,101,166)"><title>Map/MapMirror: 89.30% fuzzy, 35.22% matched, 6088 bytes</title></rect>
 <rect x="572.73" y="283.84" width="26.65" height="29.85" fill="rgb(1,111,190)"><title>Map/Map: 99.37% fuzzy, 38.31% matched, 5712 bytes</title></rect>
-<rect x="599.37" y="219.60" width="25.45" height="28.20" fill="rgb(2,110,188)"><title>Map/MapStaticObject: 98.40% fuzzy, 52.56% matched, 5152 bytes</title></rect>
+<rect x="599.37" y="219.60" width="25.45" height="28.20" fill="rgb(1,111,191)"><title>Map/MapStaticObject: 99.50% fuzzy, 52.56% matched, 5152 bytes</title></rect>
 <rect x="599.37" y="247.80" width="25.45" height="23.03" fill="rgb(0,112,191)"><title>Map/PollutionManager: 99.76% fuzzy, 85.17% matched, 4208 bytes</title></rect>
 <rect x="599.37" y="270.83" width="25.45" height="22.94" fill="rgb(0,112,192)"><title>Map/MapWireManager: 99.90% fuzzy, 68.03% matched, 4192 bytes</title></rect>
 <rect x="599.37" y="293.77" width="25.45" height="19.92" fill="rgb(0,112,191)"><title>Map/MapEventDolpic: 99.79% fuzzy, 49.45% matched, 3640 bytes</title></rect>

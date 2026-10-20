@@ -219,7 +219,6 @@ MsPerpendicFootToLineR(const JGeometry::TVec3<f32>& param_1,
                        const JGeometry::TVec3<f32>& param_2,
                        const JGeometry::TVec3<f32>& param_3)
 {
-	// TODO: floats are the worst, doesn't match at all...
 	JGeometry::TVec3<f32> diff = param_2;
 	diff -= param_1;
 	f32 fVar1 = (param_3.dot(diff) - param_1.dot(diff)) / diff.squared();
@@ -229,12 +228,10 @@ MsPerpendicFootToLineR(const JGeometry::TVec3<f32>& param_1,
 	else if (fVar1 > 1.0f)
 		fVar1 = 1.0f;
 
-	JGeometry::TVec3<f32> thing;
-	thing.scale(fVar1, diff);
-
-	JGeometry::TVec3<f32> copy = thing;
-	thing += param_1;
-	return thing;
+	diff.scale(fVar1);
+	JGeometry::TVec3<f32> foot = param_1;
+	foot += diff;
+	return foot;
 }
 
 inline f32 MsSqrtf(f32 x)
