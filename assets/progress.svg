@@ -304,7 +304,7 @@
 <rect x="586.57" y="339.21" width="21.79" height="18.00" fill="rgb(2,110,186)"><title>Camera/CameraDemo: 97.91% fuzzy, 36.79% matched, 2816 bytes</title></rect>
 <rect x="608.36" y="339.21" width="17.18" height="18.00" fill="rgb(1,111,191)"><title>Camera/lensglow: 99.46% fuzzy, 7.21% matched, 2220 bytes</title></rect>
 <rect x="625.54" y="339.21" width="15.81" height="18.00" fill="rgb(0,112,192)"><title>Camera/sunmgr: 99.95% fuzzy, 56.75% matched, 2044 bytes</title></rect>
-<rect x="586.57" y="357.22" width="15.17" height="18.77" fill="rgb(3,108,184)"><title>Camera/CubeManagerBase: 96.88% fuzzy, 20.94% matched, 2044 bytes</title></rect>
+<rect x="586.57" y="357.22" width="15.17" height="18.77" fill="rgb(0,112,192)"><title>Camera/CubeManagerBase: 99.90% fuzzy, 20.94% matched, 2044 bytes</title></rect>
 <rect x="586.57" y="375.98" width="15.17" height="18.29" fill="rgb(11,99,161)"><title>Camera/lensflare: 87.20% fuzzy, 7.63% matched, 1992 bytes</title></rect>
 <rect x="586.57" y="394.28" width="15.17" height="15.54" fill="rgb(0,200,0)"><title>Camera/CameraKindParam: 100.00% fuzzy, 100.00% matched, 1692 bytes</title></rect>
 <rect x="601.74" y="357.22" width="13.56" height="16.68" fill="rgb(0,200,0)"><title>Camera/CameraInbetween: 100.00% fuzzy, 100.00% matched, 1624 bytes</title></rect>
