@@ -18,6 +18,16 @@
 #include <Enemy/BossHanachan.hpp>
 #include <System/MarNameRefGen.hpp>
 
+// rogue includes needed for matching sinit & bss
+#include <MSound/MSSetSound.hpp>
+#include <MSound/MSoundBGM.hpp>
+#include <System/DummyStrings.hpp>
+
+static const char cDirtyFileName[] = "/scene/map/pollution/H_ma_rak.bti";
+static const char cDirtyTexName[]  = "H_ma_rak_dummy";
+
+#include <M3DUtil/InfectiousStrings.hpp>
+
 JDrama::TNameRef* TMarNameRefGen::getNameRef_BossEnemy(const char* name) const
 {
 	if (strcmp(name, "EMario") == 0)
