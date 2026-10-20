@@ -861,5 +861,25 @@ Each one fixed real instructions in at least one function, but treat them as lea
 - **In very large functions, vector operators stop inlining partway.**
   The target then calls `TVec3::__ct`, `__ami`/`__amu`, `dot` or `getPoint` out of line where ours inlines them.
   This shows up in TYoshiTongue::movement, the MarioSpecial wire functions, TMario::damageExec and TEnemyMario::consider.
-  Changing the operator definitions in JGVec3.hpp did not reproduce it, so it may be an inlining budget rather than the operators themselves.
-  Unsolved.
+  Changing the operator definitions in JGVec3.hpp did not reproduce it.
+  The inline depth rules below explain some of these cases; the rest are unsolved.
+
+## MWCC's auto-inline rules, measured (needs human review)
+
+Measured with the game flags (`-O4,p -inline auto -inline deferred`) on throwaway TUs compiled with the project's compiler.
+Every number below came from a compile, but the probes were small, so treat the exact limits as approximate.
+
+- **A function without the `inline` keyword is auto-inlined only if its body costs at most 14.**
+  The cost is a statement count, not a byte size: a 400-statement function of plain stores is still inlined if each one costs 1.
+  It is the same for `static` functions, and it does not depend on how many call sites there are.
+  Costs seen: a plain statement 1; a declaration with an initializer 1; `if` 1 plus its body; `if`/`else` with one statement each 4; `&&` in a condition 2 more; `for` 4 plus its body; `while` 2 plus its body; a `switch` with two cases 5; a call 1 however nested; `return` and braces 0.
+  A callee's own calls count 1 each at this point, whatever gets inlined into it later.
+  So when the target calls a same-TU function out of line and ours inlines it, our version of that function is written with fewer statements than the original, not with different code: TChorobei::checkHit went from inlined to a call by replacing a nested `if` with `if (!cond) continue;` (one statement more), and its own code did not change.
+- **Functions with the `inline` keyword (or defined in a class body) are always inlined**, at least up to 200 statements.
+- **Nesting is limited to four inline levels below the function being compiled.**
+  In a chain `caller -> f4 -> f3 -> f2 -> f1 -> f0`, `f0` is called out of line whether the functions are `inline` or auto-inlined.
+- **A function that returns a class by value gets fewer levels inside it.**
+  With `friend TVec3 operator+(TVec3 a, const TVec3& b) { a += b; return a; }`, the `add` two levels below `operator+` is called out of line even when `operator+` is the first level; `r.add(a, b)` one level below is still inlined.
+  This is why the target calls `TVec3::add` out of line right after copying a vector onto the stack: the source was `x = a + b`, not `x = a; x += b;` (TCannon::updateAttachPos inside moveObject).
+  The same mechanism probably explains the out-of-line `__ct`, `dot` and `getPoint` calls listed above: look for an operator or helper that returns the vector by value.
+- **The practical reading of a diff:** an out-of-line call to a tiny inline in the target means our call site is at a shallower depth than the original, so an inline layer is missing (an operator, a wrapper, a getter); ours inlining a same-TU function the target calls means our definition of that function has too few statements.
