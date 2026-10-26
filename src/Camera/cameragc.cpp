@@ -858,6 +858,17 @@ void CPolarSubCamera::calcFinalPosAndAt_()
 	}
 }
 
+// TODO: evidence for the out-of-line calls in perform and loadAfter: the map
+// gives this UNUSED function 0x13c bytes, which only fits if MsSqrtf (inside
+// CLBCrossToPolar), TUtil<f32>::one (inside normalize) and MsClamp are all
+// calls in its own body; the original cameragc.o also emits weak copies of
+// those three. MsClamp is a direct call here, where an inline function is
+// normally always expanded, so the cause is not inline depth alone. The map
+// also has ctrlGameCamera_ and calcSlopeAngleX_ as weak, yet still called out
+// of line; marking them inline here makes MWCC inline them everywhere.
+// In perform the target also calls TVec3::set<f> and setLength(one()) where
+// we inline normalize(). Ruled out: MsSqrtf's cost (+1 breaks MarioMove),
+// MathUtil.hpp in the PCH, #pragma dont_inline, defining helpers later.
 void CPolarSubCamera::calcExternalData_()
 {
 	CLBCrossToPolar(mTarget, mPosition, &unk256, &unk258);
