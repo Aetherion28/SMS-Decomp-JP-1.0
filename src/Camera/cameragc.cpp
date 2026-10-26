@@ -868,7 +868,11 @@ void CPolarSubCamera::calcFinalPosAndAt_()
 // of line; marking them inline here makes MWCC inline them everywhere.
 // In perform the target also calls TVec3::set<f> and setLength(one()) where
 // we inline normalize(). Ruled out: MsSqrtf's cost (+1 breaks MarioMove),
-// MathUtil.hpp in the PCH, #pragma dont_inline, defining helpers later.
+// MathUtil.hpp in the PCH, #pragma dont_inline, defining helpers later,
+// and #pragma inline_depth: with -inline deferred only the value in effect
+// at the end of the TU counts, so it cannot be scoped; TU-wide depth 2 fixes
+// perform (94%) and loadAfter (98%) and emits MsSqrtf/one weak like the map,
+// but drops __ct to 86% and calcSlopeAngleX_ to 88%; depth 3 is worse.
 void CPolarSubCamera::calcExternalData_()
 {
 	CLBCrossToPolar(mTarget, mPosition, &unk256, &unk258);
