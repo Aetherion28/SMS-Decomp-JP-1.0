@@ -95,24 +95,26 @@ TLiveActor* CPolarSubCamera::getNoticeActor_()
 		if (mNoticeActor != nullptr && unk2A0[i] == mNoticeActor)
 			continue;
 
+		// TODO: the target keeps both &unk16C and &unk1EC in registers across
+		// this loop (one more saved GPR, frame 0x10 larger); ours hoists only
+		// one of them.
 		f32 dist2 = distSq(unk2A0[i]->mPosition, SMS_GetMarioPos());
-		if (dist2 >= closestDist2)
-			continue;
+		if (dist2 < closestDist2) {
+			f32 clip = mSaveNotice->mOnClipRatio.get();
+			JGeometry::TVec2<f32> clipPos;
+			CLBCalc2DFPos(&clipPos, unk16C, unk1EC, unk2A0[i]->mPosition,
+			              nullptr, false);
+			if (!isInClip(clipPos, clip))
+				continue;
 
-		f32 clip = mSaveNotice->mOnClipRatio.get();
-		JGeometry::TVec2<f32> clipPos;
-		CLBCalc2DFPos(&clipPos, unk16C, unk1EC, unk2A0[i]->mPosition, nullptr,
-		              false);
-		if (!isInClip(clipPos, clip))
-			continue;
+			if (!MsIsInSight(*gpMarioPos, SHORTANGLE2DEG(SMS_GetMarioAngleY()),
+			                 unk2A0[i]->mPosition, dist2,
+			                 mSaveNotice->mOnDegree.get(), -1.0f))
+				continue;
 
-		if (!MsIsInSight(*gpMarioPos, SHORTANGLE2DEG(SMS_GetMarioAngleY()),
-		                 unk2A0[i]->mPosition, dist2,
-		                 mSaveNotice->mOnDegree.get(), -1.0f))
-			continue;
-
-		closestDist2 = dist2;
-		noticeActor  = unk2A0[i];
+			closestDist2 = dist2;
+			noticeActor  = unk2A0[i];
+		}
 	}
 
 	return noticeActor;
