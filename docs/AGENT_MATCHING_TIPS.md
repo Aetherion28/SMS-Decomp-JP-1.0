@@ -1726,6 +1726,7 @@ Do not repeat a refuted sweep without new evidence.
 | `TParamVec::set` | Refuted at all 14 sites. |
 | `JUtility::TColor` destructor | Refuted (see above). |
 | a `JAIHeapBlock` accessor set from TWW | Refuted: SMS reads those fields raw. |
+| `TVec3<f32>::operator*(f32) const { TVec3 tmp(*this); tmp *= s; return tmp; }` in place of the friend `operator*(TVec3, f32)` | Refuted: `calcBoids` +3.3% and `TBGTentacle::setAttackTarget` +2.1%, but 5 functions worse, and Tongue loses its weak `__ami__` (`operator-=`) out-of-line copy (100% to 0%), so Tongue drops from 22.9% to 22.1% matched. The map has no `__ml__`, `__pl__` or `__mi__` for `TVec3<f>` anywhere; only the copy constructor, `__amu__` (MarioCollision) and `__ami__` (Tongue) appear as weak copies. |
 
 The "protected field" test: imagine that a field is `protected`.
 Use its getter only where the compiler would refuse the raw access: reads through another object, `self->` in nerves, globals like `gpMarioOriginal`.
