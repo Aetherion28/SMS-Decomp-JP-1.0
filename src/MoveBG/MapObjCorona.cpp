@@ -789,38 +789,46 @@ bool TBathtub::allowsTumble() const
 {
 	JGeometry::TVec3<f32> marioPos(SMS_GetMarioPos());
 	f32 grip;
-	if (!getNearGrip(marioPos, 18.0f, &grip))
-		return false;
-
-	JGeometry::TVec3<f32> delta = marioPos;
-	delta -= mBathtubData.mPos;
-	JGeometry::TVec3<f32> local;
-	mBathtubData.unk18.mult(delta, local);
-	local.y      = 0.0f;
-	f32 distance = local.length();
-	if (distance < 4200.0f)
-		return false;
-	if (!(4700.0f < distance))
-		return true;
-	if (!(mBathtubData.unk18.at(1, 1) > 0.99f))
-		return false;
-
-	TBathtubKillerManager* manager = static_cast<TBathtubKillerManager*>(
-	    JDrama::TNameRefGen::search("バスタブキラーマネージャー"));
-	u32 status = SMS_GetMarioStatus();
-	if (status == MARIO_STATUS_HIP_DROP || status == MARIO_STATUS_ROCKET
-	    || status == MARIO_STATUS_ROCKET_LANDING)
-		return false;
-
-	const TWaterGun* fludd = gpMarioOriginal->mWaterGun;
-	if (fludd != nullptr) {
-		TNozzleTrigger* nozzle
-		    = static_cast<TNozzleTrigger*>(fludd->getCurrentNozzle());
-		if (nozzle != nullptr && nozzle->getNozzleKind() == TWaterGun::Rocket
-		    && nozzle->getInsidePressure() > 0.0f)
+	if (getNearGrip(marioPos, 18.0f, &grip)) {
+		JGeometry::TVec3<f32> delta;
+		delta.sub(marioPos, mBathtubData.mPos);
+		JGeometry::TVec3<f32> local;
+		mBathtubData.unk18.mult(delta, local);
+		JGeometry::TVec3<f32> flat = local;
+		flat.y       = 0.0f;
+		f32 distance = flat.length();
+		if (distance < 4200.0f)
 			return false;
+
+		if (4700.0f < distance) {
+			if (mBathtubData.unk18.at(1, 1) > 0.99f) {
+				TBathtubKillerManager* manager
+				    = static_cast<TBathtubKillerManager*>(
+				        JDrama::TNameRefGen::search("バスタブキラーマネージャー"));
+				u32 status = SMS_GetMarioStatus();
+				if (status == MARIO_STATUS_HIP_DROP)
+					return false;
+				if (status == MARIO_STATUS_ROCKET)
+					return false;
+				if (status == MARIO_STATUS_ROCKET_LANDING)
+					return false;
+
+				const TWaterGun* fludd = gpMarioOriginal->mWaterGun;
+				if (fludd != nullptr) {
+					TNozzleTrigger* nozzle = static_cast<TNozzleTrigger*>(
+					    fludd->getCurrentNozzle());
+					if (nozzle != nullptr
+					    && nozzle->getNozzleKind() == TWaterGun::Rocket
+					    && nozzle->getInsidePressure() > 0.0f)
+						return false;
+				}
+				return manager->countActiveKillers() == 0;
+			}
+			return false;
+		}
+		return true;
 	}
-	return manager->countActiveKillers() == 0;
+	return false;
 }
 
 void TBathtub::calcRootMatrix()
@@ -892,7 +900,8 @@ u8 TBathtub::getNearJuncture(const JGeometry::TVec3<f32>&) const { return 0; }
 bool TBathtub::getNearGrip(const JGeometry::TVec3<f32>& pos, f32 maxDiff,
                            f32* out) const
 {
-	f32 angle = getDir(*getRootJointMtx(), pos);
+	MtxPtr mtx = *getRootJointMtx();
+	f32 angle  = getDir(mtx, pos);
 
 	f32 best  = 360.0f;
 	int index = 0;
