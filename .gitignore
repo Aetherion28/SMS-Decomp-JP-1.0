@@ -47,3 +47,5 @@ orig/GMSJ01/sys/*
 !orig/GMSJ01/files/
 orig/GMSJ01/files/*
 !orig/GMSJ01/files/mario.MAP
+# Apple
+.DS_Store

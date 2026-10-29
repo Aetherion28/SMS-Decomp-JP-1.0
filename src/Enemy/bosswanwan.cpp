@@ -15,7 +15,7 @@
 #include <MarioUtil/MathUtil.hpp>
 #include <MarioUtil/MtxUtil.hpp>
 #include <MarioUtil/RumbleMgr.hpp>
-#include <M3DUtil/InfectiousStrings.hpp>
+#include <M3DUtil/MActorAnm.hpp>
 #include <M3DUtil/MActor.hpp>
 #include <System/EmitterViewObj.hpp>
 #include <M3DUtil/MActorData.hpp>
@@ -355,7 +355,7 @@ TBWPicket::TBWPicket(TBossWanwan* owner, const char* name)
     , mMActor(nullptr)
 {
 	MTXIdentity(mTakingMtx);
-	initHitActor(ACTOR_TYPE_BOSS_UNKD, 1, HIT_CATEGORY_PLAYER,
+	initHitActor(ACTOR_TYPE_BOSS_WANWAN, 1, HIT_CATEGORY_PLAYER,
 	             mOwner->getBWParams()->mSLPicketRadius.get(),
 	             mOwner->getBWParams()->mSLPicketHeight.get(),
 	             mOwner->getBWParams()->mSLPicketRadius.get(),
@@ -1015,7 +1015,7 @@ void TBossWanwan::rollNextGraphNode()
 	TGraphWeb* graph     = tracer->getGraph();
 
 	if (prev >= 0 && graph->getGraphNode(prev).getRailNode()->mConnectionNum >= 2
-	    && gpMarDirector->mMoveTickCount >= 14400)
+	    && gpMarDirector->getMoveTickCount() >= 14400)
 		showMessage(0xE001C);
 
 	unk124->moveTo(graph->getEscapeDirLimited(
@@ -1159,7 +1159,7 @@ void TBossWanwan::showMessage(u32 message)
 {
 	u32 bit = 1 << (message - 0xE001A);
 	if (!(unk198 & bit))
-		gpMarDirector->mConsole->startAppearBalloon(message, true);
+		gpMarDirector->getConsole()->startAppearBalloon(message, true);
 	unk198 |= bit;
 }
 
@@ -1213,7 +1213,7 @@ void TBossWanwan::perform(u32 cue, JDrama::TGraphics* graphics)
 	}
 
 	if ((cue & CUE_MOVE) && unk1A0 == 0
-	    && gpMarDirector->mMoveTickCount >= 28800)
+	    && gpMarDirector->getMoveTickCount() >= 28800)
 		showMessage(0xE001D);
 
 	if ((cue & CUE_MOVE) && !mSpine->isNerve(&TNerveBWDie::theNerve())
@@ -1241,7 +1241,7 @@ void TBossWanwan::perform(u32 cue, JDrama::TGraphics* graphics)
 				mSpine->setNext(&TNerveBWBark::theNerve());
 		} else {
 			// Heat up by one point every 20 frames.
-			if (gpMarDirector->mMoveTickCount % 20 == 0
+			if (gpMarDirector->getMoveTickCount() % 20 == 0
 			    && mHitPoints < getBWParams()->mSLBWHitPointMax.get())
 				mHitPoints += 1;
 			unk180 = 0;
@@ -1617,7 +1617,7 @@ DEFINE_NERVE(TNerveBWDie, TLiveActor)
 	}
 
 	if (spine->getTime() > 60 && self->unk18D == 0
-	    && gpMarDirector->unk124 != 3) {
+	    && gpMarDirector->getGameMode() != 3) {
 		gpItemManager->makeShineAppearWithDemo("シャイン（ボス用）",
 		                                       "ボスシャインカメラ",
 		                                       self->mPosition.x,

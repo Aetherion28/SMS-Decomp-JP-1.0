@@ -11,9 +11,9 @@ Regenerate it with `python3 tools/progress_treemap.py` after `ninja`.
 <!-- progress:start -->
 | | Code matched | Fuzzy | Functions matched | Units complete |
 |---|---|---|---|---|
-| **Total** | 51.19% | 98.86% | 10438 / 12881 | 407 / 736 |
-| Game Code | 40.41% | 98.60% | 6503 / 8857 | 89 / 387 |
-| JSystem Middleware | 87.29% | 99.74% | 2923 / 3009 | 172 / 200 |
+| **Total** | 52.86% | 99.02% | 10526 / 12881 | 411 / 736 |
+| Game Code | 42.52% | 98.81% | 6589 / 8857 | 93 / 387 |
+| JSystem Middleware | 87.36% | 99.74% | 2925 / 3009 | 172 / 200 |
 | SDK Code | 98.88% | 99.97% | 1012 / 1015 | 146 / 149 |
 <!-- progress:end -->
 

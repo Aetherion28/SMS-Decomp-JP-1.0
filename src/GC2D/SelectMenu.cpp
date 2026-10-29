@@ -1,4 +1,3 @@
-
 #include <dolphin/gx.h>
 #include <dolphin/gx/GXGeometry.h>
 #include <dolphin/gx/GXLighting.h>
@@ -34,7 +33,6 @@
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
 #include <MSound/MSoundBGM.hpp>
-#include <System/DummyStrings.hpp>
 
 // fabricated and not matching
 inline void bzero(void* pDst, u32 len)
@@ -108,9 +106,9 @@ void TSelectGrad::setStageColor(u8 stage)
 	}
 }
 
-void TSelectGrad::perform(u32 flags, JDrama::TGraphics* gfx)
+void TSelectGrad::perform(u32 cue, JDrama::TGraphics* gfx)
 {
-	if (flags & 0x2) {
+	if (cue & CUE_CALC_ANIM) {
 		bool nextCycle = false;
 		for (s32 i = 0; i < 3; i++) {
 			u8* value = (i == 0) ? &mBottomRightCol.r
@@ -175,7 +173,7 @@ void TSelectGrad::perform(u32 flags, JDrama::TGraphics* gfx)
 		}
 	}
 
-	if (flags & 0x8) {
+	if (cue & CUE_DRAW) {
 		GXSetDither(GX_TRUE);
 
 		Mtx mtx;
@@ -430,20 +428,31 @@ void TSelectMenu::initData(u8 stage, JKRArchive* pArch,
 
 	mMenuScreen->search('bi_0')->hide();
 
-	mStageBannerPane = new TExPane(mMenuScreen, tags[mStage] * 0x100 + '0');
+	mStageBannerPane = new TExPane(mMenuScreen, (tags[mStage] << 8) + '0');
 	mStageBannerPane->getPane()->show();
-	mStageBannerText = new TBoundPane(mMenuScreen, tags[mStage] * 0x100 + 'a');
+	mStageBannerText = new TBoundPane(mMenuScreen, (tags[mStage] << 8) + 'a');
 	mStageBannerText->getPane()->show();
-	mStageBannerShadow
-	    = new TBoundPane(mMenuScreen, tags[mStage] * 0x100 + 'b');
+	mStageBannerShadow = new TBoundPane(mMenuScreen, (tags[mStage] << 8) + 'b');
 	mStageBannerShadow->getPane()->show();
 
-	mStageNameBmg = JKRGetResource("/common/2d/stagename.bmg");
+	mStageNameBmg = JKRGetResource(VERSION_SELECT(
+	    "/common/2d/stagename.bmg", GMSP01("/cmn2d/stagename.bmg"),
+	    GMSP01_NX("/cmn2d/stagename.bmg")));
 
+#if defined(VERSION_GMSJ01) || defined(VERSION_GMSJ01_01)
 	strncpy(mStageName->getStringPtr(),
 	        SMSGetMessageData(mStageNameBmg, stageNameIds[mStage] & 0xFFFF),
 	        0x11);
 	mStageName->setFont((JUTFont*)gpSystemFont);
+#elif defined(VERSION_GMSP01_NX)
+	if (TFlagManager::getInstance()->getFlag(MSF_LANGUAGE)
+	    == MSLANG_NX_JAPANESE) {
+		strncpy(mStageName->getStringPtr(),
+		        SMSGetMessageData(mStageNameBmg, stageNameIds[mStage] & 0xFFFF),
+		        0x11);
+		mStageName->setFont((JUTFont*)gpSystemFont);
+	}
+#endif
 
 	mShineUnlockStates[0] = 2;
 	mShineUnlockStates[1] = 2;
@@ -539,7 +548,7 @@ void TSelectMenu::initData(u8 stage, JKRArchive* pArch,
 
 		for (s32 slot = firstSlot; slot <= lastSlot; slot++) {
 			mShineMarks[i] = (J2DPicture*)mMenuScreen->search('i_e0' + slot);
-			mShineMarks[i]->mVisible = true;
+			mShineMarks[i]->show();
 
 			if (mShineUnlockStates[i] == 2 || mShineUnlockStates[i] == 1) {
 				JUTTexture* mark = mShineUnlockedMark;
@@ -569,7 +578,10 @@ void TSelectMenu::initData(u8 stage, JKRArchive* pArch,
 	mScenarioShadow1->remove(1);
 
 	char buf[254];
-	snprintf(buf, sizeof(buf), "/common/2d/scenarioname.bmg");
+	snprintf(buf, sizeof(buf),
+	         VERSION_SELECT("/common/2d/scenarioname.bmg",
+	                        GMSP01("/cmn2d/scenarioname.bmg"),
+	                        GMSP01_NX("/cmn2d/scenarioname.bmg")));
 	mScenarioBmg2 = JKRGetResource(buf);
 
 	mScenarioText1->setFont((JUTFont*)gpSystemFont);
@@ -597,9 +609,9 @@ static inline JUtility::TColor makeBlackCornerColor(u8 alpha)
 	return JUtility::TColor(0, 0, 0, alpha);
 }
 
-void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
+void TSelectMenu::perform(u32 cue, JDrama::TGraphics* gfx)
 {
-	if (flags & 0x1) {
+	if (cue & CUE_MOVE) {
 		switch (mMenuState) {
 		case LETTERBOX_ANIMATION: {
 			bool updated = true;
@@ -830,7 +842,7 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 
 					strncpy(mScenarioText1->getStringPtr(), scenarioName, 127);
 
-					mShineMarks[mSelectedShine]->mWhite = mMarkCol;
+					mShineMarks[mSelectedShine]->setWhite(mMarkCol);
 					mShineMarks[mSelectedShine]->setAlpha(mMarkAlpha);
 
 					mSelectShineMgr->mShines[mSelectedShine]->mIsSelected
@@ -844,7 +856,7 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 					    mScenarioBmg2, SMS_getNormalStage(shineID2));
 					strncpy(mScenarioText2->getStringPtr(), scenarioName2, 127);
 
-					mShineMarks[mSelectedShine]->mWhite = mSelectedMarkCol;
+					mShineMarks[mSelectedShine]->setWhite(mSelectedMarkCol);
 					mShineMarks[mSelectedShine]->setAlpha(mSelectedMarkAlpha);
 
 					mSelectShineMgr->mShines[mSelectedShine]->mIsSelected
@@ -908,7 +920,7 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 
 					mSelectShineMgr->mShines[mSelectedShine]->mIsSelected
 					    = false;
-					mShineMarks[mSelectedShine]->mWhite = mMarkCol;
+					mShineMarks[mSelectedShine]->setWhite(mMarkCol);
 					mShineMarks[mSelectedShine]->setAlpha(mMarkAlpha);
 
 					mSelectedShine = nextIndex;
@@ -922,7 +934,7 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 					mSelectShineMgr->mShines[mSelectedShine]->mIsSelected
 					    = true;
 
-					mShineMarks[mSelectedShine]->mWhite = mSelectedMarkCol;
+					mShineMarks[mSelectedShine]->setWhite(mSelectedMarkCol);
 					mShineMarks[mSelectedShine]->setAlpha(mSelectedMarkAlpha);
 
 					if (mNumUnlockedShines > 1) {
@@ -1064,10 +1076,11 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 			// TODO: recover the original color helper and remaining stack
 			// layout.
 			{
-				u32 ccol1
-				    = ((J2DPicture*)mLetterBoxTop->getPane())->mCornerColor[0];
-				u32 ccol2
-				    = ((J2DPicture*)mLetterBoxTop->getPane())->mCornerColor[2];
+				J2DPicture::TCornerColor corners;
+				((J2DPicture*)mLetterBoxTop->getPane())
+				    ->getCornerColor(corners);
+				u32 ccol1 = corners.mColor[0];
+				u32 ccol2 = corners.mColor[2];
 
 				u32 var1 = (ccol1 & 0xFFu) + 16u;
 
@@ -1102,10 +1115,11 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 			}
 
 			{
-				u32 ccol1 = ((J2DPicture*)mLetterBoxBottom->getPane())
-				                ->mCornerColor[0];
-				u32 ccol2 = ((J2DPicture*)mLetterBoxBottom->getPane())
-				                ->mCornerColor[2];
+				J2DPicture::TCornerColor corners;
+				((J2DPicture*)mLetterBoxBottom->getPane())
+				    ->getCornerColor(corners);
+				u32 ccol1 = corners.mColor[0];
+				u32 ccol2 = corners.mColor[2];
 
 				u32 var1 = (ccol1 & 0xFFu) + 16u;
 
@@ -1153,7 +1167,7 @@ void TSelectMenu::perform(u32 flags, JDrama::TGraphics* gfx)
 		}
 	}
 
-	if (flags & 0x8) {
+	if (cue & CUE_DRAW) {
 		switch (mMenuState) {
 		case CLOSE_MENU:
 		case LETTERBOX_ANIMATION:

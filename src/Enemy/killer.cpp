@@ -38,7 +38,7 @@
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
 #include <MSound/MSoundBGM.hpp>
-#include <M3DUtil/InfectiousStrings.hpp>
+#include <M3DUtil/MActorAnm.hpp>
 
 u8 TKiller::mSerialBomb        = 1;
 u8 TKiller::mTrampleDie        = 1;

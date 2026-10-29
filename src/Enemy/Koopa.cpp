@@ -31,7 +31,7 @@
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
 #include <MSound/MSoundBGM.hpp>
-#include <M3DUtil/InfectiousStrings.hpp>
+#include <M3DUtil/MActorAnm.hpp>
 
 // Bowser's nerves keep their theNerve() inline in the class, which leaves weak
 // nerve$localstatic0$theNerve__... objects in the map. They live in this file
@@ -665,7 +665,7 @@ BOOL KoopaNeckCallBack(J3DNode* node, int calc)
 
 	// Mario's direction, flattened onto the neck's turning plane
 	JGeometry::TVec3<f32> flat;
-	flat.scaleAdd(-yAxis.dot(toMario), toMario, yAxis);
+	flat.scaleAdd(-yAxis.dot(toMario), yAxis, toMario);
 	flat.normalize();
 	toMario.normalize();
 

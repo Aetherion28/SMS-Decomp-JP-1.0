@@ -27,7 +27,7 @@
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
 #include <MSound/MSoundBGM.hpp>
-#include <M3DUtil/InfectiousStrings.hpp>
+#include <M3DUtil/MActorAnm.hpp>
 
 namespace {
 
@@ -110,9 +110,9 @@ void TTPHitActor::updateTerrainCollsion()
 	}
 
 	JGeometry::TVec3<f32> center;
-	center.scaleAdd(0.5f * mAttackHeight, mOwner->mPosition, up);
+	center.scaleAdd(0.5f * mAttackHeight, up, mOwner->mPosition);
 	JGeometry::TVec3<f32> pos;
-	pos.scaleAdd(depth, center, JGeometry::TVec3<f32>(0.0f, -1.0f, 0.0f));
+	pos.scaleAdd(depth, JGeometry::TVec3<f32>(0.0f, -1.0f, 0.0f), center);
 
 	JGeometry::TVec3<f32> delta = pos;
 	delta -= mPosition;
@@ -139,7 +139,7 @@ void TTPHitActor::bind()
 		           - (mGroundPlane->getNormal().dot(next)
 		              - mGroundPlane->getNormal().dot(ground));
 		if (push > 0.0f)
-			next.scaleAdd(push, next, mGroundPlane->getNormal());
+			next.scaleAdd(push, mGroundPlane->getNormal(), next);
 
 		next.y = mGroundHeight;
 	} else {
@@ -299,9 +299,9 @@ MtxPtr TTabePuku::getTakingMtx()
 	JGeometry::TVec3<f32> yDir;
 	mTakingMtx.getYDir(yDir);
 	JGeometry::TVec3<f32> pos;
-	pos.scaleAdd(getParam()->mCorrectZ.get(), mPosition, zDir);
+	pos.scaleAdd(getParam()->mCorrectZ.get(), zDir, mPosition);
 	JGeometry::TVec3<f32> trans;
-	trans.scaleAdd(getParam()->mCorrectY.get(), pos, yDir);
+	trans.scaleAdd(getParam()->mCorrectY.get(), yDir, pos);
 	mTakingMtx.setTrans(trans);
 	return mTakingMtx;
 }
