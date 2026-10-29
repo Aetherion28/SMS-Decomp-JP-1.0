@@ -513,12 +513,12 @@ void TKoopaFlame::control()
 
 	mLength += mSpeed;
 	f32 height = mHeight;
-	JGeometry::TVec3<f32> pos(mDir.x * mLength + mOrigin.x,
-	                          mDir.y * mLength + mOrigin.y,
-	                          mDir.z * mLength + mOrigin.z);
+	f32 radius = mRadius;
+	JGeometry::TVec3<f32> pos;
+	pos.scaleAdd(mLength, mDir, mOrigin);
 	if (height <= 0.0f)
-		height = 2.0f * mRadius;
-	set(pos, mRadius, height);
+		height = 2.0f * radius;
+	set(pos, radius, height);
 }
 
 BOOL TKoopaFlame::receiveMessage(THitActor* sender, u32 message)
