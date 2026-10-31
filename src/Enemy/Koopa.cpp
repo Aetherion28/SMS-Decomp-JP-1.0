@@ -198,6 +198,15 @@ static inline int checkTurnDir(TKoopa* koopa, bool* grip)
 	return 0;
 }
 
+// fabricated
+static inline bool isMarioOnLeft(TKoopa* koopa)
+{
+	return MsWrapFmodf(koopa->getTargetDir(SMS_GetMarioPos())
+	                       - koopa->mTargetDir,
+	                   -180.0f, 180.0f)
+	       < 0.0f;
+}
+
 // TODO: getTargetDir and some nerve constructors stay out of line in the
 // target here; the original runs out of inlining budget earlier than this
 // version does.
@@ -241,10 +250,7 @@ DEFINE_NERVE_EXECUTE(TNerveKoopaWait, TLiveActor)
 		break;
 	default:
 	case 0:
-		koopa->mFlameFlipped = MsWrapFmodf(koopa->getTargetDir(SMS_GetMarioPos())
-		                                       - koopa->mTargetDir,
-		                                   -180.0f, 180.0f)
-		                       < 0.0f;
+		koopa->mFlameFlipped = isMarioOnLeft(koopa);
 		spine->setNext(&TNerveKoopaFlame::theNerve());
 		break;
 	}
@@ -319,10 +325,7 @@ DEFINE_NERVE_EXECUTE(TNerveKoopaFlame, TLiveActor)
 					break;
 				case 0:
 					koopa->mFlameFlipped
-					    = MsWrapFmodf(koopa->getTargetDir(SMS_GetMarioPos())
-					                      - koopa->mTargetDir,
-					                  -180.0f, 180.0f)
-					      < 0.0f;
+					    = isMarioOnLeft(koopa);
 					koopa->changeAnm(KOOPA_ANM_FIRE_START, 0,
 					                 koopa->getParam()->fireSpeed.get());
 					spine->setNext(&TNerveKoopaFlame::theNerve());
