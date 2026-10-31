@@ -1,21 +1,25 @@
 Super Mario Sunshine
 =============
 
-[<img src="assets/progress.svg" width="1000" height="500">](https://claude.ai/artifact/P341LnYJBNsiWYKJcdJKdV)
+[<img src="assets/progress.svg" width="1000" height="500">](assets/progress.html)
 
 Each box is one source file, sized by its code.
 Green: every function matches. Blue: partly matched (brighter is closer). Dark grey: not started.
-Click the graph to open the [interactive map](https://claude.ai/artifact/P341LnYJBNsiWYKJcdJKdV), where each box opens that file's function list and source.
+Click the graph to open the [interactive map](assets/progress.html), where each box opens that file's function list and source.
 Regenerate it with `python3 tools/progress_treemap.py` after `ninja`.
 
 <!-- progress:start -->
 | | Code matched | Fuzzy | Functions matched | Units complete |
 |---|---|---|---|---|
-| **Total** | 52.86% | 99.06% | 10527 / 12881 | 411 / 736 |
-| Game Code | 42.52% | 98.86% | 6590 / 8857 | 93 / 387 |
+| **Total** | 52.75% | 98.95% | 10515 / 12881 | 411 / 736 |
+| Game Code | 42.38% | 98.71% | 6578 / 8857 | 93 / 387 |
 | JSystem Middleware | 87.36% | 99.74% | 2925 / 3009 | 172 / 200 |
 | SDK Code | 98.88% | 99.97% | 1012 / 1015 | 146 / 149 |
 <!-- progress:end -->
+
+Regional target: **JP 1.0** (`GMSJ01`).
+Download [the interactive map](assets/progress.html) and open it locally.
+See [cross-version comparison](docs/REGIONAL_COMPARISON.md) and [interactive reuse map](assets/reuse.html).
 
 Upstream project: [doldecomp/sms](https://github.com/doldecomp/sms) ([upstream progress](https://decomp.dev/doldecomp/sms)).
 
