@@ -19,6 +19,7 @@ import json
 import os
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -63,8 +64,11 @@ def ask(host, model, prompt):
     }).encode()
     req = urllib.request.Request(host.rstrip("/") + "/api/chat", data=body,
                                  headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=3600) as resp:
-        return json.loads(resp.read())["message"]["content"]
+    try:
+        with urllib.request.urlopen(req, timeout=3600) as resp:
+            return json.loads(resp.read())["message"]["content"]
+    except urllib.error.HTTPError as e:
+        raise SystemExit(f"Ollama error {e.code}: {e.read().decode(errors='replace')}")
 
 
 def main():

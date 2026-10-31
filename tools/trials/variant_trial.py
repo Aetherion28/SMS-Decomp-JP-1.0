@@ -96,6 +96,11 @@ def main():
     with open(path, encoding="utf-8", errors="surrogateescape", newline="") as f:
         original = f.read()
     old = task["old"]
+    crlf = "\r\n" in original and "\r\n" not in old
+    if crlf:  # Windows checkout: match the file's line endings
+        old = old.replace("\n", "\r\n")
+        for cand in task.get("candidates", []):
+            cand["new"] = cand["new"].replace("\r\n", "\n").replace("\n", "\r\n")
     if original.count(old) != 1:
         raise SystemExit(f"'old' occurs {original.count(old)} times in {task['file']}; it must occur once")
 

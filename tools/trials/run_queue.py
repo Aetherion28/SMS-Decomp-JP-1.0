@@ -15,6 +15,7 @@ finished tasks are skipped.
 
 import argparse
 import glob
+import json
 import os
 import subprocess
 import sys
@@ -37,9 +38,8 @@ def main():
     def run(cmd):
         if log:
             log.flush()
-            subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT)
-        else:
-            subprocess.run(cmd)
+            return subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT).returncode
+        return subprocess.run(cmd).returncode
 
     def bar(done, total, name, t0, step):
         if not log:
@@ -57,19 +57,30 @@ def main():
 
     tasks = sorted(p for p in glob.glob(os.path.join(args.task_dir, "*.json"))
                    if not p.endswith(".result.json"))
-    todo = [t for t in tasks if not os.path.exists(os.path.splitext(t)[0] + ".result.json")]
+    def done(t):
+        r = os.path.splitext(t)[0] + ".result.json"
+        if not os.path.exists(r):
+            return False
+        with open(r, encoding="utf-8") as f:
+            return bool(json.load(f).get("candidates"))
+
+    todo = [t for t in tasks if not done(t)]
     t0 = time.time()
     for i, task in enumerate(todo):
         result = os.path.splitext(task)[0] + ".result.json"
         name = os.path.basename(task)[:-5]
         (log or sys.stdout).write(f"== {os.path.basename(task)}\n")
         if not args.no_model:
+            ok = 0
             for r in range(args.rounds):
                 bar(i, len(todo), name, t0, f"model {r + 1}/{args.rounds}")
                 cmd = [sys.executable, os.path.join(HERE, "llm_candidates.py"), task, "--n", str(args.n)]
                 if args.model:
                     cmd += ["--model", args.model]
-                run(cmd)
+                ok += run(cmd) == 0
+            if ok == 0:
+                (log or sys.stdout).write("model failed every round; task left for the next run\n")
+                continue
         bar(i, len(todo), name, t0, "scoring")
         run([sys.executable, os.path.join(HERE, "variant_trial.py"), task, "--out", result])
     bar(len(todo), len(todo), "", t0, "done")
