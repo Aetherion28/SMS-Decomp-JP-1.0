@@ -18,6 +18,7 @@ import glob
 import os
 import subprocess
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -29,22 +30,51 @@ def main():
     ap.add_argument("--rounds", type=int, default=1)
     ap.add_argument("--no-model", action="store_true")
     ap.add_argument("--model")
+    ap.add_argument("--log", help="send step output here and show a progress bar instead")
     args = ap.parse_args()
+    log = open(args.log, "a", encoding="utf-8") if args.log else None
+
+    def run(cmd):
+        if log:
+            log.flush()
+            subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT)
+        else:
+            subprocess.run(cmd)
+
+    def bar(done, total, name, t0, step):
+        if not log:
+            return
+        width = 30
+        fill = int(width * done / total) if total else width
+        el = time.time() - t0
+        eta = ""
+        if done:
+            left = el / done * (total - done)
+            eta = f" ETA {int(left // 3600)}h{int(left % 3600 // 60):02d}m"
+        line = f"[{'#' * fill}{'-' * (width - fill)}] {done}/{total}{eta}  {step} {name}"
+        sys.stdout.write("\r" + line[:110].ljust(110))
+        sys.stdout.flush()
 
     tasks = sorted(p for p in glob.glob(os.path.join(args.task_dir, "*.json"))
                    if not p.endswith(".result.json"))
-    for task in tasks:
+    todo = [t for t in tasks if not os.path.exists(os.path.splitext(t)[0] + ".result.json")]
+    t0 = time.time()
+    for i, task in enumerate(todo):
         result = os.path.splitext(task)[0] + ".result.json"
-        if os.path.exists(result):
-            continue
-        print(f"== {os.path.basename(task)}", flush=True)
+        name = os.path.basename(task)[:-5]
+        (log or sys.stdout).write(f"== {os.path.basename(task)}\n")
         if not args.no_model:
-            for _ in range(args.rounds):
+            for r in range(args.rounds):
+                bar(i, len(todo), name, t0, f"model {r + 1}/{args.rounds}")
                 cmd = [sys.executable, os.path.join(HERE, "llm_candidates.py"), task, "--n", str(args.n)]
                 if args.model:
                     cmd += ["--model", args.model]
-                subprocess.run(cmd)
-        subprocess.run([sys.executable, os.path.join(HERE, "variant_trial.py"), task, "--out", result])
+                run(cmd)
+        bar(i, len(todo), name, t0, "scoring")
+        run([sys.executable, os.path.join(HERE, "variant_trial.py"), task, "--out", result])
+    bar(len(todo), len(todo), "", t0, "done")
+    if log:
+        print()
 
 
 if __name__ == "__main__":
