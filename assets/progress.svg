@@ -79,7 +79,7 @@
 <rect x="252.05" y="485.35" width="16.42" height="14.65" fill="rgb(0,200,0)"><title>Enemy/spline: 100.00% fuzzy, 100.00% matched, 1728 bytes</title></rect>
 <rect x="268.47" y="454.34" width="16.62" height="14.34" fill="rgb(0,112,192)"><title>Enemy/SleepBossHanachan: 99.94% fuzzy, 67.76% matched, 1712 bytes</title></rect>
 <rect x="285.10" y="454.34" width="16.62" height="14.34" fill="rgb(0,112,191)"><title>Enemy/wireBinder: 99.74% fuzzy, 25.23% matched, 1712 bytes</title></rect>
-<rect x="268.47" y="468.68" width="14.53" height="16.18" fill="rgb(11,99,162)"><title>Enemy/BathtubBinder: 87.46% fuzzy, 31.99% matched, 1688 bytes</title></rect>
+<rect x="268.47" y="468.68" width="14.53" height="16.18" fill="rgb(3,109,185)"><title>Enemy/BathtubBinder: 97.36% fuzzy, 31.99% matched, 1688 bytes</title></rect>
 <rect x="268.47" y="484.86" width="14.53" height="15.14" fill="rgb(0,112,191)"><title>Enemy/spider: 99.60% fuzzy, 11.65% matched, 1580 bytes</title></rect>
 <rect x="283.01" y="468.68" width="18.71" height="10.69" fill="rgb(1,110,188)"><title>Enemy/enemytable: 98.54% fuzzy, 80.78% matched, 1436 bytes</title></rect>
 <rect x="283.01" y="479.37" width="18.71" height="10.00" fill="rgb(0,200,0)"><title>Enemy/typicalenemy: 100.00% fuzzy, 100.00% matched, 1344 bytes</title></rect>
