@@ -60,7 +60,7 @@ def ask(host, model, prompt):
         "messages": [{"role": "user", "content": prompt}],
         "format": "json",
         "stream": False,
-        "options": {"temperature": 0.7, "num_ctx": 16384},
+        "options": {"temperature": 0.7, "num_ctx": int(os.environ.get("TRIAL_CTX", "16384"))},
     }).encode()
     req = urllib.request.Request(host.rstrip("/") + "/api/chat", data=body,
                                  headers={"Content-Type": "application/json"})
