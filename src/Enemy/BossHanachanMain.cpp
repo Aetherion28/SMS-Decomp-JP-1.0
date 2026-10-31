@@ -772,7 +772,7 @@ f32 TBossHanachan::getBodyMaxRotateZ() const
 bool TBossHanachan::isCanWalk() const
 {
 	bool result                = true;
-	JGeometry::TVec3<f32> goal = unkF4.getPoint();
+	JGeometry::TVec3<f32> goal = mCurrentTarget.getPoint();
 	f32 squareToGoal = JGeometry::TVec3<f32>(goal.x - mPosition.x, 0.0f,
 	                                         goal.z - mPosition.z)
 	                       .squared();
@@ -793,12 +793,12 @@ void TBossHanachan::execWalk(bool accelerate)
 	mTurnSpeed = unk1C0->mSLWalkTurnSpeed.get();
 	if (isCanWalk())
 		walkToCurPathNode(mMarchSpeed, mTurnSpeed, 0.0f);
-	JGeometry::TVec3<f32> direction = unkF4.getPoint();
+	JGeometry::TVec3<f32> direction = mCurrentTarget.getPoint();
 	direction.set(direction.x - mPosition.x, 0.0f, direction.z - mPosition.z);
 	f32 squareToGoal = direction.squared();
 	if (squareToGoal < CLBSquared(100.0f)) {
-		if (!unk114.empty())
-			switchNextGoalPath();
+		if (!mGoalPath.empty())
+			switchNextGoalPathNode();
 		else
 			goToDirLimitedNextGraphNode(90.0f);
 	}
@@ -830,7 +830,7 @@ void TBossHanachan::execSlip()
 			direction.scale(500.0f);
 			JGeometry::TVec3<f32> goal = mPosition;
 			goal.add(direction);
-			setGoalPath(TPathNode(goal));
+			setGoal(goal);
 			walkToCurPathNode(mMarchSpeed, mTurnSpeed, 0.0f);
 		}
 		gpCameraShake->keepShake(CAM_SHAKE_MODE_UNK9, 1.0f);

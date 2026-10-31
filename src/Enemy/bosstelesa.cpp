@@ -322,7 +322,7 @@ DEFINE_NERVE_EXECUTE(TNerveBubbleLive, TLiveActor)
 			bubble->setBckAnm(8);
 		} else {
 			bubble->setBckAnm(10);
-			bubble->setGoalPath((THitActor*)gpMarioAddress);
+			bubble->setGoal((THitActor*)gpMarioAddress);
 		}
 
 		J3DFrameCtrl* frameCtrl = bubble->mMActor->getFrameCtrl(0);
@@ -842,7 +842,7 @@ void TBossTelesa::init(TLiveManager* manager)
 	             HIT_CATEGORY_PLAYER | HIT_CATEGORY_ENEMY | HIT_CATEGORY_BOSS,
 	             mBodyRadius, mHeadHeight, mBodyRadius, mHeadHeight);
 	mGroundPlane = TMap::getIllegalCheckData();
-	setGoalPath((THitActor*)gpMarioAddress);
+	setGoal((THitActor*)gpMarioAddress);
 	initAnmSound();
 	unk15C     = static_cast<TBossTelesaSaveLoadParams*>(getSaveParam());
 	mActorType = ACTOR_TYPE_BOSS_TELESA;

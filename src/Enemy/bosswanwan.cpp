@@ -1119,7 +1119,7 @@ void TBossWanwan::rollNextGraphNode()
 
 void TBossWanwan::slideToCurPathNode(float speed, float turnSpeed)
 {
-	JGeometry::TVec3<f32> pos = unkF4.getPoint();
+	JGeometry::TVec3<f32> pos = mCurrentTarget.getPoint();
 
 	pos.sub(mPosition);
 
@@ -1638,9 +1638,7 @@ DEFINE_NERVE(TNerveBWJump, TLiveActor)
 	TBossWanwan* boss = static_cast<TBossWanwan*>(spine->getBody());
 
 	if (spine->getTime() == 0) {
-		const JGeometry::TVec3<f32>& targetPos
-		    = boss->unk104.unk0 != nullptr ? boss->unk104.unk0->mPosition
-		                                   : boss->unk104.unk4;
+		const JGeometry::TVec3<f32>& targetPos = boss->getGoal().getPoint();
 
 		f32 speed       = boss->unk124->unkC;
 		boss->mVelocity = boss->calcVelocityToJumpToY(targetPos, speed,
@@ -1719,13 +1717,10 @@ DEFINE_NERVE(TNerveBWJumpToBath, TLiveActor)
 		JGeometry::TVec3<f32> vel = boss->calcVelocityToJumpToY(
 		    BW_BATH_POS, 10.0f, boss->getGravityY());
 
-		TPathNode goal(BW_BATH_POS);
-		boss->unkF4  = goal;
-		boss->unk104 = goal;
-		boss->unk114.clear();
+		boss->setGoal(BW_BATH_POS);
 
 		boss->mVelocity = vel;
-		boss->mLiveFlag |= 0x80;
+		boss->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		boss->unk16C = 0;
 	}
 
@@ -1849,10 +1844,7 @@ DEFINE_NERVE(TNerveBWJumpAway, TLiveActor)
 		JGeometry::TVec3<f32> vel = boss->calcVelocityToJumpToY(
 		    BW_HEAD_START, 40.0f, boss->getGravityY());
 
-		TPathNode goal(BW_HEAD_START);
-		boss->unkF4  = goal;
-		boss->unk104 = goal;
-		boss->unk114.clear();
+		boss->setGoal(BW_HEAD_START);
 
 		boss->mVelocity = vel;
 		boss->onLiveFlag(LIVE_FLAG_AIRBORNE);
@@ -1907,13 +1899,10 @@ DEFINE_NERVE(TNerveBWFall, TLiveActor)
 		JGeometry::TVec3<f32> vel = boss->calcVelocityToJumpToY(
 		    boss->mPicket->mPosition, 5.0f, boss->getGravityY());
 
-		TPathNode goal(boss->mPicket->mPosition);
-		boss->unkF4  = goal;
-		boss->unk104 = goal;
-		boss->unk114.clear();
+		boss->setGoal(boss->mPicket->mPosition);
 
 		boss->mVelocity = vel;
-		boss->mLiveFlag |= 0x80;
+		boss->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		boss->unk16C = 0;
 	}
 

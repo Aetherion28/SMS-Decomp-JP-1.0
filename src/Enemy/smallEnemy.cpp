@@ -198,7 +198,7 @@ void TSmallEnemy::init(TLiveManager* param_1)
 	if (!unk124->getGraph() || unk124->getGraph()->isDummy())
 		unk124->init(gpConductor->getGraphByName("main"));
 
-	setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+	setGoal((THitActor*)gpMarioAddress);
 	initAnmSound();
 }
 

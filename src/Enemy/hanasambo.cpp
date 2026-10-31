@@ -618,7 +618,7 @@ void THanaSambo::load(JSUMemoryInputStream& param_1)
 {
 	TSmallEnemy::load(param_1);
 	reset();
-	setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+	setGoal((THitActor*)gpMarioAddress);
 }
 
 void THanaSambo::init(TLiveManager* param_1)
@@ -629,7 +629,7 @@ void THanaSambo::init(TLiveManager* param_1)
 	unk198     = (THanaSamboSaveLoadParams*)getSaveParam();
 	mSpine->initWith(&TNerveHanaSamboHide::theNerve());
 	unk1AC = new TMBindShadowBody(this, getModel(), 1.5f);
-	setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+	setGoal((THitActor*)gpMarioAddress);
 
 	if (mInstanceIndex == 0) {
 		// TODO: what this loop did is unknown
@@ -1099,7 +1099,7 @@ void TSamboHead::load(JSUMemoryInputStream& param_1)
 {
 	TSmallEnemy::load(param_1);
 	reset();
-	setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+	setGoal((THitActor*)gpMarioAddress);
 }
 
 void TSamboHead::init(TLiveManager* param_1)
@@ -1109,7 +1109,7 @@ void TSamboHead::init(TLiveManager* param_1)
 	unk150     = 0x11;
 	unk194     = (TSamboHeadSaveLoadParams*)getSaveParam();
 	mSpine->initWith(&TNerveSamboHeadHide::theNerve());
-	setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+	setGoal((THitActor*)gpMarioAddress);
 	mMActor->setJointCallback(mBodyJntIndex, SamboHeadRollCallback);
 }
 
@@ -1361,7 +1361,7 @@ DEFINE_NERVE(TNerveSamboHeadAttack, TLiveActor)
 			self->unk19C = 0;
 			self->updateSquareToMario();
 
-			JGeometry::TVec3<f32> goal = self->getUnk104().getPoint();
+			JGeometry::TVec3<f32> goal = self->getGoal().getPoint();
 			goal.set(SMS_GetMarioPos().x - self->mPosition.x, 0.0f,
 			         SMS_GetMarioPos().z - self->mPosition.z);
 			if (goal.x == 0.0f && goal.y == 0.0f && goal.z == 0.0f)

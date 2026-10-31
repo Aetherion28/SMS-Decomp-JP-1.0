@@ -299,10 +299,10 @@ void TCannon::init(TLiveManager* param_1)
 		mSpine->initWith(&TNerveCannonSearch::theNerve());
 		if (unk230 == 9) {
 			unk239 = 0;
-			setGoalPath(
+			setGoal(
 			    TPathNode(JGeometry::TVec3<f32>(-565.0f, 8500.0f, 7675.0f)));
 		} else {
-			setGoalPath((THitActor*)gpMarioAddress);
+			setGoal((THitActor*)gpMarioAddress);
 		}
 
 		unk1A8 = new TChorobei(this, 0);
@@ -368,8 +368,7 @@ void TCannon::reset()
 
 	if (unk230 == 9) {
 		unk239 = 0;
-		setGoalPath(
-		    TPathNode(JGeometry::TVec3<f32>(-565.0f, 8500.0f, 7675.0f)));
+		setGoal(JGeometry::TVec3<f32>(-565.0f, 8500.0f, 7675.0f));
 	}
 }
 
@@ -767,7 +766,7 @@ void TCannon::killerShoot()
 		JGeometry::TVec3<f32> marioDelta = SMS_DistanceFromMarioVec(mPosition);
 		goal.x += marioDelta.x;
 		goal.z += marioDelta.z;
-		killer->setGoalPath(TPathNode(goal));
+		killer->setGoal(goal);
 		SMSGetMSound()->startSoundActor(MSD_SE_EN_KILLER_FIRE,
 		                                &killer->mPosition, 0, nullptr, 0, 4);
 		SMSGetMSound()->startSoundActor(MSD_SE_EN_KILLER_FLY,
@@ -827,9 +826,9 @@ void TCannon::setKillerGoalPoint()
 		JGeometry::TVec3<f32> goal = SMS_GetMarioPos();
 		goal.x += 500.0f * JMASCos(angle);
 		goal.z += 500.0f * JMASSin(angle);
-		setGoalPath(TPathNode(goal));
+		setGoal(goal);
 	} else {
-		setGoalPath(TPathNode(unk248));
+		setGoal(unk248);
 	}
 	unk1AC[unk214]->setBckAnm(1);
 }
@@ -896,7 +895,7 @@ DEFINE_NERVE(TNerveCannonSearch, TLiveActor)
 	f32 distSquared     = cannon->getDistToMarioSquared();
 	if (spine->getTime() == 0) {
 		if (distSquared < initialBombDist * initialBombDist)
-			cannon->setGoalPath((THitActor*)gpMarioAddress);
+			cannon->setGoal((THitActor*)gpMarioAddress);
 		cannon->unk1A8->setBckAnm(19);
 	}
 	if (cannon->unk1A8->unk6C->getMActor()->curAnmEndsNext()

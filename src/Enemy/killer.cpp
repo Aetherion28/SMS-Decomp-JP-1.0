@@ -126,7 +126,7 @@ void TFlyEnemy::calcChaseParam()
 	JGeometry::TVec3<f32> goal;
 	goal.add(mPosition, diff);
 	if (mIsHoming)
-		setGoalPath(TPathNode(goal));
+		setGoal(goal);
 
 	if (diff.y > 100.0f || fabsf(diff.y) < 100.0f) {
 		if (mIsHoming) {
@@ -177,7 +177,7 @@ void TFlyEnemy::flyMove()
 	JGeometry::TVec3<f32> velocity = mVelocity;
 	velocity.scale(0.9f);
 	mVelocity                  = velocity;
-	JGeometry::TVec3<f32> diff = getUnkF4().getPoint();
+	JGeometry::TVec3<f32> diff = getCurrentTarget().getPoint();
 	diff -= mPosition;
 	VECMag(&diff);
 	f32 angle   = MsWrap(MsGetRotFromZaxisY(diff), 0.0f, 360.0f);

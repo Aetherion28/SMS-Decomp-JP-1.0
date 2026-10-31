@@ -760,22 +760,15 @@ void TEnemyMario::emWalkAround()
 	setStickToAngle(mFaceAngle.y, 0.5f);
 }
 
-// TODO: this sure feels like it should be a method of TSpineEnemy
-// fabricated
-static inline f32 getGoalDistance(const TSpineEnemy* enemy)
-{
-	return (enemy->getUnk104().getPoint() - enemy->mPosition).length();
-}
-
 void TEnemyMario::emWalkGraph()
 {
-	if (getGoalDistance(mEMario) < 100.0f) {
+	if (mEMario->getGoalDistance() < 100.0f) {
 		if (mDistanceToMario > 3000.0f)
 			mEMario->goToRandomNextGraphNode();
 		else
 			mEMario->goToRandomEscapeGraphNode();
 	}
-	const JGeometry::TVec3<f32>& goal = mEMario->getUnkF4().getPoint();
+	const JGeometry::TVec3<f32>& goal = mEMario->getCurrentTarget().getPoint();
 	u16 angle = matan(goal.z - mPosition.z, goal.x - mPosition.x);
 	setStickToAngle(angle, 1.0f);
 	++mEMDoingTimer;

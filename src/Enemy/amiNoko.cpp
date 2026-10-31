@@ -224,7 +224,7 @@ bool TAmiNoko::isHitValid(u32 param_1)
 #if defined(VERSION_GMSP01) || defined(VERSION_GMSP01_NX)
 void TAmiNoko::calcDirection()
 {
-	JGeometry::TVec3<f32> pos = unkF4.getPoint();
+	JGeometry::TVec3<f32> pos = mCurrentTarget.getPoint();
 	pos -= mPosition;
 	if (pos.isZero())
 		pos.set(1.0f, 0.0f, 0.0f);
@@ -457,7 +457,7 @@ void TAmiNoko::calcRootMatrix()
 
 	MtxPtr rootMtx = getModel()->getBaseTRMtx();
 
-	JGeometry::TVec3<f32> pos = unkF4.getPoint();
+	JGeometry::TVec3<f32> pos = mCurrentTarget.getPoint();
 	pos -= mPosition;
 	if (pos.x == 0.0f && pos.y == 0.0f && pos.z == 0.0f)
 		pos.x = 1.0f;
@@ -638,7 +638,7 @@ f32 TAmiNoko::getGravityY() const
 void TAmiNoko::creepToCurPathNode(f32 param_1)
 {
 #if defined(VERSION_GMSP01) || defined(VERSION_GMSP01_NX)
-	JGeometry::TVec3<f32> direction = unkF4.getPoint();
+	JGeometry::TVec3<f32> direction = mCurrentTarget.getPoint();
 	direction -= mPosition;
 	if (!direction.isZero()) {
 		f32 speed = MsMin(param_1, direction.length());
@@ -650,7 +650,7 @@ void TAmiNoko::creepToCurPathNode(f32 param_1)
 	}
 #else
 	if (isBckAnm(4) || isBckAnm(7) || isBckAnm(10) || isBckAnm(13)) {
-		JGeometry::TVec3<f32> direction = unkF4.getPoint();
+		JGeometry::TVec3<f32> direction = mCurrentTarget.getPoint();
 		direction -= mPosition;
 		if (direction.x == 0.0f && direction.y == 0.0f && direction.z == 0.0f)
 			direction.x = 1.0f;
@@ -699,7 +699,7 @@ DEFINE_NERVE(TNerveAmiNokoWalkOnFence, TLiveActor)
 		}
 	}
 
-	JGeometry::TVec3<f32> pos = self->getUnkF4().getPoint();
+	JGeometry::TVec3<f32> pos = self->getCurrentTarget().getPoint();
 	pos -= self->mPosition;
 	if (pos.length() < 1.5f && self->checkCurAnmEnd(0)) {
 		if (self->isBckAnm(3) || self->isBckAnm(6)) {
@@ -736,7 +736,7 @@ DEFINE_NERVE(TNerveAmiNokoTurn, TLiveActor)
 		}
 	}
 
-	JGeometry::TVec3<f32> pos = self->getUnkF4().getPoint();
+	JGeometry::TVec3<f32> pos = self->getCurrentTarget().getPoint();
 	pos -= self->mPosition;
 	if (pos.x == 0.0f && pos.y == 0.0f && pos.z == 0.0f)
 		pos.x = 1.0f;
