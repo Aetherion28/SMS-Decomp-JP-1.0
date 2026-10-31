@@ -232,24 +232,24 @@ BOOL TBathtubGrip::receiveMessage(THitActor* sender, u32 message)
 		f32 speed;
 		switch (dead) {
 		case 1:
-			count = unk244->unk16C->breakCount0.get();
 			speed = unk244->unk16C->animSpeed1.get();
+			count = unk244->unk16C->breakCount0.get();
 			break;
 		case 2:
-			count = unk244->unk16C->breakCount1.get();
 			speed = unk244->unk16C->animSpeed2.get();
+			count = unk244->unk16C->breakCount1.get();
 			break;
 		case 3:
-			count = unk244->unk16C->breakCount2.get();
 			speed = unk244->unk16C->animSpeed3.get();
+			count = unk244->unk16C->breakCount2.get();
 			break;
 		case 4:
-			count = unk244->unk16C->breakCount3.get();
 			speed = unk244->unk16C->animSpeed4.get();
+			count = unk244->unk16C->breakCount3.get();
 			break;
 		default:
-			count = unk244->unk16C->breakCount0.get();
 			speed = unk244->unk16C->animSpeed0.get();
+			count = unk244->unk16C->breakCount0.get();
 			break;
 		}
 		startBreak(dead, count, speed);
