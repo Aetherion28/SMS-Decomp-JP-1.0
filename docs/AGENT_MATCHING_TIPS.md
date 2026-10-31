@@ -324,6 +324,7 @@ How the depth grows:
 - Calls nested in one statement's arguments are all walked in the same pass, so `a()->b()->c()` costs one pass, not three.
 - **A call in the argument of an expanded call moves down one pass.** In `stack.push(fetchS32())`, `push` is pass 0, the implicit `TSpcSlice(int)` conversion is pass 1, and `fetchS32` is pass 2.
 - A call nested inside an already expanded body costs no extra pass.
+- **A default argument costs one pass.** `new THaneHamuKuri;` with the name as a default argument first expands a one-statement wrapper (kind 6) at pass 0, and the real constructor is only seen at pass 1, where the 10-statement limit applies. An 11-statement constructor therefore stays a `bl`. The same constructor called with the argument written out is reached at pass 0 and is always expanded. Checked with the kind and statement count of each callee in the inline trace (`createEnemyInstance` of `THaneHamuKuriManager` against `TKoopaJrSubmarineManager`).
 
 To push one callee deeper than its sibling, move the call into the other callee's body.
 Do not nest it as an argument.

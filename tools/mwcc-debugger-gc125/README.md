@@ -51,3 +51,5 @@ python tools/mwcc-debugger-gc125/inline_trace.py mario/Enemy/Koopa "execute__16T
 ```
 
 The GC/1.2.5 addresses (`can_inline` and its return sites, the pass counter) come from rayanht/mwcc's symbol map.
+
+Each traced callee also shows its saved inline info as `[linkname kind=K nstmts=N]` (kind 6: inlined as an expression; kind 3: only at statement level, never in the right operand of `&&`, `||`, `?:`, `,` or the null check of `new`). `variables.txt` now tags each stack object with its type kind (`:int`, `:float`, `:class`, ...).
