@@ -1027,7 +1027,7 @@ void TBossWanwan::rollNextGraphNode()
 
 void TBossWanwan::slideToCurPathNode(f32 speed, f32 turn_speed)
 {
-	JGeometry::TVec3<f32> toGoal = getUnkF4().getPoint();
+	JGeometry::TVec3<f32> toGoal = getCurrentTarget().getPoint();
 	toGoal -= mPosition;
 	f32 dist = VECMag(&toGoal);
 
@@ -1471,7 +1471,7 @@ DEFINE_NERVE(TNerveBWJump, TLiveActor)
 	TBossWanwan* self = (TBossWanwan*)spine->getBody();
 
 	if (spine->getTime() == 0) {
-		const JGeometry::TVec3<f32>& goal = self->getUnk104().getPoint();
+		const JGeometry::TVec3<f32>& goal = self->getGoal().getPoint();
 		f32 speed                         = self->unk124->unkC;
 		JGeometry::TVec3<f32> vel
 		    = self->calcVelocityToJumpToY(goal, speed, self->getGravityY());
@@ -1547,7 +1547,7 @@ DEFINE_NERVE(TNerveBWJumpToBath, TLiveActor)
 	if (spine->getTime() == 0) {
 		JGeometry::TVec3<f32> vel
 		    = self->calcVelocityToJumpToY(BW_BATH_POS, 10.0f, self->getGravityY());
-		self->setGoalPath(TPathNode(BW_BATH_POS));
+		self->setGoal(BW_BATH_POS);
 		self->mVelocity = vel;
 		self->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		self->unk16C = 0;
@@ -1639,7 +1639,7 @@ DEFINE_NERVE(TNerveBWJumpAway, TLiveActor)
 	if (spine->getTime() == 0) {
 		JGeometry::TVec3<f32> vel = self->calcVelocityToJumpToY(
 		    BW_HEAD_START, 40.0f, self->getGravityY());
-		self->setGoalPath(TPathNode(BW_HEAD_START));
+		self->setGoal(BW_HEAD_START);
 		self->mVelocity = vel;
 		self->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		self->unk16C = 0;
@@ -1689,7 +1689,7 @@ DEFINE_NERVE(TNerveBWFall, TLiveActor)
 		const JGeometry::TVec3<f32>& goal = self->mPicket->mPosition;
 		JGeometry::TVec3<f32> vel
 		    = self->calcVelocityToJumpToY(goal, 5.0f, self->getGravityY());
-		self->setGoalPath(TPathNode(self->mPicket->mPosition));
+		self->setGoal(self->mPicket->mPosition);
 		self->mVelocity = vel;
 		self->onLiveFlag(LIVE_FLAG_AIRBORNE);
 		self->unk16C = 0;

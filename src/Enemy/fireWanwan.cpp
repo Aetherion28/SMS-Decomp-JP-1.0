@@ -940,14 +940,6 @@ bool TFireWanwan::isFindMario(f32 param_1)
 	return isFindMarioFromParam(param_1);
 }
 
-static inline f32 dist(const JGeometry::TVec3<f32>& a,
-                       const JGeometry::TVec3<f32>& b)
-{
-	JGeometry::TVec3<f32> tmp = a;
-	tmp.sub(b);
-	return tmp.length();
-}
-
 bool TFireWanwan::isMissMario() const
 {
 	if (SMS_CheckMarioFlag(MARIO_FLAG_VISIBLE)
@@ -961,7 +953,7 @@ bool TFireWanwan::isMissMario() const
 		return true;
 
 	f32 giveUpLen = getSaveParam2()->mSLGiveUpLength.get();
-	if (dist(unk104.getPoint(), mPosition) > giveUpLen)
+	if (getGoalDistance() > giveUpLen)
 		return true;
 
 	return false;
@@ -1906,7 +1898,7 @@ DEFINE_NERVE(TNerveFireWanwanAttack, TLiveActor)
 
 	if (spine->getTime() == 0) {
 		self->setBckAnm(3);
-		self->setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+		self->setGoal((THitActor*)gpMarioAddress);
 	}
 
 	if (self->doAttack()) {
@@ -1955,7 +1947,7 @@ DEFINE_NERVE(TNerveFireWanwanRecoverGraph, TLiveActor)
 		self->unk124->mCurrIdx = -1;
 		self->goToShortestNextGraphNode();
 
-		self->decideTarget(self->unk104.getPoint());
+		self->decideTarget(self->getGoal().getPoint());
 	}
 
 	// TODO: inline?

@@ -338,7 +338,7 @@ bool TTabePuku::isMissMario() const
 		return true;
 
 	f32 giveUpLen = getParam()->mSLGiveUpLength.get();
-	if ((unk104.getPoint() - mPosition).length() > giveUpLen)
+	if ((mGoal.getPoint() - mPosition).length() > giveUpLen)
 		return true;
 
 	JGeometry::TVec3<f32> nearest
@@ -379,7 +379,7 @@ bool TTabePuku::isBiting() const
 
 void TTabePuku::swimToCurPathNode(const JGeometry::TVec3<f32>& offset)
 {
-	JGeometry::TVec3<f32> dir = getUnk104().getPoint();
+	JGeometry::TVec3<f32> dir = getGoal().getPoint();
 	dir -= mPosition;
 	dir += offset;
 	swimTo(dir);
@@ -414,7 +414,7 @@ void TTabePuku::prepareDrag()
 	JGeometry::TQuat4<f32> rot;
 	rot.setEulerY(MsRandF() * 6.2831855f);
 	rot.rotate(mDragDir);
-	setGoalPath(TPathNode(mPosition));
+	setGoal(mPosition);
 	mMarchSpeed = getParam()->mDiveSpeed.get();
 }
 
@@ -424,7 +424,7 @@ bool TTabePuku::doDrag()
 	swimTo(mDragDir);
 	if (mTouchedWall || isTouchedPlane()
 	    || getParam()->mDragLength.get()
-	           < (unk104.getPoint() - mPosition).length()) {
+	           < (mGoal.getPoint() - mPosition).length()) {
 		detach();
 		return true;
 	}
@@ -566,7 +566,7 @@ DEFINE_NERVE(TNerveTabePukuAttack, TLiveActor)
 	TTabePuku* puku = (TTabePuku*)spine->getBody();
 	if (spine->getTime() == 0) {
 		puku->setBckAnm(0);
-		puku->setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+		puku->setGoal((THitActor*)gpMarioAddress);
 		puku->mMarchSpeed = puku->getParam()->mAttackSpeed.get();
 	}
 

@@ -402,7 +402,7 @@ DEFINE_NERVE(TNerveBombHeiAttack, TLiveActor)
 	if (spine->getTime() == 0) {
 		self->setWalkAnm();
 		self->unk164 = 0;
-		self->setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+		self->setGoal((THitActor*)gpMarioAddress);
 	}
 	self->walkBehavior(2, 1.0f);
 	return false;

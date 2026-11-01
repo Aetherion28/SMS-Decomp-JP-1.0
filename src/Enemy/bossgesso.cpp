@@ -1614,7 +1614,7 @@ DEFINE_NERVE(TNerveBGWait, TLiveActor)
 			self->changeBck(25);
 		}
 
-		self->setGoalPath(TPathNode((THitActor*)gpMarioAddress));
+		self->setGoal((THitActor*)gpMarioAddress);
 
 		self->getMActor()->setBtpFromIndex(2);
 		self->getMActor()->getFrameCtrl(ANM_TYPE_BTP)->setFrame(0.0f);
@@ -1931,7 +1931,7 @@ DEFINE_NERVE(TNerveBGDie, TLiveActor)
 		JGeometry::TVec3<f32> local_24(self->mPosition.x, -5000.0f,
 		                               self->mPosition.z + 7000.0f);
 
-		self->setGoalPath(TPathNode(local_24));
+		self->setGoal(local_24);
 
 		self->mVelocity
 		    = self->calcVelocityToJumpToY(local_24, 50.0f, self->getGravityY());
