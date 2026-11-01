@@ -1553,19 +1553,16 @@ bool TBossTelesa::rouletteFall()
 	if (mRoulettes[0]->mPosition.y > mRoulettes[1]->mPosition.y) {
 		mRoulettes[0]->mPosition.y -= 1.0f;
 		mRoulettes[0]->mMActor->setBck("rulet00");
-	} else {
-		mRoulettes[0]->mPosition.y = mRoulettes[1]->mPosition.y;
-		return TRUE;
-	}
 
-	if (mRoulettes[0]->mPosition.y > mRoulettes[1]->mPosition.y + 3.0f) {
-		if (SMS_SendMessageToMario(this, HIT_MESSAGE_TAKE))
-			mHeldObject = (TTakeActor*)SMS_GetMarioHitActor();
-	} else {
-		if (SMS_SendMessageToMario(this, HIT_MESSAGE_DETACH)) {
-			SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_RLT_SET,
-			                                &mPosition, 0, nullptr, 0, 4);
-			mHeldObject = nullptr;
+		if (mRoulettes[0]->mPosition.y > mRoulettes[1]->mPosition.y + 3.0f) {
+			if (SMS_SendMessageToMario(this, HIT_MESSAGE_TAKE))
+				mHeldObject = (TTakeActor*)SMS_GetMarioHitActor();
+		} else {
+			if (SMS_SendMessageToMario(this, HIT_MESSAGE_DETACH)) {
+				SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_RLT_SET,
+				                                &mPosition, 0, nullptr, 0, 4);
+				mHeldObject = nullptr;
+			}
 		}
 
 		SMSGetMSound()->startSoundActor(MSD_SE_BS_TELESA_V_LAUGH1B, &mPosition,
@@ -2268,10 +2265,10 @@ DEFINE_NERVE(TNerveBossTelesaHideWait, TLiveActor)
 		boss->onLiveFlag(LIVE_FLAG_HIDDEN);
 		boss->mIsSpicy = 0;
 
-		u8 maxHp = boss->getMaxHitPoints();
-		boss->unk34C.a = MsClamp<u8>(
-		    TBossTelesa::mNormalAlpha + (maxHp - boss->mHitPoints) * 30, 0,
-		    0xFE);
+		u8 maxHp       = boss->getMaxHitPoints();
+		boss->unk34C.a = MsClamp<u8>(TBossTelesa::mNormalAlpha
+		                                 + (maxHp - boss->mHitPoints) * 30,
+		                             0, 0xFE);
 
 		boss->mSlot->mScaling.set(0.0f, 0.0f, 0.0f);
 		boss->getMActor()->setBrkFromIndex(2);
@@ -2458,10 +2455,10 @@ DEFINE_NERVE(TNerveBossTelesaFreeze, TLiveActor)
 		if (boss->checkCurAnmEnd(0)) {
 			boss->mIsSpicy = 0;
 
-			u8 maxHp = boss->getMaxHitPoints();
-			boss->unk34C.a = MsClamp<u8>(
-			    TBossTelesa::mNormalAlpha + (maxHp - boss->mHitPoints) * 30, 0,
-			    0xFE);
+			u8 maxHp       = boss->getMaxHitPoints();
+			boss->unk34C.a = MsClamp<u8>(TBossTelesa::mNormalAlpha
+			                                 + (maxHp - boss->mHitPoints) * 30,
+			                             0, 0xFE);
 			return TRUE;
 		}
 	} else {

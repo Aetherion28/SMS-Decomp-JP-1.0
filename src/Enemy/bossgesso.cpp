@@ -793,8 +793,8 @@ void TBossGesso::changeAttackMode(int new_mode)
 
 	case ASTATE_GUARD:
 		for (int i = 0; i < 2; ++i) {
-			static int idx[] = { 1, 3 };
-			TBGTentacle* tentacle  = mTentacles[idx[i]];
+			static int idx[]      = { 1, 3 };
+			TBGTentacle* tentacle = mTentacles[idx[i]];
 			if (!tentacle->isThing())
 				tentacle->changeStateAndFixNodes(10);
 		}
@@ -985,8 +985,7 @@ void TBossGesso::doAttackSingle()
 		static const int idxarray[] = { 1, 3 };
 		TBGTentacle* tentacle       = mTentacles[idxarray[i]];
 
-		if (inSight()
-		    && tentacle->mState == 0) {
+		if (inSight() && tentacle->mState == 0) {
 			JGeometry::TVec3<f32> delta = SMS_GetMarioPos();
 			delta -= tentacle->getFirstNode()->getPosition();
 
@@ -1091,8 +1090,7 @@ void TBossGesso::doAttackDouble()
 	f32 doubleAttackLen2 = getSaveParams()->mSLDoubleAttackLen.value;
 	doubleAttackLen2 *= doubleAttackLen2;
 
-	if (inSight()
-	    && delta.squared() < doubleAttackLen2) {
+	if (inSight() && delta.squared() < doubleAttackLen2) {
 
 		for (int i = 0; i < 2; ++i) {
 			static const int idxarray[] = { 0, 2 };
@@ -1147,8 +1145,7 @@ void TBossGesso::doAttackUnison()
 	f32 unisonAttackLen2 = getSaveParams()->mSLUnisonAttackLen.value;
 	unisonAttackLen2 *= unisonAttackLen2;
 
-	if (inSight()
-	    && gpMarioOriginal->isTouchGround4cm()
+	if (inSight() && gpMarioOriginal->isTouchGround4cm()
 	    && delta.squared() < unisonAttackLen2) {
 
 		BOOL bVar3 = true;
@@ -1204,7 +1201,6 @@ void TBossGesso::doAttackShoot()
 		return;
 	}
 }
-
 
 // TODO: inline seems sus here, probably needed cuz inSight is wrong
 void TBossGesso::doAttackGuard()
@@ -1510,7 +1506,6 @@ void TBossGesso::perform(u32 cue, JDrama::TGraphics* graphics)
 			SMSGetMSound()->startSoundActorWithInfo(
 			    MSD_SE_BS_GESO_ROLL, &mPosition, nullptr, lenFromToeToMario(),
 			    0, 0, nullptr, 0, 4);
-
 		}
 	}
 
@@ -1530,7 +1525,7 @@ TBossGessoManager::TBossGessoManager(const char* name)
 
 void TBossGessoManager::createModelData()
 {
-	static TModelDataLoadEntry entry[] = {
+	static const TModelDataLoadEntry entry[] = {
 		{ "bgeso_body.bmd",
 		  J3DMLF_MaterialPEFull | J3DMLF_UseUniqueMaterials
 		      | (16 << J3DMLF_TevStageNumShift),
