@@ -411,20 +411,19 @@ bool TTabePuku::doDive()
 void TTabePuku::prepareDrag()
 {
 	mDragDir.set(0.0f, 0.0f, 1.0f);
-	JGeometry::TQuat4<f32> rot;
-	rot.setEulerY(MsRandF() * 6.2831855f);
-	rot.rotate(mDragDir);
+	JGeometry::TQuat4<f32> quat;
+	quat.setEulerY(MsRandF() * (2.0f * JGeometry::TUtil<f32>::PI()));
+	quat.rotate(mDragDir);
 	setGoal(mPosition);
-	mMarchSpeed = getParam()->mDiveSpeed.get();
 }
 
 // Drag Mario along the floor in a random direction until he gets away.
 bool TTabePuku::doDrag()
 {
 	swimTo(mDragDir);
-	if (mTouchedWall || isTouchedPlane()
-	    || getParam()->mDragLength.get()
-	           < (mGoal.getPoint() - mPosition).length()) {
+	if (mTouchedWall || !isAirborne()
+	    || ((TTabePukuParams*)getSaveParam())->mDragLength.get()
+	           < getGoalDistance()) {
 		detach();
 		return true;
 	}
@@ -626,13 +625,14 @@ DEFINE_NERVE(TNerveTabePukuDive, TLiveActor)
 
 DEFINE_NERVE(TNerveTabePukuDrag, TLiveActor)
 {
-	TTabePuku* puku = (TTabePuku*)spine->getBody();
-	// TODO: 96.6%, the target calls TVec3::dot out of line in doDrag's
-	// length(), one inline level deeper than here.
-	if (spine->getTime() == 0)
-		puku->prepareDrag();
+	TTabePuku* self = (TTabePuku*)spine->getBody();
+	if (spine->getTime() == 0) {
+		self->prepareDrag();
+		self->mMarchSpeed
+		    = ((TTabePukuParams*)self->getSaveParam())->mDiveSpeed.get();
+	}
 
-	if (puku->doDrag()) {
+	if (self->doDrag()) {
 		spine->pushAfterCurrent(&TNerveTabePukuRecoverGraph::theNerve());
 		return true;
 	}
