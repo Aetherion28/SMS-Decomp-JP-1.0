@@ -1058,7 +1058,7 @@ void TCardLoad::perform(u32 cue, JDrama::TGraphics* graphics)
 				alpha = 0;
 			mTitleScreenRoot->setAlpha(alpha);
 			if (gpCameraOption->unkE == 0) {
-				MSBgm::startBGM(MSD_BGM_BOSSPAKU_DEMO);
+				MSBgm::startBGM(MSD_BGM_MAP_SELECT);
 				unk1C        = PROGRESS_UNK30;
 				mScreenState = SCREEN_FILE_SELECT;
 			}
@@ -1128,7 +1128,7 @@ void TCardLoad::perform(u32 cue, JDrama::TGraphics* graphics)
 			break;
 
 		case SCREEN_INIT_TITLE:
-			MSBgm::startBGM(MSD_BGM_CHUBOSS2);
+			MSBgm::startBGM(MSD_BGM_MAIN_TITLE);
 			mGamePad->onFlag(TMarioGamePad::PAD_FLAG_MENU_INPUT);
 			gpMarioOriginal->offFlag(MARIO_FLAG_HAS_FLUDD);
 			mScreenState = SCREEN_ENTER_TITLE;
@@ -1465,7 +1465,7 @@ s8 TCardLoad::waitForChoice(TEProgress param_1, TEProgress param_2, int param_3)
 		}
 
 		if (unkC4 == 4) {
-			unk484[unkB7]->setCenteredSize(20, unk48C[unkB7].getWidth() * 0.5f,
+			unk484[unkB7]->setCenteredSize(40, unk48C[unkB7].getWidth() * 0.5f,
 			                               unk48C[unkB7].getHeight() * 0.5f,
 			                               unk48C[unkB7].getWidth(),
 			                               unk48C[unkB7].getHeight());
@@ -1480,7 +1480,7 @@ s8 TCardLoad::waitForChoice(TEProgress param_1, TEProgress param_2, int param_3)
 			unkAC->setRotation(0, 0, DEG2SHORTANGLE(12));
 			unkAC->setEmitterScale(JGeometry::TVec3<f32>(0.9f, 1.0f, 0.1f));
 		} else if (unkC4 == 44) {
-			unk484[unkB7]->setCenteredSize(20, unk48C[unkB7].getWidth(),
+			unk484[unkB7]->setCenteredSize(40, unk48C[unkB7].getWidth(),
 			                               unk48C[unkB7].getHeight(),
 			                               unk48C[unkB7].getWidth() * 0.5f,
 			                               unk48C[unkB7].getHeight() * 0.5f);

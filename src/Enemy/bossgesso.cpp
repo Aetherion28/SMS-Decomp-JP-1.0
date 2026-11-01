@@ -1694,7 +1694,7 @@ DEFINE_NERVE(TNerveBGBeakDamage, TLiveActor)
 
 		if (SMSGetMarDirector()->getCurrentStage() == 3
 		    || SMSGetMarDirector()->getCurrentStage() == 59) {
-			MSBgm::stopBGM(MSD_BGM_MAP_SELECT, 10);
+			MSBgm::stopBGM(MSD_BGM_BOSS, 10);
 			MSMainProc::setBossNotDamagedFlag(false);
 		}
 	}
@@ -1760,7 +1760,7 @@ DEFINE_NERVE(TNerveBGBeakDamage, TLiveActor)
 		spine->pushAfterCurrent(&TNerveBGPollute::theNerve());
 		if (SMSGetMarDirector()->getCurrentStage() == 3
 		    || SMSGetMarDirector()->getCurrentStage() == 59)
-			MSBgm::startBGM(MSD_BGM_CHUBOSS_MANTA);
+			MSBgm::startBGM(MSD_BGM_BOSSGESO_2DN3RD);
 
 		return true;
 	}

@@ -1282,7 +1282,7 @@ static void evStartMontemanBGM(TSpcTypedInterp<TEventWatcher>* interp,
 {
 	interp->verifyArgNum(0, &arg_num);
 	MSBgm::stopTrackBGM(0, 10);
-	MSBgm::startBGM(MSD_STR_SPACEWORLD);
+	MSBgm::startBGM(MSD_BGM_MONTEMAN_RACE);
 	SMSGetMSound()->startSoundSystemSE(MSD_SE_SY_RACE_START, 0, nullptr, 0);
 	interp->push();
 }
@@ -1291,7 +1291,7 @@ static void evStartMontemanFanfare(TSpcTypedInterp<TEventWatcher>* interp,
                                    u32 arg_num)
 {
 	interp->verifyArgNum(0, &arg_num);
-	MSBgm::startBGM(MSD_BGM_CAMERA_KAGE);
+	MSBgm::startBGM(MSD_BGM_FANFARE_RACE);
 	interp->push();
 }
 #endif

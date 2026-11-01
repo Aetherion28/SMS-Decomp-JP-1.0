@@ -706,7 +706,7 @@ void TShine::appearWithTime(int time, int appear_wait_time, int move_up_time,
 	SMSGetMSound()->startSoundActor(MSD_SE_SHINE_APPEAR, &mPosition, 0, nullptr,
 	                                0, 4);
 #if !defined(VERSION_GMSJ01)
-	MSBgm::startBGM(0x8001002D);
+	MSBgm::startBGM(MSD_BGM_SHINE_APPEAR);
 #endif
 
 	mStateTimer = mAppearWaitTime;
@@ -747,7 +747,7 @@ void TShine::appearSimple(int param_1)
 	SMSGetMSound()->startSoundActor(MSD_SE_SHINE_APPEAR, &mPosition, 0, nullptr,
 	                                0, 4);
 #if !defined(VERSION_GMSJ01)
-	MSBgm::startBGM(0x8001002D);
+	MSBgm::startBGM(MSD_BGM_SHINE_APPEAR);
 #endif
 
 	mStateTimer = mAppearWaitTime;
