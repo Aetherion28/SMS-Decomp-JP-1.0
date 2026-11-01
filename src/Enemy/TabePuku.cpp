@@ -339,7 +339,7 @@ bool TTabePuku::isMissMario() const
 		return true;
 
 	f32 giveUpLen = getParam()->mSLGiveUpLength.get();
-	if ((mGoal.getPoint() - mPosition).length() > giveUpLen)
+	if (getGoalDistance() > giveUpLen)
 		return true;
 
 	JGeometry::TVec3<f32> nearest
