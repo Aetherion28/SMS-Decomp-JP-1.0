@@ -93,6 +93,25 @@ Building
   ninja
   ```
 
+Building a playable game
+========================
+
+The normal build only proves the match: it links the original objects for every file that is not finished, so its DOL is the retail one byte for byte.
+To build the game from this repository's own source instead:
+
+1. Do the normal setup above with your own disc image in `orig/GMSJ01/`, and run `ninja` once.
+2. Run `python3 tools/build_playable.py`.
+   It compiles every source file, finished or not, links them, and writes `build_play/GMSJ01/playable/mario.dol`.
+   Files that still have little or no source are taken from the original objects split from your own disc, and the script lists them; `--pure` links only this repository's code.
+3. Put that DOL into a copy of your own ISO with a GameCube ISO rebuilder, for example GCRebuilder on Windows: open your ISO (Image > Open), right-click `&&systemdata/Start.dol`, choose Import and pick the new `mario.dol`.
+   If the new DOL is larger than the old one, export the whole image instead (Image > Export), replace `&&systemdata/Start.dol` in the exported folder, then open that folder as the root and rebuild a new ISO from it.
+   Convert RVZ, WIA, GCZ or CISO images to ISO first, for example in Dolphin (right-click the game > Convert File).
+4. Play the new ISO in Dolphin or on a console.
+
+To share a build without sharing the game, make an xdelta patch from your own ISO, for example `xdelta3 -e -s "your game.iso" "rebuilt.iso" game.xdelta`.
+Someone with the same retail disc applies it with xdelta or Delta Patcher.
+A patch made without `--pure` still carries the original objects that the script listed, so only share patches built with `--pure`.
+
 Diffing
 =======
 
