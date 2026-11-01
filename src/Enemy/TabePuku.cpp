@@ -66,13 +66,14 @@ TTPHitActor::TTPHitActor(TTabePuku& owner)
 
 void TTPHitActor::init()
 {
-	initHitActor(ACTOR_TYPE_TABE_PUKU, 1, 0x80000000, 10.0f, 10.0f, 10.0f,
+	initHitActor(0x10000035, 1, HIT_CATEGORY_PLAYER, 10.0f, 10.0f, 10.0f,
 	             10.0f);
 	offHitFilter(HIT_FILTER_NO_COLLISION);
 	onHitFilter(HIT_FILTER_NO_DAMAGE);
-	static_cast<TIdxGroupObj*>(JDrama::TNameRefGen::search("敵グループ"))
-	    ->getChildren()
-	    .push_back(this);
+
+	TIdxGroupObj* group
+	    = static_cast<TIdxGroupObj*>(JDrama::TNameRefGen::search("敵グループ"));
+	group->getChildren().push_back(this);
 }
 
 BOOL TTPHitActor::receiveMessage(THitActor* sender, u32 message)
@@ -270,12 +271,12 @@ void TTabePuku::emitEffects()
 		f32 depth = -mPosition.y / 100.0f;
 		if (depth <= 0.0f)
 			depth = 0.0f;
-		s16 lifetime = (int)depth * 20 + 2;
+		int lifetime = (int)depth * 20 + 2;
 		if (lifetime > 200)
 			lifetime = 200;
-		emitter->mBaseLifetime = lifetime;
-		if (mSpine->getLatestNerve() == &TNerveTabePukuAttack::theNerve())
-			emitter->mChildSpawnRate = 0.1f;
+		emitter->setLifeTime(lifetime);
+		if (isAttacking())
+			emitter->setRate(0.1f);
 	}
 }
 
@@ -326,7 +327,7 @@ void TTabePuku::forceKill() { }
 
 bool TTabePuku::isFindMario(f32 rate) { return isFindMarioFromParam(rate); }
 
-bool TTabePuku::doKeepDistance() { return !isAttacking(); }
+bool TTabePuku::doKeepDistance() { return !(isAttacking() || isBiting()); }
 
 // Size matches the map (0x1C4); body taken from TNerveTabePukuAttack.
 // Mario got too far above/below, too far from the goal or left the
@@ -365,8 +366,7 @@ bool TTabePuku::isGraphWander() const
 
 bool TTabePuku::isAttacking() const
 {
-	return mSpine->getLatestNerve() == &TNerveTabePukuAttack::theNerve()
-	       || isBiting();
+	return mSpine->getLatestNerve() == &TNerveTabePukuAttack::theNerve();
 }
 
 bool TTabePuku::isBiting() const
@@ -433,29 +433,49 @@ bool TTabePuku::doDrag()
 
 // The cosAngle and front locals are a guess; the body has to be at least 15
 // statements long, or the compiler would auto-inline it into doDrag.
-void TTabePuku::swimTo(const JGeometry::TVec3<f32>& target)
+void TTabePuku::swimTo(const JGeometry::TVec3<f32>& dir)
 {
-	JGeometry::TVec3<f32> dir = target;
+	JGeometry::TVec3<f32> d(dir);
+
 	if (JGeometry::TUtil<f32>::epsilonEquals(
-	        0.0f, target.squared(), JGeometry::TUtil<f32>::epsilon())) {
-		setMomentumFromQuat();
+	        0.0f, dir.squared(), JGeometry::TUtil<f32>::epsilon())) {
+		JGeometry::TVec3<f32> forward;
+		mQuat.getZDir(forward);
+		forward.scale(mMarchSpeed);
+
+		JGeometry::TVec3<f32> velocity = mVelocity;
+		velocity.scale(((TTabePukuParams*)getSaveParam())->mWaterFric.get());
+		velocity.add(forward);
+		mVelocity = velocity;
+
+		mRotation.y = MsGetRotFromZaxisY(velocity);
 		return;
 	}
 
-	dir.normalize();
-	JGeometry::TQuat4<f32> rot;
-	f32 cosAngle = dir.dot(JGeometry::TVec3<f32>(0.0f, 0.0f, 1.0f));
-	if (JGeometry::TUtil<f32>::epsilonEquals(
-	        -1.0f, cosAngle, JGeometry::TUtil<f32>::epsilon())) {
-		rot.setEulerY(JGeometry::TUtil<f32>::PI());
-	} else {
-		JGeometry::TVec3<f32> front(0.0f, 0.0f, 1.0f);
-		rot.setRotate(front, dir, 1.0f);
-	}
+	d.normalize();
 
-	mQuat.slerp(rot, getParam()->mTurnSlerpRate.get());
+	JGeometry::TVec3<f32> zaxis(0.0f, 0.0f, 1.0f);
+	JGeometry::TQuat4<f32> target;
+	if (JGeometry::TUtil<f32>::epsilonEquals(-1.0f, d.dot(zaxis),
+	                                         JGeometry::TUtil<f32>::epsilon()))
+		target.setEulerY(JGeometry::TUtil<f32>::PI());
+	else
+		target.setRotate(zaxis, d, 1.0f);
+
+	mQuat.slerp(target,
+	            ((TTabePukuParams*)getSaveParam())->mTurnSlerpRate.value);
 	mQuat.normalize();
-	setMomentumFromQuat();
+
+	JGeometry::TVec3<f32> forward;
+	mQuat.getZDir(forward);
+	forward.scale(mMarchSpeed);
+
+	JGeometry::TVec3<f32> velocity = mVelocity;
+	velocity.scale(((TTabePukuParams*)getSaveParam())->mWaterFric.get());
+	velocity.add(forward);
+	mVelocity = velocity;
+
+	mRotation.y = MsGetRotFromZaxisY(velocity);
 }
 
 // Swim forwards with the water slowing the fish down.
