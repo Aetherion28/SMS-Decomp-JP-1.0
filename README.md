@@ -19,7 +19,6 @@ Regenerate it with `python3 tools/progress_treemap.py` after `ninja`.
 
 Regional target: **JP 1.0** (`GMSJ01`).
 Download [the interactive map](assets/progress.html) and open it locally.
-See [cross-version comparison](docs/REGIONAL_COMPARISON.md) and [interactive reuse map](assets/reuse.html).
 
 Upstream project: [doldecomp/sms](https://github.com/doldecomp/sms) ([upstream progress](https://decomp.dev/doldecomp/sms)).
 

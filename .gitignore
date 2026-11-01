@@ -39,7 +39,7 @@ compile_commands.json
 *.exe
 tools/mwcc_compiler
 
-# Private fork: track the game executable and the compilers we build with
+# Private fork: track this version's executable and linker map, and the compilers we build with
 !orig/GMSJ01/sys/
 orig/GMSJ01/sys/*
 !orig/GMSJ01/sys/main.dol
@@ -47,5 +47,3 @@ orig/GMSJ01/sys/*
 !orig/GMSJ01/files/
 orig/GMSJ01/files/*
 !orig/GMSJ01/files/mario.MAP
-# Apple
-.DS_Store
