@@ -598,8 +598,8 @@ void TMario::doSurfing()
 	if (mForwardVel > powMax)
 		mForwardVel = powMax;
 
-	f32 rate = (want - powMin) / (powMax - powMin);
-	s16 rotSp = rate * (rotMax - rotMin) + rotMin;
+	f32 rate     = (want - powMin) / (powMax - powMin);
+	s16 rotSp    = rate * (rotMax - rotMin) + rotMin;
 	s16 diff     = mIntendedYaw - mFaceAngle.y;
 	mFaceAngle.y = mIntendedYaw - IConverge(diff, 0, rotSp, rotSp);
 	slopeProcess();
@@ -1116,8 +1116,8 @@ void TMario::slippingBasic(int statusOnStop, int statusOnFall, int slipAnim)
 				s16 wallAng = matan(mWallPlane->getNormal().z,
 				                    mWallPlane->getNormal().x);
 
-				f32 newMag
-				    = MsSqrtf(mSlideVelX * mSlideVelX + mSlideVelZ * mSlideVelZ);
+				f32 newMag = MsSqrtf(mSlideVelX * mSlideVelX
+				                     + mSlideVelZ * mSlideVelZ);
 				newMag *= 0.9;
 				if (newMag < 4.0f)
 					newMag = 4.0f;

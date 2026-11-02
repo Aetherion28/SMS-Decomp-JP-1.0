@@ -1619,7 +1619,7 @@ static inline f32 calcPlaneDistance(const TBGCheckData* plane,
                                     JGeometry::TVec3<f32> pos)
 {
 	return plane->mNormal.x * pos.x + plane->mNormal.y * pos.y
-	     + plane->mNormal.z * pos.z + plane->mPlaneDistance;
+	       + plane->mNormal.z * pos.z + plane->mPlaneDistance;
 }
 
 void TMario::checkCurrentPlane()

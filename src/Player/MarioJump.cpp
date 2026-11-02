@@ -1082,7 +1082,7 @@ BOOL TMario::hipAttacking()
 
 			if (160.0f + (mPosition.y + lift) < mFloorPosition.x) {
 				mPosition.y += lift / 4.0f;
-				unk104      = mPosition.y;
+				unk104 = mPosition.y;
 			}
 		}
 		setPlayerVelocity(0.0f);
@@ -1232,8 +1232,8 @@ BOOL TMario::diving()
 			if (checkFlag(MARIO_FLAG_HAS_FLUDD)) {
 				mWaterGun->setHoverAngleTargetL(-nozzleAngle);
 				mWaterGun->setHoverAngleTargetR(nozzleAngle);
-				s16 diff           = mIntendedYaw - mFaceAngle.y;
-				s16 rotSp          = mDivingParams.mRotSp.get();
+				s16 diff     = mIntendedYaw - mFaceAngle.y;
+				s16 rotSp    = mDivingParams.mRotSp.get();
 				mFaceAngle.y = mIntendedYaw - IConverge(diff, 0, rotSp, rotSp);
 			}
 		}
