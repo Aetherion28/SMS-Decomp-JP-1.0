@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sound Glitch Fix</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; code panels break out slightly wider; a timeline strip shows the race */
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --fg:#1d2330; --mut:#5b6474; --line:#d9dee6;
+  --accent:#1f5fbf; --bad:#b3261e; --good:#1b7a3d; --codebg:#f0f2f6; --hl-bad:#fbe4e2; --hl-good:#e1f3e7;
+  --display:"Fraunces",Georgia,serif; --body:"Source Sans 3",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12151b; --panel:#1a1f27; --fg:#e4e8ef; --mut:#9aa3b2; --line:#2c3340;
+  --accent:#7aa7ff; --bad:#ff8a80; --good:#7fd69b; --codebg:#161b22; --hl-bad:#3a1e1e; --hl-good:#16301f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151b; --panel:#1a1f27; --fg:#e4e8ef; --mut:#9aa3b2; --line:#2c3340;
+  --accent:#7aa7ff; --bad:#ff8a80; --good:#7fd69b; --codebg:#161b22; --hl-bad:#3a1e1e; --hl-good:#16301f; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:17px/1.6 var(--body)}
+main{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+h1{font:600 2.3rem/1.15 var(--display);margin:0 0 .4rem;text-wrap:balance}
+h2{font:600 1.4rem/1.25 var(--display);margin:2.4rem 0 .6rem;text-wrap:balance}
+.lede{font-size:1.15rem;color:var(--mut);margin:0 0 1.5rem}
+p,li{max-width:68ch}
+code{font:0.88em var(--mono);background:var(--codebg);padding:.1em .35em;border-radius:4px}
+.tag{display:inline-block;font:600 .72rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.35em .55em;border-radius:4px;margin-right:.4rem}
+.tag.bad{color:var(--bad);border:1px solid var(--bad)}.tag.good{color:var(--good);border:1px solid var(--good)}
+.verdict{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:16px 18px;margin:1.2rem 0}
+.verdict p{margin:.3rem 0}
+figure{margin:1rem 0 1.4rem}
+figcaption{font:.85rem var(--mono);color:var(--mut);margin-bottom:.35rem}
+pre{margin:0;background:var(--codebg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font:13px/1.55 var(--mono)}
+pre .b{background:var(--hl-bad);display:block;margin:0 -14px;padding:0 14px}
+pre .g{background:var(--hl-good);display:block;margin:0 -14px;padding:0 14px}
+pre .c{color:var(--mut)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair>*{min-width:0}
+@media (max-width:640px){.pair{grid-template-columns:1fr}}
+.race{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font:14px/1.45 var(--body);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.race .t{font:600 12px/1.6 var(--mono);color:var(--mut);white-space:nowrap}
+.race .x{color:var(--bad);font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+td,th{border-bottom:1px solid var(--line);padding:.5rem .4rem;text-align:left;vertical-align:top}
+th{font:600 .78rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.tw{overflow-x:auto}
+a{color:var(--accent)}
+.foot{color:var(--mut);font-size:.9rem;margin-top:2.5rem;border-top:1px solid var(--line);padding-top:1rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Sound Glitch: what the later versions fixed</h1>
+<p class="lede">JP 1.0's music loader marks a slot "loading" only after it has queued the file read. If the read finishes first, the flag is left set forever. US and every later version set the flag before the read.</p>
+
+<div class="verdict">
+<p><span class="tag bad">JP 1.0</span> Flag set <b>after</b> <code>loadFileAsync</code>: a race the load can win.</p>
+<p><span class="tag good">US · JP 1.1 · PAL · Korean · 3D All-Stars</span> Flag set <b>before</b> <code>loadFileAsync</code>: the race is gone.</p>
+<p>Source: the decompiled <code>JAIBasic::checkEntriedSeq</code>, which matches each version's own disc, and the original machine code of each disc.</p>
+</div>
+
+<h2>The function</h2>
+<p>When the game asks for a new music sequence (a BGM track or a jingle), <code>JAIBasic::checkEntriedSeq</code> finds memory for it and starts an asynchronous DVD read. Each music slot has a <code>mLoadingFlag</code>; while it is set, the function stops working on new requests.</p>
+<figure><figcaption>libs/JSystem/src/JAudio/JAInterface/JAIGFrameSequence.cpp — JAIBasic::checkEntriedSeq</figcaption>
+<pre>for (int i = 0; i &lt; JAIGlobalParameter::seqPlayTrackMax; ++i) {
+	JAISeqUpdateData* sud = &amp;unk0-&gt;mSeqTrackInfo[i];
+	...
+	if (!(r27 &amp; 1))          <span class="c">// no new request on this slot</span>
+		continue;
+<span class="b">	if (sud-&gt;mLoadingFlag)   <span class="c">// slot still "loading": give up for this frame</span>
+		return;               <span class="c">// return, not continue: later slots wait too</span></span>
+	...
+	if (!sound-&gt;checkSwBit(JAISeqSwBit_SyncLoad)) {
+		sound-&gt;mState = SOUNDSTATE_Stored;
+		...
+		unk0-&gt;setAutoHeapLoadedFlag(pos, 1);
+<span class="g">#if !defined(VERSION_GMSJ01)
+		sud-&gt;mLoadingFlag = true;            <span class="c">// US and later: before the read</span>
+#endif</span>
+		JASystem::Vload::loadFileAsync(
+		    mSeqArchiveHandle + (soundId &amp; JAISoundID_IndexMask), ptr,
+		    0, size, checkDvdLoadArc, param);
+<span class="b">#if defined(VERSION_GMSJ01)
+		sud-&gt;mLoadingFlag = true;            <span class="c">// JP 1.0: after the read was queued</span>
+#endif</span>
+	}</pre></figure>
+
+<p>The read's completion callback clears the flag and marks the sound ready:</p>
+<figure><figcaption>same file — JAIBasic::checkDvdLoadArc (runs on the audio DVD thread)</figcaption>
+<pre>if (lo &lt; 0xFE) {
+	JAISound* sound = basic-&gt;unk0-&gt;mSeqTrackInfo[lo].mSound;
+<span class="g">	basic-&gt;unk0-&gt;mSeqTrackInfo[lo].mLoadingFlag = false;</span>
+	if (sound &amp;&amp; sound-&gt;mState == SOUNDSTATE_Stored &amp;&amp; ...)
+		sound-&gt;mState = SOUNDSTATE_Prepared;
+	...</pre></figure>
+
+<p>Nothing else clears the flag except the sound system's start-up, which runs once at boot:</p>
+<figure><figcaption>libs/JSystem/src/JAudio/JAInterface/JAIData.cpp — JAIData initialisation</figcaption>
+<pre>mSeqTrackInfo[i].mLoadingFlag = false;</pre></figure>
+
+<h2>The race</h2>
+<p>The audio DVD thread runs at a higher priority than the game thread, so it can run as soon as the read finishes, even in the middle of the game thread's code:</p>
+<figure><figcaption>libs/JSystem/src/JAudio/JASystem/JASAudioThread.cpp</figcaption>
+<pre>s32 pri = OSGetThreadPriority(OSGetCurrentThread());   <span class="c">// the game thread</span>
+jac_pri = pri - 3;                                      <span class="c">// audio thread</span>
+dvd_pri = jac_pri + 1;                                  <span class="c">// DVD thread: 2 above the game (lower = higher)</span>
+...
+OSCreateThread(&amp;jac_dvdThread, &amp;Dvd::dvdProc, 0, ..., dvd_pri, 1);</pre></figure>
+
+<div class="race">
+<span class="t">game</span><span>queues the read with <code>loadFileAsync</code> and returns</span>
+<span class="t">DVD</span><span>read finishes before the game thread runs its next line; the callback sets <code>mLoadingFlag = false</code> and the sound to Prepared</span>
+<span class="t">game</span><span class="x">runs the JP 1.0 line <code>mLoadingFlag = true</code>; no callback is left to clear it</span>
+<span class="t">later</span><span>the next request on that slot hits <code>if (sud-&gt;mLoadingFlag) return;</code>, every frame, until the console is reset</span>
+</div>
+<p>With the US order, the flag is already set when the read starts, so the callback's <code>false</code> is always the last write.</p>
+
+<h2>The discs agree</h2>
+<p>This is the original code from each disc. The store <code>stb r22, 0x3(r30)</code> writes <code>mLoadingFlag</code> (offset 3 of the slot data).</p>
+<div class="pair">
+<figure><figcaption>JP 1.0 · 0x80051578</figcaption>
+<pre>bl  setAutoHeapLoadedFlag
+lwz r0, 0x2c(r24)
+addi r4, r25, 0x0
+addi r6, r26, 0x0
+addi r7, r31, 0x0
+addi r8, r20, 0x0
+add  r3, r0, r21
+li   r5, 0x0
+bl  loadFileAsync
+<span class="b">stb r22, 0x3(r30)   <span class="c">; flag after</span></span></pre></figure>
+<figure><figcaption>US · 0x80306CB0</figcaption>
+<pre>bl  setAutoHeapLoadedFlag
+<span class="g">stb r22, 0x3(r30)   <span class="c">; flag before</span></span>
+addi r4, r25, 0x0
+addi r6, r26, 0x0
+lwz r0, 0x2c(r24)
+addi r7, r31, 0x0
+addi r8, r20, 0x0
+add  r3, r0, r21
+li   r5, 0x0
+bl  loadFileAsync</pre></figure>
+</div>
+<p>JP 1.1, PAL, the Korean disc and 3D All-Stars have the same function as US, byte for byte apart from addresses.</p>
+
+<h2>How it explains the symptoms</h2>
+<div class="tw"><table>
+<tr><th>Wiki symptom</th><th>Explanation from the code</th></tr>
+<tr><td>Starts for unknown reasons</td><td>It needs a read that finishes while the game thread is held up at that exact point. Pure timing, so it is rare and can happen with or without practice codes.</td></tr>
+<tr><td>Lasts until the game is turned off</td><td>Only start-up clears the flag.</td></tr>
+<tr><td>The Shine jingles don't play</td><td>The next track on the stuck slot is never loaded; short jingles such as the Shine-appear and Shine-get music go through these slots.</td></tr>
+<tr><td>Cutscenes last at least 6 s (10 s for deaths); Mario frozen after a Gatekeeper</td><td>The requested track never starts but is never removed either, so the game still sees a secondary BGM in progress, which is the condition the wiki already found for the long cutscenes.</td></tr>
+<tr><td>Crashes, often on a Shine</td><td>Plausible, not proven: the logged crash is a virtual call in <code>JAIBasic::processFrameWork</code> through an overwritten vtable pointer, which fits a sound handle that stays referenced after the rest of the system frees and reuses it. The exact write was not traced.</td></tr>
+</table></div>
+
+<h2>A second guard in US</h2>
+<p>US also stops one sound-list walk after 100 entries. That only matters if a list is corrupted into a loop, so it may be part of the same clean-up. JP 1.1 and PAL keep it.</p>
+<figure><figcaption>src/MSound/MSound.cpp — MSound::setCategoryAllVolume</figcaption>
+<pre><span class="g">#if !defined(VERSION_GMSJ01)
+	u32 count = 0;
+	for (JAISound* sound = unk0-&gt;getLinkBuffer(category)-&gt;mUsedHead;
+	     sound != nullptr; sound = sound-&gt;getNextSound()) {
+		if (count &gt;= 100)
+			break;
+		sound-&gt;setVolume(volume, param_3, param_4);
+		count++;
+	}</span>
+<span class="b">#else
+	for (JAISound* sound = unk0-&gt;getLinkBuffer(category)-&gt;mUsedHead;
+	     sound != nullptr; sound = sound-&gt;getNextSound())
+		sound-&gt;setVolume(volume, param_3, param_4);
+#endif</span></pre></figure>
+
+<p class="foot">Code from the <a href="https://github.com/Aetherion28/SMS-Decomp-JP-1.0">JP 1.0</a> and <a href="https://github.com/Aetherion28/SMS-Decomp-US">US</a> decompilations; the function shown matches each version's disc. Background: the Sound Glitch page of the SMS speedrun wiki.</p>
+</main>
+</body>
+</html>

@@ -18,6 +18,8 @@ Regenerate it with `python3 tools/progress_treemap.py` after `ninja`.
 <!-- progress:end -->
 
 Regional target: **JP 1.0** (`GMSJ01`).
+
+Write-up: [the JP 1.0 sound glitch and how later versions fixed it](https://aetherion28.github.io/SMS-Decomp-JP-1.0/sound-glitch.html) ([source](docs/sound-glitch.html)).
 Download [the interactive map](assets/progress.html) and open it locally.
 
 Upstream project: [doldecomp/sms](https://github.com/doldecomp/sms) ([upstream progress](https://decomp.dev/doldecomp/sms)).
