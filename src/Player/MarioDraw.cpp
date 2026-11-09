@@ -464,18 +464,21 @@ static int MarioHeadCtrl(J3DNode* param_1, int param_2)
 static int MarioWaistCtrl(J3DNode* param_1, int param_2)
 {
 	if (param_2 == 0) {
-		TMario* mario = gpMarioForCallBack;
+		TMario* mario                 = gpMarioForCallBack;
+		JGeometry::TVec3<s16>& angles = mario->unkFC;
 		if (mario == gpMarioOriginal && gpCamera->isLButtonCamera() == true
 		    && gpMarioForCallBack->canBendBody() != 0
 		    && gpCamera->mCurrentTarget.mPitch > 0) {
-			mario->unkFC.x = gpCamera->mCurrentTarget.mPitch;
+			angles.x = gpCamera->mCurrentTarget.mPitch;
 			Mtx transform;
-			MsMtxSetRotRPH(transform, SHORTANGLE2DEG(-mario->unkFC.z), 0.0f,
-			               SHORTANGLE2DEG(mario->unkFC.x));
+			MsMtxSetRotRPH(transform, SHORTANGLE2DEG((s16)-angles.z), 0.0f,
+			               SHORTANGLE2DEG(angles.x));
 			MTXConcat(J3DSys::mCurrentMtx, transform, J3DSys::mCurrentMtx);
 			return 1;
-		} else if (gpMarioForCallBack->checkStatusType(MARIO_FLAG_HAS_FLUDD)
-		           && !gpMarioForCallBack->onYoshi()) {
+		}
+
+		if (gpMarioForCallBack->checkStatusType(MARIO_FLAG_HAS_FLUDD)
+		    && !gpMarioForCallBack->onYoshi()) {
 			const TWaterGun* gun       = gpMarioForCallBack->mWaterGun;
 			TNozzleBase* currentNozzle = gun->getCurrentNozzle();
 			s16 gunAngle               = currentNozzle->getGunAngle();
@@ -485,12 +488,12 @@ static int MarioWaistCtrl(J3DNode* param_1, int param_2)
 				MTXConcat(J3DSys::mCurrentMtx, gunMtx, J3DSys::mCurrentMtx);
 				return 1;
 			}
-		} else if (gpMarioForCallBack->mAnimationId == TMario::ANIM_RUN1
-		           || gpMarioForCallBack->mAnimationId == TMario::ANIM_RUN2
-		           || gpMarioForCallBack->mAnimationId
-		                      == TMario::ANIM_RIDE_SHELL
-		                  && !gpMarioForCallBack->checkStatusType(
-		                      MARIO_FLAG_FLUDD_EMITTING)) {
+		}
+
+		if ((gpMarioForCallBack->mAnimationId == TMario::ANIM_RUN1
+		     || gpMarioForCallBack->mAnimationId == TMario::ANIM_RUN2
+		     || gpMarioForCallBack->mAnimationId == TMario::ANIM_RIDE_SHELL)
+		    && !gpMarioForCallBack->checkFlag(MARIO_FLAG_FLUDD_EMITTING)) {
 
 			// Ah, i love storing floats, casting them to s16
 			// and then transforming them to floats again...
@@ -506,8 +509,8 @@ static int MarioWaistCtrl(J3DNode* param_1, int param_2)
 			MTXConcat(J3DSys::mCurrentMtx, transform, J3DSys::mCurrentMtx);
 			return 1;
 		} else {
-			mario->unkFC.x = 0;
-			mario->unkFC.z = 0;
+			angles.x = 0;
+			angles.z = 0;
 		}
 	}
 	return 1;

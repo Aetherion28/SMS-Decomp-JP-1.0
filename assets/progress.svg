@@ -130,7 +130,7 @@
 <rect x="549.87" y="172.59" width="11.41" height="9.62" fill="rgb(0,200,0)"><title>MoveBG/MapObjTumblePole: 100.00% fuzzy, 100.00% matched, 788 bytes</title></rect>
 <rect x="561.28" y="0.00" width="68.86" height="68.74" fill="rgb(0,112,191)"><title>Player/MarioMove: 99.68% fuzzy, 28.60% matched, 33988 bytes</title></rect>
 <rect x="561.28" y="68.74" width="68.86" height="68.66" fill="rgb(0,112,192)"><title>Player/MarioInit: 100.00% fuzzy, 96.17% matched, 33948 bytes</title></rect>
-<rect x="561.28" y="137.40" width="68.86" height="44.81" fill="rgb(3,109,184)"><title>Player/MarioDraw: 97.14% fuzzy, 20.55% matched, 22156 bytes</title></rect>
+<rect x="561.28" y="137.40" width="68.86" height="44.81" fill="rgb(3,109,185)"><title>Player/MarioDraw: 97.21% fuzzy, 20.55% matched, 22156 bytes</title></rect>
 <rect x="630.14" y="0.00" width="53.87" height="55.06" fill="rgb(2,110,186)"><title>Player/MarioSpecial: 97.83% fuzzy, 8.08% matched, 21296 bytes</title></rect>
 <rect x="684.01" y="0.00" width="52.08" height="55.06" fill="rgb(2,110,186)"><title>Player/ModelWaterManager: 97.89% fuzzy, 18.32% matched, 20588 bytes</title></rect>
 <rect x="736.09" y="0.00" width="51.30" height="55.06" fill="rgb(1,111,190)"><title>Player/WaterGun: 99.23% fuzzy, 42.64% matched, 20280 bytes</title></rect>
@@ -279,7 +279,7 @@
 <rect x="737.09" y="256.04" width="25.26" height="22.74" fill="rgb(2,110,188)"><title>NPC/NpcEffect: 98.47% fuzzy, 21.34% matched, 4124 bytes</title></rect>
 <rect x="762.35" y="256.04" width="25.04" height="22.74" fill="rgb(1,111,189)"><title>NPC/NpcInitPrg: 98.83% fuzzy, 0.00% matched, 4088 bytes</title></rect>
 <rect x="737.09" y="278.78" width="18.73" height="18.82" fill="rgb(3,109,185)"><title>NPC/NpcParts: 97.43% fuzzy, 10.43% matched, 2532 bytes</title></rect>
-<rect x="737.09" y="297.60" width="18.73" height="16.09" fill="rgb(4,107,180)"><title>NPC/NpcWalkTurn: 95.57% fuzzy, 9.98% matched, 2164 bytes</title></rect>
+<rect x="737.09" y="297.60" width="18.73" height="16.09" fill="rgb(5,106,178)"><title>NPC/NpcWalkTurn: 94.45% fuzzy, 9.98% matched, 2164 bytes</title></rect>
 <rect x="755.82" y="278.78" width="16.36" height="16.38" fill="rgb(0,112,192)"><title>NPC/NpcCoin: 99.97% fuzzy, 45.95% matched, 1924 bytes</title></rect>
 <rect x="772.18" y="278.78" width="15.20" height="16.38" fill="rgb(1,111,190)"><title>NPC/NpcCollision: 99.24% fuzzy, 12.30% matched, 1788 bytes</title></rect>
 <rect x="755.82" y="295.16" width="11.57" height="18.53" fill="rgb(4,108,182)"><title>NPC/NpcCallback: 96.03% fuzzy, 30.91% matched, 1540 bytes</title></rect>

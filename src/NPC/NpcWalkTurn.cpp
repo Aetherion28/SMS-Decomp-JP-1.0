@@ -7,9 +7,11 @@
 
 bool TBaseNPC::isCanWalk() const
 {
-	bool result = true;
-	// TODO: TVec3::sub should use set internally I guess?
-	if ((mCurrentTarget.getPoint() - mPosition).squared() < CLBSquared(10.0f))
+	bool result                 = true;
+	JGeometry::TVec3<f32> point = mCurrentTarget.getPoint();
+	JGeometry::TVec3<f32> toPoint;
+	toPoint.set(point.x - mPosition.x, 0.0f, point.z - mPosition.z);
+	if (toPoint.squared() < CLBSquared(10.0f))
 		result = false;
 	return result;
 }
