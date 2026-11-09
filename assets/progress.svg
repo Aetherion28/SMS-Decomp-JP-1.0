@@ -231,7 +231,7 @@
 <rect x="519.92" y="497.65" width="4.03" height="2.35" fill="rgb(0,200,0)"><title>System/ScenarioArchiveName: 100.00% fuzzy, 100.00% matched, 68 bytes</title></rect>
 <rect x="523.95" y="494.75" width="3.29" height="2.71" fill="rgb(0,200,0)"><title>System/ProcessMeter: 100.00% fuzzy, 100.00% matched, 64 bytes</title></rect>
 <rect x="523.95" y="497.46" width="3.29" height="2.54" fill="rgb(0,200,0)"><title>System/TexCache: 100.00% fuzzy, 100.00% matched, 60 bytes</title></rect>
-<rect x="527.24" y="182.21" width="45.49" height="98.94" fill="rgb(4,107,181)"><title>Map/BathWaterManager: 95.77% fuzzy, 22.61% matched, 32316 bytes</title></rect>
+<rect x="527.24" y="182.21" width="45.49" height="98.94" fill="rgb(4,107,181)"><title>Map/BathWaterManager: 95.78% fuzzy, 22.61% matched, 32316 bytes</title></rect>
 <rect x="527.24" y="281.15" width="45.49" height="32.54" fill="rgb(1,111,191)"><title>Map/MapEventMare: 99.48% fuzzy, 38.84% matched, 10628 bytes</title></rect>
 <rect x="572.73" y="182.21" width="39.30" height="37.39" fill="rgb(0,112,192)"><title>Map/PollutionCount: 99.94% fuzzy, 77.48% matched, 10552 bytes</title></rect>
 <rect x="612.03" y="182.21" width="28.03" height="37.39" fill="rgb(2,110,188)"><title>Map/MapCheck: 98.39% fuzzy, 20.41% matched, 7524 bytes</title></rect>

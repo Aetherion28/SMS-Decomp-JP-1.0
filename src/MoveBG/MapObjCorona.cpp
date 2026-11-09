@@ -634,9 +634,9 @@ void TBathtub::control()
 	TMapObjBase::control();
 	calcBathtubData();
 	getModel()->calc();
-	JGeometry::TVec3<f32> up(mBathtubData.unk18.at(1, 0),
+	JGeometry::TVec3<f32> up(mBathtubData.unk18.at(0, 1),
 	                         mBathtubData.unk18.at(1, 1),
-	                         mBathtubData.unk18.at(1, 2));
+	                         mBathtubData.unk18.at(2, 1));
 	if (mBathtubData.unk0C.dot(up) > 0.995f)
 		gpMarioParticleManager->emit(MAP_MAP_MS_LKP_YUGE1, &unk1F4, 1, this);
 	for (int i = 0; i < 5; ++i) {

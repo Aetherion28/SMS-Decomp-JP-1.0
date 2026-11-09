@@ -1806,8 +1806,7 @@ void TBathWaterManager::perform(u32 cue, JDrama::TGraphics* graphics)
 
 	if (cue & CUE_MOVE) {
 		unk30 = unk28[unk18->displaysMesh.get()];
-		unk1C += 1;
-		if (!(unk1C & 3)) {
+		if (!(++unk1C & 3)) {
 			for (int actor = 0; actor < 2; ++actor) {
 				TBathWater* bw           = unk20[actor];
 				const TBathtubData& data = unk24->getBathtubData();
@@ -1830,26 +1829,25 @@ void TBathWaterManager::perform(u32 cue, JDrama::TGraphics* graphics)
 						throwMario(unk14[0]->jump.get());
 				}
 			}
-
-			// Periodic jump-drop spawn.
-			if ((unk1C & 7) == 4 && unk24->getBathtubData().unk64) {
-				const TBathtubData& data = unk24->getBathtubData();
-
-				JGeometry::TVec3<f32> vel;
-				if (fakeCalcPos(data, unk14[1]->dropRadius.get(),
-				                unk10.get_float(-1.0f, 1.0f), &vel))
-					unk20[1]->addDrop(vel, unk10.get_float01());
-			}
-
-			TBathWater* soundBw = unk20[0];
-			JGeometry::TVec3<f32> avg;
-			avg.set(soundBw->unk78);
-			f32 tmp = soundBw->unk84;
-			if (tmp > 0.0f)
-				SMSGetMSound()->startSoundActorWithInfo(MSD_SE_BS_KOOPA_FLOOD,
-				                                        &avg, nullptr, tmp, 0,
-				                                        0, nullptr, 0, 4);
 		}
+
+		// Periodic jump-drop spawn.
+		if ((unk1C & 7) == 4 && unk24->getBathtubData().unk64) {
+			const TBathtubData& data = unk24->getBathtubData();
+
+			JGeometry::TVec3<f32> vel;
+			if (fakeCalcPos(data, unk14[1]->dropRadius.get(),
+			                unk10.get_float(-1.0f, 1.0f), &vel))
+				unk20[1]->addDrop(vel, unk10.get_float01());
+		}
+
+		TBathWater* soundBw = unk20[0];
+		JGeometry::TVec3<f32> avg;
+		avg.set(soundBw->unk78);
+		f32 tmp = soundBw->unk84;
+		if (tmp > 0.0f)
+			SMSGetMSound()->startSoundActorWithInfo(
+			    MSD_SE_BS_KOOPA_FLOOD, &avg, nullptr, tmp, 0, 0, nullptr, 0, 4);
 	}
 
 	if (cue & CUE_DRAW)
